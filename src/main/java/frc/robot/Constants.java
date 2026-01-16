@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import org.opencv.core.Point;
+
+import edu.wpi.first.math.geometry.CoordinateSystem;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -27,5 +30,18 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static class navigationConstants {
+    //NAV MAP
+    // NAMING CONVENTION IS color first, under/over if related to hump or no, side towards center or driverstation or center, Y coordinate side relati+654\]
+    //center points
+    public static final Point centerPointBlue = new Point(2.5, 4);
+    public static final Point centerPointRed = new Point(14, 4);
+
+    //Red Side Navigation
+    public static final Point redUnderDriverstation = new Point(13.1, 7.4);
+    public static final Point redUnderCenter = new Point(10.8, 7.4);
+
   }
 }
