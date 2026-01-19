@@ -24,7 +24,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.navigation.nav;
+import frc.robot.subsystems.navigation.NavigationSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -36,7 +36,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final nav navSys;
+  private final NavigationSubsystem navSys;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -58,6 +58,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+
+        navSys = new NavigationSubsystem();
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -87,6 +89,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        navSys = new NavigationSubsystem();
         break;
 
       default:
@@ -98,6 +101,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+
+        navSys = new NavigationSubsystem();
         break;
     }
 
@@ -152,7 +157,7 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    controller.y().onTrue(Commands.runOnce(navsys::generatePath(Constants.navigationConstants.centerPoint), navsys));
+    controller.y().onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
 
     // Reset gyro to 0° when B button is pressed
     controller
