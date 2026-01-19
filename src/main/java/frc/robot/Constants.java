@@ -7,9 +7,9 @@
 
 package frc.robot;
 
-import org.opencv.core.Point;
-
 import edu.wpi.first.math.geometry.CoordinateSystem;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -34,14 +34,12 @@ public final class Constants {
 
   public static class navigationConstants {
     //NAV MAP
-    // NAMING CONVENTION IS color first, under/over if related to hump or no, side towards center or driverstation or center, Y coordinate side relati+654\]
-    //center points
-    public static final Point centerPointBlue = new Point(2.5, 4);
-    public static final Point centerPointRed = new Point(14, 4);
+    public static final Pose2d centerPointBlue = new Pose2d(2.5, 4.0, Rotation2d.fromDegrees(0));
+    public static final Pose2d leftCenterPointBlue = new Pose2d(2.5, 4.0, Rotation2d.fromDegrees(90));
+    public static final Pose2d rightCenterPointBlue = new Pose2d(2.5, 1.5, Rotation2d.fromDegrees(270));
 
-    //Red Side Navigation
-    public static final Point redUnderDriverstation = new Point(13.1, 7.4);
-    public static final Point redUnderCenter = new Point(10.8, 7.4);
-
+    public static final Pose2d centerPoint = new Pose2d(8.25, 4.0, Rotation2d.fromDegrees(0));
+    public static final Pose2d leftCenterPoint = new Pose2d(8.25, 4.0, Rotation2d.fromDegrees(90));
+    public static final Pose2d rightCenterPoint = new Pose2d(8.25, 1.5, Rotation2d.fromDegrees(270));
   }
 }
