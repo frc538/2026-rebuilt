@@ -25,7 +25,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.navigation.nav;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -37,7 +36,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final nav Nav;
+  private final nav navSys;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -153,7 +152,7 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    controller.y().onTrue(Commands.runOnce(Nav::generatePath, Nav));
+    controller.y().onTrue(Commands.runOnce(navsys::generatePath(Constants.navigationConstants.centerPoint), navsys));
 
     // Reset gyro to 0° when B button is pressed
     controller
@@ -166,8 +165,6 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
   }
-  
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.CoordinateSystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -33,13 +32,16 @@ public final class Constants {
   }
 
   public static class navigationConstants {
-    //NAV MAP
+    // NAV MAP
     public static final Pose2d centerPointBlue = new Pose2d(2.5, 4.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d leftCenterPointBlue = new Pose2d(2.5, 4.0, Rotation2d.fromDegrees(90));
-    public static final Pose2d rightCenterPointBlue = new Pose2d(2.5, 1.5, Rotation2d.fromDegrees(270));
+    public static final Pose2d leftCenterPointBlue =
+        new Pose2d(2.5, 4.0, Rotation2d.fromDegrees(90));
+    public static final Pose2d rightCenterPointBlue =
+        new Pose2d(2.5, 1.5, Rotation2d.fromDegrees(270));
 
     public static final Pose2d centerPoint = new Pose2d(8.25, 4.0, Rotation2d.fromDegrees(0));
     public static final Pose2d leftCenterPoint = new Pose2d(8.25, 4.0, Rotation2d.fromDegrees(90));
-    public static final Pose2d rightCenterPoint = new Pose2d(8.25, 1.5, Rotation2d.fromDegrees(270));
+    public static final Pose2d rightCenterPoint =
+        new Pose2d(8.25, 1.5, Rotation2d.fromDegrees(270));
   }
 }
