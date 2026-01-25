@@ -33,6 +33,9 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIO;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -46,6 +49,8 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Hopper hopper;
+  private final Flywheel flywheel;
+
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -74,6 +79,7 @@ public class RobotContainer {
                 new VisionIOLimelight(camera2Name, drive::getRotation),
                 new VisionIOLimelight(camera3Name, drive::getRotation));
         hopper = new Hopper(new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        flywheel = new Flywheel(new FlywheelIOSim());
         break;
 
       case SIM:
@@ -93,6 +99,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
                 new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
         hopper = new Hopper(new HopperIO() {});
+        flywheel = new Flywheel(new FlywheelIOSim());
         break;
 
       default:
@@ -112,6 +119,7 @@ public class RobotContainer {
                 new VisionIO() {},
                 new VisionIO() {});
         hopper = new Hopper(new HopperIO() {});
+        flywheel = new Flywheel(new FlywheelIO() {});
         break;
     }
 
@@ -165,6 +173,8 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    controller.y().onTrue(Commands.runOnce(flywheel::fullSpeed, flywheel));
 
     // Reset gyro to 0° when B button is pressed
     controller
