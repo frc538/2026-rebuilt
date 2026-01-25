@@ -175,6 +175,7 @@ public class RobotContainer {
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     controller.y().onTrue(Commands.runOnce(flywheel::fullSpeed, flywheel));
+    controller.a().onTrue(Commands.runOnce(flywheel::lowSpeed, flywheel));
 
     // Reset gyro to 0° when B button is pressed
     controller
