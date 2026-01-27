@@ -1,5 +1,3 @@
 package frc.robot;
 
-public class list<T> {
-
-}
+public class list<T> {}
