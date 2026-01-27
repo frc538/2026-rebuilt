@@ -62,8 +62,6 @@ public class RobotContainer {
 
         navSys = new NavigationSubsystem();
 
-        SmartDashboard.putData(navSys.m_field);
-
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -108,6 +106,8 @@ public class RobotContainer {
         navSys = new NavigationSubsystem();
         break;
     }
+
+    SmartDashboard.putData(navSys.m_field);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
