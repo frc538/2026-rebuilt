@@ -1,18 +1,13 @@
 package frc.robot.subsystems.navigation;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.List;
 
 public class NavigationSubsystem extends SubsystemBase {
 
@@ -22,8 +17,6 @@ public class NavigationSubsystem extends SubsystemBase {
   // Create the constraints to use while pathfinding
   private final PathConstraints constraints =
       new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
-
-  private GoalEndState endState = new GoalEndState(0, new Rotation2d(90));
 
   public Command generatePath(Pose2d endPoint) {
 
@@ -38,14 +31,18 @@ public class NavigationSubsystem extends SubsystemBase {
         // before attempting to rotate.
         );
   }
-
+  /*
   public Command showPath() {
     return Commands.runOnce(
         () -> {
+          private GoalEndState endState = new GoalEndState(0, new Rotation2d(90));
           List<Pose2d> pathPlannerPath =
-              Pathfinding.getCurrentPath(constraints, endState).getPathPoses();
+              Pathfinding
+
+              .getCurrentPath(constraints, endState).getPathPoses();
           m_field.getObject("Path").setPoses(pathPlannerPath);
         });
     // return m_field.setRobotPose(AutoBuilder.getCurrentPose());
   }
+    */
 }

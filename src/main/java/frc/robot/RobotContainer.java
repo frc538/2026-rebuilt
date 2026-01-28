@@ -40,7 +40,8 @@ public class RobotContainer {
   private final NavigationSubsystem navSys;
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController pilotController = new CommandXboxController(0);
+  private final CommandXboxController navController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -143,28 +144,51 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -pilotController.getLeftY(),
+            () -> -pilotController.getLeftX(),
+            () -> -pilotController.getRightX()));
 
     // Lock to 0° when A button is held
-    controller
+    pilotController
         .a()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
+                () -> -pilotController.getLeftY(),
+                () -> -pilotController.getLeftX(),
                 () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    pilotController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    controller.y().onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
-    controller.rightBumper().onTrue(navSys.showPath());
+    // Blue
+    navController.y().onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
+    navController.b().onTrue(navSys.generatePath(Constants.navigationConstants.centerPointBlue));
+    navController
+        .a()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointBlue));
+    // Red
+    navController
+        .povLeft()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPointRed));
+    navController
+        .povUp()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointRed));
+    navController
+        .povDown()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointRed));
+    // Center
+    navController
+        .rightBumper()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPoint));
+    navController.start().onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
+    navController
+        .leftBumper()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
+    // controller.rightBumper().onTrue(navSys.showPath());
 
     // Reset gyro to 0° when B button is pressed
-    controller
+    pilotController
         .b()
         .onTrue(
             Commands.runOnce(
