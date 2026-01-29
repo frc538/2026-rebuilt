@@ -31,6 +31,9 @@ public class FlywheelIOSim implements FlywheelIO {
   }
 
   public void updateInputs(FlywheelIOInputs inputs) {
+    // Update the sim model based on most recent commands. The standard loop time is 20ms.
+    flywheelSim.update(0.020);
+
     inputs.rpm = flywheelSim.getAngularVelocityRPM();
   }
 
@@ -38,8 +41,5 @@ public class FlywheelIOSim implements FlywheelIO {
     // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
     flywheelSim.setInput(voltage);
-
-    // Next, we update it. The standard loop time is 20ms.
-    flywheelSim.update(0.020);
   }
 }
