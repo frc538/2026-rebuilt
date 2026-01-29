@@ -15,7 +15,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public Command fullSpeed() {
-    return Commands.run(
+    return Commands.runOnce(
         () -> {
           io.setVoltage(12.0);
           Logger.recordOutput("Flywheel/voltageCmd", 12.0);
@@ -23,10 +23,18 @@ public class Flywheel extends SubsystemBase {
   }
 
   public Command lowSpeed() {
-    return Commands.run(
+    return Commands.runOnce(
         () -> {
           io.setVoltage(3.0);
           Logger.recordOutput("Flywheel/voltageCmd", 3.0);
+        });
+  }
+
+  public Command off() {
+    return Commands.runOnce(
+        () -> {
+          io.setVoltage(0.0);
+          Logger.recordOutput("Flywheel/voltageCmd", 0.0);
         });
   }
 

@@ -174,8 +174,9 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    controller.y().onTrue(Commands.runOnce(flywheel::fullSpeed, flywheel));
-    controller.a().onTrue(Commands.runOnce(flywheel::lowSpeed, flywheel));
+    controller.button(1).onTrue(flywheel.fullSpeed());
+    controller.button(3).onTrue(flywheel.lowSpeed());
+    controller.button(4).onTrue(flywheel.off());
 
     // Reset gyro to 0° when B button is pressed
     controller
