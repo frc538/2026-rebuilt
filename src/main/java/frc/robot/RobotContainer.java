@@ -39,9 +39,12 @@ import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -64,8 +67,10 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
+        launcher = new Launcher();
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIOPigeon2(),
                 new ModuleIOTalonFX(TunerConstants.FrontLeft),
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
@@ -86,8 +91,10 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
+        launcher = new Launcher();
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIO() {},
                 new ModuleIOSim(TunerConstants.FrontLeft),
                 new ModuleIOSim(TunerConstants.FrontRight),
@@ -106,8 +113,10 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
+        launcher = new Launcher();
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
