@@ -36,5 +36,7 @@ public final class Constants {
     public static final double FDConversionFactor = 1.0;
     public static final double SpindexSpeed = 1.0;
     public static final double FeedSpeed = 1.0;
+    public static final int FeedCanId = 3;
+    public static final int SpindexCanId = 4;
   }
 }
