@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -35,6 +38,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final ClimberSubsystem climberSubsystem;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -56,6 +60,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+        climberSubsystem =
+            new ClimberSubsystem(
+                new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -85,6 +92,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
       default:
@@ -96,6 +104,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
 
@@ -149,6 +158,8 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
     // Reset gyro to 0° when B button is pressed
     controller
