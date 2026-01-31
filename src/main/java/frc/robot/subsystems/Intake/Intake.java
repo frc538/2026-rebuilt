@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Intake;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -7,6 +8,8 @@ public class Intake extends SubsystemBase {
 
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  public boolean FlipFlop = false;
+  public double Pos;
 
   public Intake(IntakeIO io) {
     this.io = io;
@@ -18,12 +21,34 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("Intake", inputs);
   }
 
-  public void runIntake(double speed) {
-    io.runRotato(speed);
+  public Command runIntake(double speed) {
+    return runOnce(
+        () -> {
+          io.runRotato(speed);
+          Logger.recordOutput("Intake/rotato command", speed);
+          runIntake(500);
+        });
   }
 
-  public void setIntakePosition(double radians) {
-    io.setIntakePosition(radians);
+  public Command setIntakePosition(double radians) {
+    return runOnce(
+        () -> {
+          io.setIntakePosition(radians);
+          Logger.recordOutput("IntakeArm/Set Intake Position Command", radians);
+        });
+  }
+
+  public Command togglePosition() {
+    return runOnce(
+        () -> {
+          if (FlipFlop = true) {
+            Pos = 60;
+            FlipFlop = false;
+          } else if (FlipFlop = false) {
+            Pos = 0;
+            FlipFlop = true;
+          }
+        });
   }
 
   public double getPositionRad() {
