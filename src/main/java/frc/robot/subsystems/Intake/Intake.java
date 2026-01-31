@@ -19,11 +19,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void runIntake(double speed) {
-    io.runIntake(speed);
-  }
-
-  public void setVortexVelocity(double radPerSec) {
-    io.setVortexVelocity(radPerSec);
+    io.runRotato(speed);
   }
 
   public void setIntakePosition(double radians) {

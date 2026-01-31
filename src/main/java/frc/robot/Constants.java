@@ -28,4 +28,10 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public final class Intake {
+    public static final double MovementMotorVelocity = 1;
+    public static final int movementMotorCANid = 1;
+    public static final int rotatoMotorCANid = 2;
+  }
 }
