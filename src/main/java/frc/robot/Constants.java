@@ -34,5 +34,7 @@ public final class Constants {
     public static final double FeedGearing = 1.0;
     public static final double SDConversionFactor = 1.0;
     public static final double FDConversionFactor = 1.0;
+    public static final double SpindexSpeed = 1.0;
+    public static final double FeedSpeed = 1.0;
   }
 }
