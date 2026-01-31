@@ -1,14 +1,15 @@
 package frc.robot.subsystems.hopper;
 
+// import com.revrobotics.spark.SparkBase.PersistMode;
+// import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 public class HopperIOSparkMax implements HopperIO {
-  MotorController Spindex = null;
-  MotorController Feed = null;
+
   private final SparkMax fdSparkMax;
   private final SparkMax sdSparkMax;
 
@@ -19,8 +20,17 @@ public class HopperIOSparkMax implements HopperIO {
   public HopperIOSparkMax(int feedcanid, int spindexcanid) { // feed can id
     sdSparkMax = new SparkMax(feedcanid, MotorType.kBrushless);
     fdSparkMax = new SparkMax(spindexcanid, MotorType.kBrushless);
+    mConfig
+        .idleMode(IdleMode.kBrake)
+        // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
+        .inverted(false);
 
+    // sdSparkMax.configure(mConfig, ResetMode.kResetSafeParameters,
+    // PersistMode.kPersistParameters);
+    // fdSparkMax.configure(mConfig, ResetMode.kResetSafeParameters,
+    // PersistMode.kPersistParameters);
   }
+
   public void updateInputs(HopperIOInputs inputs) {
     inputs.FDAppliedOutput = fdSparkMax.getAppliedOutput();
     inputs.FDBusVoltage = fdSparkMax.getBusVoltage();
@@ -33,10 +43,10 @@ public class HopperIOSparkMax implements HopperIO {
   }
 
   public void FeedSpeedCommand(double speed) {
-    Feed.set(speed);
+    fdSparkMax.set(speed);
   }
 
   public void SpindexSpeedCommand(double speed) {
-    Spindex.set(speed);
+    sdSparkMax.set(speed);
   }
 }
