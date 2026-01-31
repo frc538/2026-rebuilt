@@ -39,4 +39,10 @@ public final class Constants {
     public static final int FeedCanId = 3;
     public static final int SpindexCanId = 4;
   }
+
+  public final class Intake {
+    public static final double MovementMotorVelocity = 1;
+    public static final int movementMotorCANid = 1;
+    public static final int rotatoMotorCANid = 2;
+  }
 }
