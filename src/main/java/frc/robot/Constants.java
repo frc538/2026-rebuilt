@@ -35,5 +35,4 @@ public final class Constants {
     public static final double SDConversionFactor = 1.0;
     public static final double FDConversionFactor = 1.0;
   }
-
 }

@@ -1,8 +1,8 @@
 package frc.robot.subsystems.hopper;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -15,7 +15,7 @@ public class HopperIOSparkMax implements HopperIO {
   private final SparkMax sdSparkMax;
 
   SparkMaxConfig sdConfig = new SparkMaxConfig();
-SparkMaxConfig fdConfig = new SparkMaxConfig();
+  SparkMaxConfig fdConfig = new SparkMaxConfig();
 
   SparkRelativeEncoder sdEncoder;
   SparkRelativeEncoder fdEncoder;
@@ -25,7 +25,7 @@ SparkMaxConfig fdConfig = new SparkMaxConfig();
     fdSparkMax = new SparkMax(spindexcanid, MotorType.kBrushless);
     sdEncoder = (SparkRelativeEncoder) sdSparkMax.getEncoder();
     fdEncoder = (SparkRelativeEncoder) fdSparkMax.getEncoder();
-    
+
     fdConfig
         .idleMode(IdleMode.kBrake)
         // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
@@ -43,8 +43,10 @@ SparkMaxConfig fdConfig = new SparkMaxConfig();
         .positionConversionFactor(Constants.Hopper.SDConversionFactor)
         .velocityConversionFactor(Constants.Hopper.SDConversionFactor);
 
-     sdSparkMax.configure(sdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-     fdSparkMax.configure(fdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    sdSparkMax.configure(
+        sdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    fdSparkMax.configure(
+        fdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   public void updateInputs(HopperIOInputs inputs) {
