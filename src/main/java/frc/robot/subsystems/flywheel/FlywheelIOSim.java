@@ -50,10 +50,6 @@ public class FlywheelIOSim implements FlywheelIO {
 
     // Compensate for a piece of fuel if required
     if (isFuel) {
-      // wheel angular momentum
-      double iw = kFlywheelMomentOfInertia * flywheelSim.getAngularVelocityRadPerSec();
-      // projectile angular momentum
-      double ip = kFuelMomentOfInertia * fuelRotationalVelocity;
       // Calculate tangential velocity of the wheel (m/s)
       double vw = flywheelSim.getAngularVelocityRadPerSec() * kWheelRadius;
       // Calculate the angular velocity of the fuel
@@ -62,8 +58,12 @@ public class FlywheelIOSim implements FlywheelIO {
       double ap = (wf - fuelRotationalVelocity) / 0.02;
       // Calculate torque on the fuel
       double Tp = kFuelMomentOfInertia * ap;
+      // Calculate force on the fuel
+      double fp = Tp / fuelRadius;
+      // Calculate torque on the wheel
+      double Tw = -fp * kWheelRadius;
       // Calculate acceleration impact on the wheel
-      double aw = -Tp / kFlywheelMomentOfInertia;
+      double aw = Tw / kFlywheelMomentOfInertia;
       // Calculate change in velocity of the wheel
       double vwNew = vw + aw * 0.02;
 
@@ -82,6 +82,8 @@ public class FlywheelIOSim implements FlywheelIO {
     }
 
     inputs.rpm = flywheelSim.getAngularVelocityRPM();
+    inputs.projectileRotationalSpeed = fuelRotationalVelocity;
+    inputs.projectileSpeed = fuelLinearVelocity;
   }
 
   public void setVoltage(double voltage) {

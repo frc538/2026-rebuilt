@@ -6,6 +6,8 @@ public interface FlywheelIO {
   @AutoLog
   public static class FlywheelIOInputs {
     public double rpm;
+    public double projectileSpeed;
+    public double projectileRotationalSpeed;
   }
 
   public default void updateInputs(FlywheelIOInputs inputs) {}
