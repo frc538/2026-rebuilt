@@ -11,4 +11,6 @@ public interface FlywheelIO {
   public default void updateInputs(FlywheelIOInputs inputs) {}
 
   public default void setVoltage(double voltage) {}
+
+  public default void simLaunch() {}
 }

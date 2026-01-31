@@ -75,24 +75,6 @@ public class RobotContainer {
                 new VisionIOLimelight(camera2Name, drive::getRotation),
                 new VisionIOLimelight(camera3Name, drive::getRotation));
         flywheel = new Flywheel(new FlywheelIOSim());
-
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
-        //
-        // drive =
-        // new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
-        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
-        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
-        // new ModuleIOTalonFXS(TunerConstants.BackRight));
         break;
 
       case SIM:
@@ -188,6 +170,7 @@ public class RobotContainer {
     controller.button(1).onTrue(flywheel.fullSpeed());
     controller.button(3).onTrue(flywheel.lowSpeed());
     controller.button(4).onTrue(flywheel.off());
+    controller.button(5).onTrue(flywheel.feed());
 
     // Reset gyro to 0° when B button is pressed
     controller

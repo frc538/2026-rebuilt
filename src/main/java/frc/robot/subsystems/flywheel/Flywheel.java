@@ -38,6 +38,13 @@ public class Flywheel extends SubsystemBase {
         });
   }
 
+  public Command feed() {
+    return Commands.runOnce(
+        () -> {
+          io.simLaunch();
+        });
+  }
+
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Flywheel", inputs);
