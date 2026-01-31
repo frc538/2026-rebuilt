@@ -9,6 +9,7 @@ public class Hopper extends SubsystemBase {
 
   HopperIO io;
   HopperIOInputsAutoLogged inputs = new HopperIOInputsAutoLogged();
+  Boolean HopperActivated = false;
 
   public Hopper(HopperIO IO) {
     io = IO;
@@ -19,6 +20,33 @@ public class Hopper extends SubsystemBase {
         () -> {
           io.SpindexSpeedCommand(Constants.Hopper.SpindexSpeed);
           io.FeedSpeedCommand(Constants.Hopper.FeedSpeed);
+          HopperActivated = true;
+        });
+  }
+
+  public Command HopperToggle() {
+    return runOnce(
+        () -> {
+          if (HopperActivated) {
+            // HopperOFF();
+            io.SpindexSpeedCommand(0);
+            io.FeedSpeedCommand(0);
+            HopperActivated = false;
+          } else {
+            // HopperON();
+            io.SpindexSpeedCommand(Constants.Hopper.SpindexSpeed);
+            io.FeedSpeedCommand(Constants.Hopper.FeedSpeed);
+            HopperActivated = true;
+          }
+        });
+  }
+
+  public Command HopperOFF() {
+    return run(
+        () -> {
+          io.SpindexSpeedCommand(0);
+          io.FeedSpeedCommand(0);
+          HopperActivated = false;
         });
   }
 
@@ -26,5 +54,6 @@ public class Hopper extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Hopper", inputs);
+    Logger.recordOutput("Hopper/Activated", HopperActivated);
   }
 }
