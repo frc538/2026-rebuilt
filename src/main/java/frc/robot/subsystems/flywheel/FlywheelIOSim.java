@@ -23,13 +23,14 @@ public class FlywheelIOSim implements FlywheelIO {
   private static double fuelPosition = 0.0; // radians
   private static double fuelLinearVelocity = 0.0; // m/s
   private static double fuelRotationalVelocity = 0.0; // radians/sec
-  private static final double fuelMass = 0.5 * 0.4535924; // kg
+  private static final double fuelMass = 0.2268; // kg
   private static final double fuelRadius = 0.075; // meters
-  private static final double kFuelMomentOfInertia = 2 / 5 * fuelMass * fuelRadius * fuelRadius;
+  private static final double kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
   private static final double kWheelRadius = 0.050165; // m
 
   private static final double hoodFraction = 0.125; // 1/8th of the wheel to accelerate
-  private static final double hoodDistance = 2 * 3.14 * (kWheelRadius + fuelRadius) * hoodFraction;
+  private static final double hoodDistance =
+      2.0 * 3.14 * (kWheelRadius + fuelRadius) * hoodFraction;
 
   // The plant holds a state-space model of our flywheel. This system has the following properties:
   //
@@ -50,35 +51,51 @@ public class FlywheelIOSim implements FlywheelIO {
 
     // Compensate for a piece of fuel if required
     if (isFuel) {
-      // Calculate tangential velocity of the wheel (m/s)
-      double vw = flywheelSim.getAngularVelocityRadPerSec() * kWheelRadius;
-      // Calculate the angular velocity of the fuel
-      double wf = vw / fuelRadius;
-      // Calculate rotational acceleration of the fuel assuming no slippage
-      double ap = (wf - fuelRotationalVelocity) / 0.02;
-      // Calculate torque on the fuel
-      double Tp = kFuelMomentOfInertia * ap;
-      // Calculate force on the fuel
-      double fp = Tp / fuelRadius;
-      // Calculate torque on the wheel
-      double Tw = -fp * kWheelRadius;
-      // Calculate acceleration impact on the wheel
-      double aw = Tw / kFlywheelMomentOfInertia;
-      // Calculate change in velocity of the wheel
-      double vwNew = vw + aw * 0.02;
+      /*// Calculate tangential velocity of the wheel (m/s)
+            double vw = flywheelSim.getAngularVelocityRadPerSec() * kWheelRadius;
+            // Calculate the angular velocity of the fuel
+            double wf = vw / fuelRadius;
+            // Calculate rotational acceleration of the fuel assuming no slippage
+            double ap = (wf - fuelRotationalVelocity) / 0.02;
+            // Calculate torque on the fuel
+            double Tp = kFuelMomentOfInertia * ap;
+            // Calculate force on the fuel
+            double fp = Tp / fuelRadius;
+            // Calculate torque on the wheel
+            double Tw = -fp * kWheelRadius;
+            // Calculate acceleration impact on the wheel
+            double aw = Tw / kFlywheelMomentOfInertia;
+            // Calculate change in velocity of the wheel
+            double vwNew = vw + aw * 0.02;
 
-      // Set the outputs
-      flywheelSim.setAngularVelocity(vwNew);
-      fuelRotationalVelocity = fuelRotationalVelocity + ap * 0.02;
-      fuelLinearVelocity = fuelRotationalVelocity * fuelRadius;
-      fuelPosition = fuelPosition + fuelLinearVelocity * 0.02;
+            // Set the outputs
+            flywheelSim.setAngularVelocity(vwNew);
+            fuelRotationalVelocity = fuelRotationalVelocity + ap * 0.02;
+            fuelLinearVelocity = fuelRotationalVelocity * fuelRadius;
+            fuelPosition = fuelPosition + fuelLinearVelocity * 0.02;
+      */
+      // (defun wheel-final-rotational-velocity (wwi iw rw mp ip rp)
+      //  (/ (* iw wwi)
+      //   (+ (* rw rw 1/4 (+ mp (/ ip rp rp))) iw)))
+      double wwi = flywheelSim.getAngularVelocityRadPerSec();
+      double wwf =
+          kFlywheelMomentOfInertia
+              * wwi
+              / (kWheelRadius
+                      * kWheelRadius
+                      * 0.25
+                      * (fuelMass + (kFuelMomentOfInertia / (fuelRadius * fuelRadius)))
+                  + kFlywheelMomentOfInertia);
+
+      System.out.println(String.format("Launch, wwi=%f, wwf=%f", wwi, wwf));
+      flywheelSim.setAngularVelocity(wwf);
 
       // Stop worrying about the fuel anymore, it's gone baby
-      if (fuelPosition > hoodDistance) {
-        isFuel = false;
 
-        // TODO: Generate a fuel simulated projectile with the right parameters
-      }
+      isFuel = false;
+
+      // TODO: Generate a fuel simulated projectile with the right parameters
+
     }
 
     inputs.rpm = flywheelSim.getAngularVelocityRPM();
