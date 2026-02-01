@@ -1,6 +1,6 @@
-//Created by LordOfFrogs on Github.
-//https://www.chiefdelphi.com/t/best-way-to-programmatically-determine-which-hub-is-active/511116/10 - ChiefDelphi Post
-//https://gist.github.com/LordOfFrogs/240ba37cf696ba156d87f387c1461bd5 - Github Gist link
+// Created by LordOfFrogs on Github.
+// https://www.chiefdelphi.com/t/best-way-to-programmatically-determine-which-hub-is-active/511116/10 - ChiefDelphi Post
+// https://gist.github.com/LordOfFrogs/240ba37cf696ba156d87f387c1461bd5 - Github Gist link
 
 package frc.robot.util;
 

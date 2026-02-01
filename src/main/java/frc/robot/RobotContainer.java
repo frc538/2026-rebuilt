@@ -26,12 +26,12 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.flywheel.Flywheel;
-import frc.robot.subsystems.flywheel.FlywheelIO;
-import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSparkMax;
+import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherIO;
+import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -49,7 +49,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Hopper hopper;
-  private final Flywheel flywheel;
+  private final Launcher launcher;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -78,8 +78,10 @@ public class RobotContainer {
                 new VisionIOLimelight(camera1Name, drive::getRotation),
                 new VisionIOLimelight(camera2Name, drive::getRotation),
                 new VisionIOLimelight(camera3Name, drive::getRotation));
-        hopper = new Hopper(new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
-        flywheel = new Flywheel(new FlywheelIOSim());
+        hopper =
+            new Hopper(
+                new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        launcher = new Launcher(new LauncherIOSim());
         break;
 
       case SIM:
@@ -99,7 +101,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
                 new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
         hopper = new Hopper(new HopperIO() {});
-        flywheel = new Flywheel(new FlywheelIOSim());
+        launcher = new Launcher(new LauncherIOSim());
         break;
 
       default:
@@ -119,7 +121,7 @@ public class RobotContainer {
                 new VisionIO() {},
                 new VisionIO() {});
         hopper = new Hopper(new HopperIO() {});
-        flywheel = new Flywheel(new FlywheelIO() {});
+        launcher = new Launcher(new LauncherIO() {});
         break;
     }
 
@@ -174,10 +176,10 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    controller.button(1).onTrue(flywheel.fullSpeed());
-    controller.button(3).onTrue(flywheel.lowSpeed());
-    controller.button(4).onTrue(flywheel.off());
-    controller.button(2).onTrue(flywheel.feed());
+    controller.button(1).onTrue(launcher.fullSpeed());
+    controller.button(3).onTrue(launcher.lowSpeed());
+    controller.button(4).onTrue(launcher.off());
+    controller.button(2).onTrue(launcher.feed());
 
     // Reset gyro to 0° when B button is pressed
     controller

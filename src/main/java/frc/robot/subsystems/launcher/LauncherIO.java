@@ -1,16 +1,16 @@
-package frc.robot.subsystems.flywheel;
+package frc.robot.subsystems.launcher;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface FlywheelIO {
+public interface LauncherIO {
   @AutoLog
-  public static class FlywheelIOInputs {
+  public static class LauncherIOInputs {
     public double rpm;
     public double projectileSpeed;
     public double projectileRotationalSpeed;
   }
 
-  public default void updateInputs(FlywheelIOInputs inputs) {}
+  public default void updateInputs(LauncherIOInputs inputs) {}
 
   public default void setVoltage(double voltage) {}
 
