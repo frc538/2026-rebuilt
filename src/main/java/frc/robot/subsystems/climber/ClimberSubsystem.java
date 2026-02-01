@@ -10,82 +10,38 @@ public class ClimberSubsystem extends SubsystemBase {
   private final ClimberIO io;
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
-  double winchSpeed = 0; //y-axis?
-  double actuatorSpeed = 0; //x-axis?
+  double motorSpeed = 0;
 
   public ClimberSubsystem(ClimberIO IO) {
     io = IO;
   }
 
   //Main/Base Commands
-  public Command climberExtend() {
-    return runOnce(() -> {
-      pushUpClimber();
-      pushAwayClimber();
-    });
-  }
-
-  public Command climberRetract() {
-    return runOnce(() -> {
-      pullInClimber();
-      pullDownClimber();
-    });
-  }
-
-  //Block Commands
-  public Command pullDownClimber() {  //Pulls the climber down (y-axis)
+  public Command climberRetract() { 
     return runEnd(() -> {
-      winchSpeed = -1;
-      io.setOutput(winchSpeed);
+      motorSpeed = -1;
+      io.setOutput(motorSpeed);
     }, () -> {
-      winchSpeed = 0;
-      io.setOutput(winchSpeed);
+      motorSpeed = 0;
+      io.setOutput(motorSpeed);
     });
   }
 
-  public Command pullInClimber() { //Pulls the climber in (x-axis)
+  public Command climberExtend() { 
     return runEnd(() -> {
-      actuatorSpeed = -1;
-      io.setOutput(actuatorSpeed);
+      motorSpeed = 1;
+      io.setOutput(motorSpeed);
     }, () -> {
-      actuatorSpeed = 0;
-      io.setOutput(actuatorSpeed);
+      motorSpeed = 0;
+      io.setOutput(motorSpeed);
     });
   }
 
-  public Command pushAwayClimber() { //Pushes the climber away (x-axis)
-    return runEnd(() -> {
-      actuatorSpeed = 1;
-      io.setOutput(actuatorSpeed);
-    }, () -> {
-      actuatorSpeed = 0;
-      io.setOutput(actuatorSpeed);
-    });
-  }
-
-  public Command pushUpClimber() { //Pushes the climber up (y-axis)
-    return runEnd(() -> {
-      winchSpeed = 1;
-      io.setOutput(winchSpeed);
-    }, () -> {
-      winchSpeed = 0;
-      io.setOutput(winchSpeed);
-    });
-  }
-
-  public Command climberWinchSpeed(DoubleSupplier speedSupplier) {
+  public Command climberMotorSpeed(DoubleSupplier speedSupplier) {
     return run(
         () -> {
-          winchSpeed = speedSupplier.getAsDouble();
-          io.setOutput(winchSpeed);
-        });
-  }
-
-  public Command climberActuatorSpeed(DoubleSupplier speedSupplier) {
-    return run(
-        () -> {
-          actuatorSpeed = speedSupplier.getAsDouble();
-          io.setOutput(actuatorSpeed);
+          motorSpeed = speedSupplier.getAsDouble();
+          io.setOutput(motorSpeed);
         });
   }
 
@@ -93,7 +49,6 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("climber subsystem", inputs);
-    Logger.recordOutput("climber subsystem/winchSpeed", winchSpeed);
-    Logger.recordOutput("climber subsystem/actuatorSpeed", actuatorSpeed);
+    Logger.recordOutput("climber subsystem/motorSpeed", motorSpeed);
   }
 }
