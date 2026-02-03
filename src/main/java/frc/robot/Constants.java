@@ -41,8 +41,14 @@ public final class Constants {
   }
 
   public final class Intake {
+    public static final double UprightPos = 60;
+    public static final double ReadyPos = 0;
+    public static final double IntakeSpeed = 1;
     public static final double MovementMotorVelocity = 1;
     public static final int movementMotorCANid = 1;
     public static final int rotatoMotorCANid = 2;
+    // public static final int IntakeCurrentLimit = 1;
+    // public static final int IntakePositionConversionFactor = 1;
+    // public static final int IntakeVelocityConversionFactor = 1;
   }
 }

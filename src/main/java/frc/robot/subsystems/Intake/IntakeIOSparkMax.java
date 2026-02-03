@@ -13,21 +13,23 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 
 public class IntakeIOSparkMax implements IntakeIO {
+  SparkMax movementMotor;
+  SparkMax rotato;
+  RelativeEncoder armEncoder;
+  RelativeEncoder rotatoEncoder;
+  SparkClosedLoopController pid;
 
-  private final SparkMax movementMotor =
-      new SparkMax(Constants.Intake.movementMotorCANid, MotorType.kBrushless);
-  private final SparkFlex rotato =
-      new SparkFlex(Constants.Intake.rotatoMotorCANid, MotorType.kBrushless);
+  public IntakeIOSparkMax(int MovMotorCanId, int RotatoCanId) {
+    movementMotor = new SparkMax(MovMotorCanId, MotorType.kBrushless);
+    rotato = new SparkMax(RotatoCanId, MotorType.kBrushless);
+    armEncoder = movementMotor.getEncoder();
+    rotatoEncoder = rotato.getEncoder();
+    pid = movementMotor.getClosedLoopController();
 
-  private final RelativeEncoder armEncoder = movementMotor.getEncoder();
-  private final RelativeEncoder rotatoEncoder = rotato.getEncoder();
-  private final SparkClosedLoopController pid = movementMotor.getClosedLoopController();
-
-  public IntakeIOSparkMax() {
     SparkMaxConfig config = new SparkMaxConfig();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
     double radiansPerRotation = 2 * Math.PI;
-
+    
     config
         .encoder
         .positionConversionFactor(radiansPerRotation)

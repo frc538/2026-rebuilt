@@ -2,6 +2,7 @@ package frc.robot.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -22,11 +23,12 @@ public class Intake extends SubsystemBase {
   }
 
   public Command runIntake(double speed) {
-    return runOnce(
+    return run(
         () -> {
+          if (Pos == Constants.Intake.ReadyPos) {
           io.runRotato(speed);
           Logger.recordOutput("Intake/rotato command", speed);
-          runIntake(500);
+        }          
         });
   }
 
@@ -42,16 +44,13 @@ public class Intake extends SubsystemBase {
     return runOnce(
         () -> {
           if (FlipFlop = true) {
-            Pos = 60;
+            Pos = Constants.Intake.UprightPos;
             FlipFlop = false;
           } else if (FlipFlop = false) {
-            Pos = 0;
+            Pos = Constants.Intake.ReadyPos;
             FlipFlop = true;
           }
         });
   }
 
-  public double getPositionRad() {
-    return inputs.positionRad;
-  }
 }
