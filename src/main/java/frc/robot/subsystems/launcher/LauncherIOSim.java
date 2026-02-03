@@ -1,10 +1,23 @@
 package frc.robot.subsystems.launcher;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants;
 
 public class LauncherIOSim implements LauncherIO {
   private FlywheelSim flywheelSim;
@@ -18,17 +31,12 @@ public class LauncherIOSim implements LauncherIO {
 
   // Fuel launching state
   private static boolean isFuel = false;
-  private static double fuelPosition = 0.0; // radians
   private static double fuelLinearVelocity = 0.0; // m/s
   private static double fuelRotationalVelocity = 0.0; // radians/sec
   private static final double fuelMass = 0.2268; // kg
   private static final double fuelRadius = 0.075; // meters
   private static final double kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
   private static final double kWheelRadius = 0.050165; // m
-
-  private static final double hoodFraction = 0.125; // 1/8th of the wheel to accelerate
-  private static final double hoodDistance =
-      2.0 * 3.14 * (kWheelRadius + fuelRadius) * hoodFraction;
 
   // The plant holds a state-space model of our flywheel. This system has the following properties:
   //
@@ -39,13 +47,53 @@ public class LauncherIOSim implements LauncherIO {
       LinearSystemId.createFlywheelSystem(
           DCMotor.getKrakenX60(1), kFlywheelMomentOfInertia, kFlywheelGearing);
 
+  // Turret azimuth state
+  private SingleJointedArmSim turretSim;
+  private static double commandedAzimuth = 0.0;
+  private static final double kTurretMomentOfInertia = 0.005; // kg * m^2
+  private static final double kTurretGearing = 50; // Total guess at the gearing for motor to turret
+  private SparkMax m_turretSparkMax =
+      new SparkMax(Constants.launcherConstants.launchMotorID, MotorType.kBrushless);
+  private SparkMaxConfig m_turretConfig = new SparkMaxConfig();
+  private SparkMaxSim m_turretSparkMaxSim = new SparkMaxSim(m_turretSparkMax, DCMotor.getNEO(1));
+  private final SparkClosedLoopController turretClosedLoopController;
+
+  private final LinearSystem<N2, N1, N2> m_turretPlant =
+      LinearSystemId.createSingleJointedArmSystem(
+          DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
+
   public LauncherIOSim() {
     flywheelSim = new FlywheelSim(m_flywheelPlant, DCMotor.getKrakenX60(1));
+
+    m_turretConfig.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit(50);
+    m_turretConfig
+        .closedLoop
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .pid(0.1, 0, 0)
+        .outputRange(-1, 1);
+
+    m_turretSparkMax.configure(
+        m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    turretClosedLoopController = m_turretSparkMax.getClosedLoopController();
+
+    turretSim =
+        new SingleJointedArmSim(
+            m_turretPlant,
+            DCMotor.getNEO(1),
+            kTurretGearing,
+            0.25,
+            -3 * Math.PI / 4,
+            3 * Math.PI / 4,
+            false,
+            0.0);
   }
 
+  @Override
   public void updateInputs(LauncherIOInputs inputs) {
     // Update the sim model based on most recent commands. The standard loop time is 20ms.
     flywheelSim.update(0.020);
+
+    turretSim.update(0.020);
 
     // Compensate for a piece of fuel if required
     if (isFuel) {
@@ -73,8 +121,12 @@ public class LauncherIOSim implements LauncherIO {
     inputs.rpm = flywheelSim.getAngularVelocityRPM();
     inputs.projectileRotationalSpeed = fuelRotationalVelocity;
     inputs.projectileSpeed = fuelLinearVelocity;
+
+    inputs.turretAngle = Math.toDegrees(turretSim.getAngleRads());
+    inputs.turretSpeed = Math.toDegrees(turretSim.getVelocityRadPerSec());
   }
 
+  @Override
   public void setVoltage(double voltage) {
     // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
@@ -88,12 +140,17 @@ public class LauncherIOSim implements LauncherIO {
     }
 
     isFuel = true;
-    fuelPosition = 0.0;
     fuelLinearVelocity = 0.0;
     fuelRotationalVelocity = 0.0;
   }
 
+  @Override
   public void simLaunch() {
     launchFuel();
+  }
+
+  @Override
+  public void pointAt(double angle) {
+    turretClosedLoopController.setSetpoint(Math.toRadians(angle), ControlType.kPosition);
   }
 }
