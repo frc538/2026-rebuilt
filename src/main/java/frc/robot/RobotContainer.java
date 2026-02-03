@@ -39,12 +39,9 @@ import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -67,7 +64,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        launcher = new Launcher();
+        launcher = new Launcher(new LauncherIOSim());
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -86,12 +83,11 @@ public class RobotContainer {
         hopper =
             new Hopper(
                 new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
-        launcher = new Launcher(new LauncherIOSim());
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        launcher = new Launcher();
+        launcher = new Launcher(new LauncherIOSim());
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -108,12 +104,11 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
                 new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
         hopper = new Hopper(new HopperIO() {});
-        launcher = new Launcher(new LauncherIOSim());
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        launcher = new Launcher();
+        launcher = new Launcher(new LauncherIO() {});
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -130,7 +125,6 @@ public class RobotContainer {
                 new VisionIO() {},
                 new VisionIO() {});
         hopper = new Hopper(new HopperIO() {});
-        launcher = new Launcher(new LauncherIO() {});
         break;
     }
 

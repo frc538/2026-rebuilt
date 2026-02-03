@@ -1,6 +1,5 @@
 package frc.robot.subsystems.launcher;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -66,17 +65,16 @@ public class Launcher extends SubsystemBase {
     Logger.processInputs("Launcher", inputs);
 
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        aimPoint = Constants.launcherConstants.hubBlue;
+      aimPoint = Constants.launcherConstants.hubBlue;
     } else {
-        aimPoint = Constants.launcherConstants.hubRed;
+      aimPoint = Constants.launcherConstants.hubRed;
     }
 
-    distanceX = aimPoint.getX()-robotPose.getX();
+    distanceX = aimPoint.getX() - robotPose.getX();
     distanceX = Math.pow(distanceX, 2);
-    distanceY = aimPoint.getY()-robotPose.getY();
+    distanceY = aimPoint.getY() - robotPose.getY();
     distanceY = Math.pow(distanceY, 2);
-    
-    endDistance = Math.sqrt(distanceX+distanceY);
-  }
 
+    endDistance = Math.sqrt(distanceX + distanceY);
+  }
 }
