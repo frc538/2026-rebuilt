@@ -78,7 +78,9 @@ public class RobotContainer {
                 new VisionIOLimelight(camera1Name, drive::getRotation),
                 new VisionIOLimelight(camera2Name, drive::getRotation),
                 new VisionIOLimelight(camera3Name, drive::getRotation));
-        hopper = new Hopper(new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        hopper =
+            new Hopper(
+                new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
         intake =
             new Intake(
                 new IntakeIOSparkMax(
@@ -190,9 +192,7 @@ public class RobotContainer {
 
     controller.start().onTrue(hopper.HopperToggle());
 
-    controller.select().onTrue(intake.runIntake(500));
-
-    controller.y().onTrue(intake.togglePosition());
+    controller.y().onTrue(intake.runIntake(Constants.Intake.IntakeSpeed));
   }
 
   /**
