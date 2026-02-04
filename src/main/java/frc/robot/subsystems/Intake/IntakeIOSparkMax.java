@@ -5,12 +5,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
+
 
 public class IntakeIOSparkMax implements IntakeIO {
   SparkMax movementMotor;
@@ -28,16 +28,15 @@ public class IntakeIOSparkMax implements IntakeIO {
 
     SparkMaxConfig config = new SparkMaxConfig();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
-    double radiansPerRotation = 2 * Math.PI;
     
     config
         .encoder
-        .positionConversionFactor(radiansPerRotation)
-        .velocityConversionFactor(radiansPerRotation / 60.0);
+        .positionConversionFactor(Constants.Intake.ArmPosConFac)
+        .velocityConversionFactor(Constants.Intake.ArmVelConFac);
 
     RotatoConfig.encoder
-        .positionConversionFactor(radiansPerRotation)
-        .velocityConversionFactor(radiansPerRotation / 60.0);
+        .positionConversionFactor(Constants.Intake.RotatoPosConFac)
+        .velocityConversionFactor(Constants.Intake.RotatoVelConFac);
 
     config.closedLoop.p(0.1).i(0.0).d(0.01).outputRange(-1.0, 1.0);
 

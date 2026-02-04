@@ -10,7 +10,7 @@ public class Intake extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public boolean FlipFlop = false;
-  public double Pos;
+
 
   public Intake(IntakeIO io) {
     this.io = io;
@@ -25,11 +25,10 @@ public class Intake extends SubsystemBase {
   public Command runIntake(double speed) {
     return run(
         () -> {
-          if (Pos == Constants.Intake.ReadyPos) {
           io.runRotato(speed);
           Logger.recordOutput("Intake/rotato command", speed);
         }          
-        });
+        );
   }
 
   public Command setIntakePosition(double radians) {
@@ -44,10 +43,10 @@ public class Intake extends SubsystemBase {
     return runOnce(
         () -> {
           if (FlipFlop = true) {
-            Pos = Constants.Intake.UprightPos;
+            runIntake(Constants.Intake.ReadyPos);
             FlipFlop = false;
           } else if (FlipFlop = false) {
-            Pos = Constants.Intake.ReadyPos;
+            runIntake(Constants.Intake.UprightPos);
             FlipFlop = true;
           }
         });

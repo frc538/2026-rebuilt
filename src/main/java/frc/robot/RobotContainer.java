@@ -189,7 +189,6 @@ public class RobotContainer {
 
     controller.select().onTrue(intake.runIntake(500));
 
-    controller.y().onTrue(intake.setIntakePosition(intake.Pos));
     controller.y().onTrue(intake.togglePosition());
   }
 
