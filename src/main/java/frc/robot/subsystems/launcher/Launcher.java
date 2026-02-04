@@ -19,6 +19,7 @@ public class Launcher extends SubsystemBase {
   private double endDistance;
   private double timeFlight;
   private double targetAzimuth;
+  private double launchSpeed;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -115,9 +116,13 @@ public class Launcher extends SubsystemBase {
             (Constants.launcherConstants.hubHeight
                 - Constants.launcherConstants.launcherHeight
                 - endDistance * Math.tan(Constants.launcherConstants.launcherAngle) / -9.81));
+
+    launchSpeed = endDistance/Math.cos(Constants.launcherConstants.launcherAngle*timeFlight);
     
     Logger.recordOutput("aimpoint", aimPoint);
     Logger.recordOutput("azimuth", targetAzimuth);
     Logger.recordOutput("distance", endDistance);
+    Logger.recordOutput("time flight", timeFlight);
+    Logger.recordOutput("launch speed", launchSpeed);
   }
 }
