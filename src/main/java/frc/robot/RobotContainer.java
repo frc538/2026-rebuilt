@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -46,6 +49,8 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Hopper hopper;
+  private final Intake intake;
+
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -73,7 +78,13 @@ public class RobotContainer {
                 new VisionIOLimelight(camera1Name, drive::getRotation),
                 new VisionIOLimelight(camera2Name, drive::getRotation),
                 new VisionIOLimelight(camera3Name, drive::getRotation));
-        hopper = new Hopper(new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        hopper =
+            new Hopper(
+                new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        intake =
+            new Intake(
+                new IntakeIOSparkMax(
+                    Constants.Intake.movementMotorCANid, Constants.Intake.rotatoMotorCANid) {});
         break;
 
       case SIM:
@@ -93,6 +104,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
                 new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
         hopper = new Hopper(new HopperIO() {});
+        intake = new Intake(new IntakeIO() {});
         break;
 
       default:
@@ -112,6 +124,7 @@ public class RobotContainer {
                 new VisionIO() {},
                 new VisionIO() {});
         hopper = new Hopper(new HopperIO() {});
+        intake = new Intake(new IntakeIO() {});
         break;
     }
 
@@ -176,7 +189,10 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
     controller.start().onTrue(hopper.HopperToggle());
+
+    controller.y().onTrue(intake.runIntake(Constants.Intake.IntakeSpeed));
   }
 
   /**
