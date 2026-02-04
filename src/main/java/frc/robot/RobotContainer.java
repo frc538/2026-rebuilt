@@ -79,7 +79,10 @@ public class RobotContainer {
                 new VisionIOLimelight(camera2Name, drive::getRotation),
                 new VisionIOLimelight(camera3Name, drive::getRotation));
         hopper = new Hopper(new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
-        intake = new Intake(new IntakeIOSparkMax(Constants.Intake.movementMotorCANid, Constants.Intake.rotatoMotorCANid) {});
+        intake =
+            new Intake(
+                new IntakeIOSparkMax(
+                    Constants.Intake.movementMotorCANid, Constants.Intake.rotatoMotorCANid) {});
         break;
 
       case SIM:

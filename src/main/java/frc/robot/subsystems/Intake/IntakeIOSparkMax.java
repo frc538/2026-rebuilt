@@ -11,7 +11,6 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 
-
 public class IntakeIOSparkMax implements IntakeIO {
   SparkMax movementMotor;
   SparkMax rotato;
@@ -28,7 +27,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
     SparkMaxConfig config = new SparkMaxConfig();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
-    
+
     config
         .encoder
         .positionConversionFactor(Constants.Intake.ArmPosConFac)

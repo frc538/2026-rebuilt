@@ -11,7 +11,6 @@ public class Intake extends SubsystemBase {
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public boolean FlipFlop = false;
 
-
   public Intake(IntakeIO io) {
     this.io = io;
   }
@@ -27,8 +26,7 @@ public class Intake extends SubsystemBase {
         () -> {
           io.runRotato(speed);
           Logger.recordOutput("Intake/rotato command", speed);
-        }          
-        );
+        });
   }
 
   public Command setIntakePosition(double radians) {
@@ -51,5 +49,4 @@ public class Intake extends SubsystemBase {
           }
         });
   }
-
 }
