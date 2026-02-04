@@ -18,7 +18,6 @@ public class Launcher extends SubsystemBase {
   private double distanceY;
   private double endDistance;
   private double timeFlight;
-  private double hubHeight = 72; // inches
   private double targetAzimuth;
 
   LauncherIO io;
@@ -73,7 +72,8 @@ public class Launcher extends SubsystemBase {
     double deltaY = y2 - y1;
     double deltaX = x2 - x1;
 
-    targetAzimuth = Math.toDegrees(Math.atan2(deltaY, deltaX) + robotPose.getRotation().getDegrees());
+    targetAzimuth =
+        Math.toDegrees(Math.atan2(deltaY, deltaX) + robotPose.getRotation().getDegrees());
   }
 
   public void aimDownSights() {
@@ -93,7 +93,7 @@ public class Launcher extends SubsystemBase {
 
     aimDownSights();
     getAzimuth();
-    
+
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
 
@@ -115,5 +115,9 @@ public class Launcher extends SubsystemBase {
             (Constants.launcherConstants.hubHeight
                 - Constants.launcherConstants.launcherHeight
                 - endDistance * Math.tan(Constants.launcherConstants.launcherAngle) / -9.81));
+    
+    Logger.recordOutput("aimpoint", aimPoint);
+    Logger.recordOutput("azimuth", targetAzimuth);
+    Logger.recordOutput("distance", endDistance);
   }
 }
