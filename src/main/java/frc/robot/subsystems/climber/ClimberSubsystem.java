@@ -2,14 +2,13 @@ package frc.robot.subsystems.climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class ClimberSubsystem extends SubsystemBase {
   private final ClimberIO io;
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
-  double motorSpeed = 0;
+  private double motorSpeed = 0;
 
   public ClimberSubsystem(ClimberIO IO) {
     io = IO;
@@ -36,14 +35,6 @@ public class ClimberSubsystem extends SubsystemBase {
         },
         () -> {
           motorSpeed = 0;
-          io.setOutput(motorSpeed);
-        });
-  }
-
-  public Command climberMotorSpeed(DoubleSupplier speedSupplier) {
-    return run(
-        () -> {
-          motorSpeed = speedSupplier.getAsDouble();
           io.setOutput(motorSpeed);
         });
   }
