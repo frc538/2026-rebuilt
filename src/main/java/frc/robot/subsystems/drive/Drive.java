@@ -211,7 +211,7 @@ public class Drive extends SubsystemBase {
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
 
-    consumer.accept(poseEstimator.getEstimatedPosition());
+    consumer.accept(poseEstimator.getEstimatedPosition(), getVelocity());
   }
 
   /**
@@ -329,6 +329,10 @@ public class Drive extends SubsystemBase {
     return getPose().getRotation();
   }
 
+  public ChassisSpeeds getVelocity() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation());
+  }
+
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
@@ -371,6 +375,6 @@ public class Drive extends SubsystemBase {
 
   @FunctionalInterface
   public static interface PoseConsumer {
-    public void accept(Pose2d robotPose);
+    public void accept(Pose2d robotPose, ChassisSpeeds robotVelocity);
   }
 }

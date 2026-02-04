@@ -1,10 +1,7 @@
 package frc.robot.subsystems.launcher;
 
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,14 +11,15 @@ import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class Launcher extends SubsystemBase {
-    private Pose2d robotPose = new Pose2d();
-    private Pose2d aimPoint = new Pose2d();
-    private double distanceX;
-    private double distanceY;
-    private double endDistance;
-    private double timeFlight;
-    private double hubHeight = 72; // inches
-    private double targetAzimuth;
+  private Pose2d robotPose = new Pose2d();
+  private ChassisSpeeds robotVelocity = new ChassisSpeeds();
+  private Pose2d aimPoint;
+  private double distanceX;
+  private double distanceY;
+  private double endDistance;
+  private double timeFlight;
+  private double hubHeight = 72; // inches
+  private double targetAzimuth;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -61,31 +59,41 @@ public class Launcher extends SubsystemBase {
         });
   }
 
-  public void updateOdometry(Pose2d robotPose) {
+  public void updateOdometry(Pose2d robotPose, ChassisSpeeds robotVelocity) {
     this.robotPose = robotPose;
+    this.robotVelocity = robotVelocity;
   }
 
   public void getAzimuth() {
     double x1 = robotPose.getX();
     double y1 = robotPose.getY();
-    double x2;
-    double y2;
+    double x2 = aimPoint.getX();
+    double y2 = aimPoint.getY();
 
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      x2 = Constants.launcherConstants.hubBlue.getX();
-      y2 = Constants.launcherConstants.hubBlue.getY();
-    } else {
-      x2 = Constants.launcherConstants.hubRed.getX();
-      y2 = Constants.launcherConstants.hubRed.getY();
-    }
     double deltaY = y2 - y1;
     double deltaX = x2 - x1;
 
-    targetAzimuth = Math.toDegrees(Math.atan2(deltaY, deltaX)+robotPose.getRotation().getDegrees());
+    targetAzimuth = Math.toDegrees(Math.atan2(deltaY, deltaX) + robotPose.getRotation().getDegrees());
+  }
+
+  public void aimDownSights() {
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      aimPoint = Constants.launcherConstants.hubBlue;
+    } else {
+      aimPoint = Constants.launcherConstants.hubRed;
+    }
+    double aimPointX = aimPoint.getX() - robotVelocity.vxMetersPerSecond;
+    double aimPointY = aimPoint.getY() - robotVelocity.vyMetersPerSecond;
+
+    aimPoint = new Pose2d(aimPointX, aimPointY, null);
   }
 
   @Override
   public void periodic() {
+
+    aimDownSights();
+    getAzimuth();
+    
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
 
@@ -102,10 +110,10 @@ public class Launcher extends SubsystemBase {
 
     endDistance = Math.sqrt(distanceX + distanceY);
 
-    timeFlight = Math.sqrt((Constants.launcherConstants.hubHeight - Constants.launcherConstants.launcherHeight
-			    - endDistance * Math.tan(Constants.launcherConstants.launcherAngle) / -9.81));
-
-    getAzimuth();
+    timeFlight =
+        Math.sqrt(
+            (Constants.launcherConstants.hubHeight
+                - Constants.launcherConstants.launcherHeight
+                - endDistance * Math.tan(Constants.launcherConstants.launcherAngle) / -9.81));
   }
 }
-
