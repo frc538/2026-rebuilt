@@ -1,6 +1,7 @@
 package frc.robot.subsystems.launcher;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,15 +11,17 @@ import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class Launcher extends SubsystemBase {
-
-  LauncherIO io;
-  LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
-
   private Pose2d robotPose = new Pose2d();
   private Pose2d aimPoint = new Pose2d();
   private double distanceX;
   private double distanceY;
   private double endDistance;
+  private double timeFlight;
+  private double hubHeight = 72; //inches
+  private Rotation2d targetAzimuth;
+
+  LauncherIO io;
+  LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
   public Launcher(LauncherIO IO) {
     io = IO;
@@ -59,15 +62,28 @@ public class Launcher extends SubsystemBase {
     this.robotPose = robotPose;
   }
 
-  @Override
-  public void periodic() {
+    @Override
+    public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
+        if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            aimPoint = Constants.launcherConstants.hubBlue;
+        } else {
+            aimPoint = Constants.launcherConstants.hubRed;
+        }
 
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      aimPoint = Constants.launcherConstants.hubBlue;
-    } else {
-      aimPoint = Constants.launcherConstants.hubRed;
+        distanceX = aimPoint.getX()-robotPose.getX();
+        distanceX = Math.pow(distanceX, 2);
+        distanceY = aimPoint.getY()-robotPose.getY();
+        distanceY = Math.pow(distanceY, 2);
+        
+        endDistance = Math.sqrt(distanceX+distanceY);
+
+        timeFlight = Math.sqrt((
+            Constants.launcherConstants.hubHeight-Constants.launcherConstants.launcherHeight-endDistance*Math.tan
+            (Constants.launcherConstants.launcherAngle)/-9.81));
+
+        getAzimuth();
     }
 
     distanceX = aimPoint.getX() - robotPose.getX();

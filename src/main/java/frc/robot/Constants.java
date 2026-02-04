@@ -46,7 +46,8 @@ public final class Constants {
     public static final int launchMotorID = 5;
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
     public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());
-    public static final double hubHeight = 1.8288; // meters
-    public static final double launcherHeight = 0.508; // meters estimate
+    public static final double hubHeight = 1.8288; //meters
+    public static final double launcherHeight = 0.508; //meters estimate
+    public static final double launcherAngle = 60; //degrees
   }
 }
