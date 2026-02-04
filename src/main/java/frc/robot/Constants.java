@@ -51,6 +51,9 @@ public final class Constants {
     public static final double ArmVelConFac = Math.PI / 30;
     public static final int movementMotorCANid = 1;
     public static final int rotatoMotorCANid = 2;
+    public static final double IntakekP = 0.1;
+    public static final double IntakekI = 0.01;
+    public static final double IntakekD = 0.0;
 
     // public static final int IntakeCurrentLimit = 1;
     // public static final int IntakePositionConversionFactor = 1;

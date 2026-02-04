@@ -37,7 +37,12 @@ public class IntakeIOSparkMax implements IntakeIO {
         .positionConversionFactor(Constants.Intake.RotatoPosConFac)
         .velocityConversionFactor(Constants.Intake.RotatoVelConFac);
 
-    config.closedLoop.p(0.1).i(0.0).d(0.01).outputRange(-1.0, 1.0);
+    config
+        .closedLoop
+        .p(Constants.Intake.IntakekP)
+        .i(Constants.Intake.IntakekI)
+        .d(Constants.Intake.IntakekD)
+        .outputRange(-1.0, 1.0);
 
     movementMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
