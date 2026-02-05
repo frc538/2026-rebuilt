@@ -23,6 +23,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOSparkMax;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -50,6 +53,7 @@ public class RobotContainer {
   private final Vision vision;
   private final Hopper hopper;
   private final Intake intake;
+  private final ClimberSubsystem climberSubsystem;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -85,6 +89,9 @@ public class RobotContainer {
             new Intake(
                 new IntakeIOSparkMax(
                     Constants.Intake.movementMotorCANid, Constants.Intake.rotatoMotorCANid) {});
+        climberSubsystem =
+            new ClimberSubsystem(
+                new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
         break;
 
       case SIM:
@@ -105,6 +112,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
         hopper = new Hopper(new HopperIO() {});
         intake = new Intake(new IntakeIO() {});
+        climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
       default:
@@ -125,6 +133,7 @@ public class RobotContainer {
                 new VisionIO() {});
         hopper = new Hopper(new HopperIO() {});
         intake = new Intake(new IntakeIO() {});
+        climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
 
@@ -178,6 +187,8 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
     // Reset gyro to 0° when B button is pressed
     controller
