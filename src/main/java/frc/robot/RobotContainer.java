@@ -88,9 +88,9 @@ public class RobotContainer {
         intake =
             new Intake(
                 new IntakeIOSpark(
-                    Constants.Intake.RightMovCanid,
-                    Constants.Intake.LeftMovCanId,
-                    Constants.Intake.rotatoMotorCanid) {});
+                    Constants.Intake.RightRotatoCanId,
+                    Constants.Intake.LeftRotatoCanId,
+                    Constants.Intake.MovMotorCanId) {});
         climberSubsystem =
             new ClimberSubsystem(
                 new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));

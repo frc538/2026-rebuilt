@@ -50,18 +50,22 @@ public final class Constants {
   }
 
   public final class Intake {
+
+    public static final int RightRotatoCanId = 1;
+    public static final int LeftRotatoCanId = 2;
+    public static final int MovMotorCanId = 5;
+
     public static final double UprightPos = 60;
     public static final double ReadyPos = 0;
+
     public static final double IntakeSpeed = 1;
     public static final double MovementMotorVelocity = 1;
+
     public static final double RotatoPosConFac = 2 * Math.PI;
     public static final double RotatoVelConFac = Math.PI / 30;
+
     public static final double ArmPosConFac = 2 * Math.PI;
     public static final double ArmVelConFac = Math.PI / 30;
-
-    public static final int RightMovCanid = 1;
-    public static final int LeftMovCanId = 2;
-    public static final int rotatoMotorCanid = 5;
 
     public static final double IntakekP = 0.1;
     public static final double IntakekI = 0.01;

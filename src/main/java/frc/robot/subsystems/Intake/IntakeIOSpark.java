@@ -13,29 +13,30 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 
 public class IntakeIOSpark implements IntakeIO {
-  SparkFlex LeftMovMotor;
-  SparkFlex RightMovMotor;
-  SparkMax rotato;
+  SparkFlex LeftRotato;
+  SparkFlex RightRotato;
+  SparkMax MovMotor;
   RelativeEncoder armEncoder;
-  RelativeEncoder rotatoEncoder;
+  RelativeEncoder RightRotatoEncoder;
+  RelativeEncoder LeftRotatoEncoder;
   SparkClosedLoopController Lpid;
   SparkClosedLoopController Rpid;
 
-  public IntakeIOSpark(int RightMovMotorCanId, int LeftMovMotorCanId, int RotatoCanId) {
-    RightMovMotor = new SparkFlex(RightMovMotorCanId, MotorType.kBrushless);
-    LeftMovMotor = new SparkFlex(LeftMovMotorCanId, MotorType.kBrushless);
+  public IntakeIOSpark(int RightRotatoCanId, int LeftRotatoCanId, int MovMovCanId) {
+    RightRotato = new SparkFlex(RightRotatoCanId, MotorType.kBrushless);
+    LeftRotato = new SparkFlex(LeftRotatoCanId, MotorType.kBrushless);
 
-    rotato = new SparkMax(RotatoCanId, MotorType.kBrushless);
+    MovMotor = new SparkMax(MovMovCanId, MotorType.kBrushless);
 
-    armEncoder = LeftMovMotor.getEncoder();
-    armEncoder = RightMovMotor.getEncoder();
-    rotatoEncoder = rotato.getEncoder();
+    armEncoder = MovMotor.getEncoder();
+    RightRotatoEncoder = LeftRotato.getEncoder();
+    LeftRotatoEncoder = RightRotato.getEncoder();
 
-    Lpid = LeftMovMotor.getClosedLoopController();
-    Rpid = RightMovMotor.getClosedLoopController();
+    Lpid = LeftRotato.getClosedLoopController();
+    Rpid = RightRotato.getClosedLoopController();
 
-    SparkFlexConfig config = new SparkFlexConfig();
-    SparkMaxConfig RotatoConfig = new SparkMaxConfig();
+    SparkFlexConfig RotatoConfig = new SparkFlexConfig();
+    SparkMaxConfig config = new SparkMaxConfig();
 
     config
         .encoder
@@ -53,36 +54,32 @@ public class IntakeIOSpark implements IntakeIO {
         .d(Constants.Intake.IntakekD)
         .outputRange(-1.0, 1.0);
 
-    LeftMovMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    RightMovMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    LeftRotato.configure(RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    RightRotato.configure(RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    rotato.configure(RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    MovMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
 
-    inputs.rotatoOutput = rotato.getAppliedOutput();
-    inputs.rotatoBusVoltage = rotato.getBusVoltage();
-    inputs.rotatoCurrent = rotato.getOutputCurrent();
+    inputs.rotatoOutput =     LeftRotato.getAppliedOutput();
+    inputs.rotatoBusVoltage = LeftRotato.getBusVoltage();
+    inputs.rotatoCurrent =    LeftRotato.getOutputCurrent();
 
-    inputs.armMotorOutput = LeftMovMotor.getAppliedOutput();
-    inputs.armMotorBusVoltage = LeftMovMotor.getBusVoltage();
-    inputs.armMotorCurrent = LeftMovMotor.getOutputCurrent();
-
-    inputs.armMotorOutput = RightMovMotor.getAppliedOutput();
-    inputs.armMotorBusVoltage = RightMovMotor.getBusVoltage();
-    inputs.armMotorCurrent = RightMovMotor.getOutputCurrent();
+    inputs.armMotorOutput =     MovMotor.getAppliedOutput();
+    inputs.armMotorBusVoltage = MovMotor.getBusVoltage();
+    inputs.armMotorCurrent =    MovMotor.getOutputCurrent();
 
     inputs.positionRad = armEncoder.getPosition();
-    inputs.rotatoRpm = rotatoEncoder.getVelocity();
+    inputs.rotatoRpm = LeftRotatoEncoder.getVelocity();
     inputs.MovementMotorRPM = armEncoder.getVelocity();
     inputs.MovementMotorRotation = armEncoder.getPosition();
   }
 
   @Override
   public void runRotato(double speed) {
-    rotato.set(speed);
+    MovMotor.set(speed);
   }
 
   @Override
