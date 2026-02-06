@@ -58,7 +58,7 @@ public final class Constants {
     public static final double RotatoVelConFac = Math.PI / 30;
     public static final double ArmPosConFac = 2 * Math.PI;
     public static final double ArmVelConFac = Math.PI / 30;
-    
+
     public static final int RightMovCanid = 1;
     public static final int LeftMovCanId = 2;
     public static final int rotatoMotorCanid = 5;

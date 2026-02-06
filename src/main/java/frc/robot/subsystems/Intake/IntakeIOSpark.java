@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Intake;
+package frc.robot.subsystems.intake;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -21,10 +21,10 @@ public class IntakeIOSpark implements IntakeIO {
   SparkClosedLoopController Lpid;
   SparkClosedLoopController Rpid;
 
-  public IntakeIOSpark(int RightMovMotorCanId,int LeftMovMotorCanId, int RotatoCanId) {
+  public IntakeIOSpark(int RightMovMotorCanId, int LeftMovMotorCanId, int RotatoCanId) {
     RightMovMotor = new SparkFlex(RightMovMotorCanId, MotorType.kBrushless);
     LeftMovMotor = new SparkFlex(LeftMovMotorCanId, MotorType.kBrushless);
-  
+
     rotato = new SparkMax(RotatoCanId, MotorType.kBrushless);
 
     armEncoder = LeftMovMotor.getEncoder();
