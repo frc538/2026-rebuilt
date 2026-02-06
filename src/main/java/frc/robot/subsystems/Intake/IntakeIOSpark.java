@@ -5,28 +5,37 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 
-public class IntakeIOSparkMax implements IntakeIO {
-  SparkMax movementMotor;
+public class IntakeIOSpark implements IntakeIO {
+  SparkFlex LeftMovMotor;
+  SparkFlex RightMovMotor;
   SparkMax rotato;
   RelativeEncoder armEncoder;
   RelativeEncoder rotatoEncoder;
-  SparkClosedLoopController pid;
+  SparkClosedLoopController Lpid;
+  SparkClosedLoopController Rpid;
 
-  public IntakeIOSparkMax(int MovMotorCanId, int RotatoCanId) {
-    movementMotor = new SparkMax(MovMotorCanId, MotorType.kBrushless);
+  public IntakeIOSpark(int RightMovMotorCanId,int LeftMovMotorCanId, int RotatoCanId) {
+    RightMovMotor = new SparkFlex(RightMovMotorCanId, MotorType.kBrushless);
+    LeftMovMotor = new SparkFlex(LeftMovMotorCanId, MotorType.kBrushless);
+  
     rotato = new SparkMax(RotatoCanId, MotorType.kBrushless);
-    armEncoder = movementMotor.getEncoder();
-    rotatoEncoder = rotato.getEncoder();
-    pid = movementMotor.getClosedLoopController();
 
-    SparkMaxConfig config = new SparkMaxConfig();
-    SparkFlexConfig RotatoConfig = new SparkFlexConfig();
+    armEncoder = LeftMovMotor.getEncoder();
+    armEncoder = RightMovMotor.getEncoder();
+    rotatoEncoder = rotato.getEncoder();
+
+    Lpid = LeftMovMotor.getClosedLoopController();
+    Rpid = RightMovMotor.getClosedLoopController();
+
+    SparkFlexConfig config = new SparkFlexConfig();
+    SparkMaxConfig RotatoConfig = new SparkMaxConfig();
 
     config
         .encoder
@@ -44,7 +53,8 @@ public class IntakeIOSparkMax implements IntakeIO {
         .d(Constants.Intake.IntakekD)
         .outputRange(-1.0, 1.0);
 
-    movementMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    LeftMovMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    RightMovMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     rotato.configure(RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -56,9 +66,13 @@ public class IntakeIOSparkMax implements IntakeIO {
     inputs.rotatoBusVoltage = rotato.getBusVoltage();
     inputs.rotatoCurrent = rotato.getOutputCurrent();
 
-    inputs.armMotorOutput = movementMotor.getAppliedOutput();
-    inputs.armMotorBusVoltage = movementMotor.getBusVoltage();
-    inputs.armMotorCurrent = movementMotor.getOutputCurrent();
+    inputs.armMotorOutput = LeftMovMotor.getAppliedOutput();
+    inputs.armMotorBusVoltage = LeftMovMotor.getBusVoltage();
+    inputs.armMotorCurrent = LeftMovMotor.getOutputCurrent();
+
+    inputs.armMotorOutput = RightMovMotor.getAppliedOutput();
+    inputs.armMotorBusVoltage = RightMovMotor.getBusVoltage();
+    inputs.armMotorCurrent = RightMovMotor.getOutputCurrent();
 
     inputs.positionRad = armEncoder.getPosition();
     inputs.rotatoRpm = rotatoEncoder.getVelocity();
@@ -73,6 +87,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
   @Override
   public void setIntakePosition(double radians) {
-    pid.setSetpoint(radians, ControlType.kPosition);
+    Lpid.setSetpoint(radians, ControlType.kPosition);
+    Rpid.setSetpoint(radians, ControlType.kPosition);
   }
 }

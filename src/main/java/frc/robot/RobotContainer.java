@@ -22,7 +22,6 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
-import frc.robot.subsystems.Intake.IntakeIOSparkMax;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -87,8 +86,9 @@ public class RobotContainer {
                 new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
         intake =
             new Intake(
-                new IntakeIOSparkMax(
-                    Constants.Intake.movementMotorCANid, Constants.Intake.rotatoMotorCANid) {});
+                new IntakeIOSpark(
+                    Constants.Intake.RightMovCanid, Constants.Intake.LeftMovCanId, Constants.Intake.rotatoMotorCanid) {},
+                    );
         climberSubsystem =
             new ClimberSubsystem(
                 new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
