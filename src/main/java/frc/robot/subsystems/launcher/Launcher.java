@@ -20,6 +20,7 @@ public class Launcher extends SubsystemBase {
   private double timeFlight;
   private double targetAzimuth;
   private double launchSpeed;
+  private boolean shootSide = false;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -79,9 +80,25 @@ public class Launcher extends SubsystemBase {
 
   public void aimDownSights() {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      aimPoint = Constants.launcherConstants.hubBlue;
+      if (shootSide == true) {
+        if (robotPose.getY() >= 4.030) {
+          aimPoint = Constants.launcherConstants.leftBlue;
+        } else {
+          aimPoint = Constants.launcherConstants.rightBlue;
+        }
+      } else {
+        aimPoint = Constants.launcherConstants.hubBlue;
+      }
     } else {
-      aimPoint = Constants.launcherConstants.hubRed;
+      if (shootSide == true) {
+        if (robotPose.getY() >= 4.030) {
+          aimPoint = Constants.launcherConstants.rightRed;
+        } else {
+          aimPoint = Constants.launcherConstants.leftRed;
+        }
+      } else {
+        aimPoint = Constants.launcherConstants.hubRed;
+      }
     }
     double aimPointX = aimPoint.getX() - robotVelocity.vxMetersPerSecond;
     double aimPointY = aimPoint.getY() - robotVelocity.vyMetersPerSecond;
@@ -124,5 +141,7 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("distance", endDistance);
     Logger.recordOutput("time flight", timeFlight);
     Logger.recordOutput("launch speed", launchSpeed);
+
+
   }
 }
