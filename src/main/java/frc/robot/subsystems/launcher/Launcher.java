@@ -13,7 +13,7 @@ import org.littletonrobotics.junction.Logger;
 public class Launcher extends SubsystemBase {
   private Pose2d robotPose = new Pose2d();
   private ChassisSpeeds robotVelocity = new ChassisSpeeds();
-  private Pose2d aimPoint;
+  private Pose2d aimPoint = new Pose2d();
   private double distanceX;
   private double distanceY;
   private double endDistance;
@@ -79,31 +79,29 @@ public class Launcher extends SubsystemBase {
   }
 
   public void aimDownSights() {
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      if (shootSide == true) {
-        if (robotPose.getY() >= 4.030) {
-          aimPoint = Constants.launcherConstants.leftBlue;
+    if (DriverStation.getAlliance().isPresent()) {
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        if (shootSide == true) {
+          if (robotPose.getY() >= 4.030) {
+            aimPoint = Constants.launcherConstants.leftBlue;
+          } else {
+            aimPoint = Constants.launcherConstants.rightBlue;
+          }
         } else {
-          aimPoint = Constants.launcherConstants.rightBlue;
+          aimPoint = Constants.launcherConstants.hubBlue;
         }
       } else {
-        aimPoint = Constants.launcherConstants.hubBlue;
-      }
-    } else {
-      if (shootSide == true) {
-        if (robotPose.getY() >= 4.030) {
-          aimPoint = Constants.launcherConstants.rightRed;
+        if (shootSide == true) {
+          if (robotPose.getY() >= 4.030) {
+            aimPoint = Constants.launcherConstants.rightRed;
+          } else {
+            aimPoint = Constants.launcherConstants.leftRed;
+          }
         } else {
-          aimPoint = Constants.launcherConstants.leftRed;
+          aimPoint = Constants.launcherConstants.hubRed;
         }
-      } else {
-        aimPoint = Constants.launcherConstants.hubRed;
       }
     }
-    double aimPointX = aimPoint.getX() - robotVelocity.vxMetersPerSecond;
-    double aimPointY = aimPoint.getY() - robotVelocity.vyMetersPerSecond;
-
-    aimPoint = new Pose2d(aimPointX, aimPointY, null);
   }
 
   @Override
@@ -115,11 +113,10 @@ public class Launcher extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
 
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      aimPoint = Constants.launcherConstants.hubBlue;
-    } else {
-      aimPoint = Constants.launcherConstants.hubRed;
-    }
+    double aimPointX = aimPoint.getX() - robotVelocity.vxMetersPerSecond;
+    double aimPointY = aimPoint.getY() - robotVelocity.vyMetersPerSecond;
+
+    aimPoint = new Pose2d(aimPointX, aimPointY, null);
 
     distanceX = aimPoint.getX() - robotPose.getX();
     distanceX = Math.pow(distanceX, 2);
@@ -134,14 +131,12 @@ public class Launcher extends SubsystemBase {
                 - Constants.launcherConstants.launcherHeight
                 - endDistance * Math.tan(Constants.launcherConstants.launcherAngle) / -9.81));
 
-    launchSpeed = endDistance/Math.cos(Constants.launcherConstants.launcherAngle*timeFlight);
-    
-    Logger.recordOutput("aimpoint", aimPoint);
+    launchSpeed = endDistance / Math.cos(Constants.launcherConstants.launcherAngle * timeFlight);
+
+    Logger.recordOutput("aimpoint", aimPoint = new Pose2d());
     Logger.recordOutput("azimuth", targetAzimuth);
     Logger.recordOutput("distance", endDistance);
     Logger.recordOutput("time flight", timeFlight);
     Logger.recordOutput("launch speed", launchSpeed);
-
-
   }
 }
