@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
+import org.opencv.core.Mat;
 
 public class Launcher extends SubsystemBase {
   private Pose2d robotPose = new Pose2d();
@@ -102,6 +103,19 @@ public class Launcher extends SubsystemBase {
         }
       }
     }
+  }
+
+  public void getShootSpeed() {
+    double finalWheelRotationVelocity;
+
+    finalWheelRotationVelocity = (2*launchSpeed)/Constants.launcherConstants.launchWheelRadius;
+
+    double initialWheelRotVelocity;
+
+    initialWheelRotVelocity = (launchSpeed*(Constants.launcherConstants.kFuelMomentOfInertia*Math.pow(Constants.launcherConstants.launchWheelRadius, 2)
+      +4*Constants.launcherConstants.kFlywheelMomentOfInertia*(Math.pow(Constants.launcherConstants.fuelRadius, 2))+Constants.launcherConstants.fuelMass
+      *(Math.pow(Constants.launcherConstants.fuelRadius, 2))*(Math.pow(Constants.launcherConstants.kWheelRadius, 2)))/2*(Constants.launcherConstants.kFlywheelMomentOfInertia
+      *(Math.pow(Constants.launcherConstants.fuelRadius, 2))*Constants.launcherConstants.kWheelRadius));
   }
 
   @Override
