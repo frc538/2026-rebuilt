@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import static frc.robot.Constants.launcherConstants.*;
 import org.littletonrobotics.junction.Logger;
 import org.opencv.core.Mat;
 
@@ -75,8 +75,7 @@ public class Launcher extends SubsystemBase {
     double deltaY = y2 - y1;
     double deltaX = x2 - x1;
 
-    targetAzimuth =
-        Math.toDegrees(Math.atan2(deltaY, deltaX) + robotPose.getRotation().getDegrees());
+    targetAzimuth = Math.toDegrees(Math.atan2(deltaY, deltaX) + robotPose.getRotation().getDegrees());
   }
 
   public void aimDownSights() {
@@ -84,22 +83,22 @@ public class Launcher extends SubsystemBase {
       if (DriverStation.getAlliance().get() == Alliance.Blue) {
         if (shootSide == true) {
           if (robotPose.getY() >= 4.030) {
-            aimPoint = Constants.launcherConstants.leftBlue;
+            aimPoint = leftBlue;
           } else {
-            aimPoint = Constants.launcherConstants.rightBlue;
+            aimPoint = rightBlue;
           }
         } else {
-          aimPoint = Constants.launcherConstants.hubBlue;
+          aimPoint = hubBlue;
         }
       } else {
         if (shootSide == true) {
           if (robotPose.getY() >= 4.030) {
-            aimPoint = Constants.launcherConstants.rightRed;
+            aimPoint = rightRed;
           } else {
-            aimPoint = Constants.launcherConstants.leftRed;
+            aimPoint = leftRed;
           }
         } else {
-          aimPoint = Constants.launcherConstants.hubRed;
+          aimPoint = hubRed;
         }
       }
     }
@@ -108,14 +107,15 @@ public class Launcher extends SubsystemBase {
   public void getShootSpeed() {
     double finalWheelRotationVelocity;
 
-    finalWheelRotationVelocity = (2*launchSpeed)/Constants.launcherConstants.launchWheelRadius;
+    finalWheelRotationVelocity = (2 * launchSpeed) / launchWheelRadius;
 
     double initialWheelRotVelocity;
 
-    initialWheelRotVelocity = (launchSpeed*(Constants.launcherConstants.kFuelMomentOfInertia*Math.pow(Constants.launcherConstants.launchWheelRadius, 2)
-      +4*Constants.launcherConstants.kFlywheelMomentOfInertia*(Math.pow(Constants.launcherConstants.fuelRadius, 2))+Constants.launcherConstants.fuelMass
-      *(Math.pow(Constants.launcherConstants.fuelRadius, 2))*(Math.pow(Constants.launcherConstants.kWheelRadius, 2)))/2*(Constants.launcherConstants.kFlywheelMomentOfInertia
-      *(Math.pow(Constants.launcherConstants.fuelRadius, 2))*Constants.launcherConstants.kWheelRadius));
+    initialWheelRotVelocity = (launchSpeed * (kFuelMomentOfInertia * Math.pow(launchWheelRadius, 2)
+        + 4 * kFlywheelMomentOfInertia * (Math.pow(fuelRadius, 2)) + fuelMass
+            * (Math.pow(fuelRadius, 2)) * (Math.pow(kWheelRadius, 2)))
+        / (2 * kFlywheelMomentOfInertia
+            * (Math.pow(fuelRadius, 2)) * kWheelRadius));
   }
 
   @Override
@@ -139,13 +139,12 @@ public class Launcher extends SubsystemBase {
 
     endDistance = Math.sqrt(distanceX + distanceY);
 
-    timeFlight =
-        Math.sqrt(
-            (Constants.launcherConstants.hubHeight
-                - Constants.launcherConstants.launcherHeight
-                - endDistance * Math.tan(Constants.launcherConstants.launcherAngle) / -9.81));
+    timeFlight = Math.sqrt(
+        (hubHeight
+            - launcherHeight
+            - endDistance * Math.tan(launcherAngle) / -9.81));
 
-    launchSpeed = endDistance / Math.cos(Constants.launcherConstants.launcherAngle * timeFlight);
+    launchSpeed = endDistance / Math.cos(launcherAngle * timeFlight);
 
     Logger.recordOutput("aimpoint", aimPoint = new Pose2d());
     Logger.recordOutput("azimuth", targetAzimuth);
