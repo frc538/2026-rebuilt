@@ -54,8 +54,10 @@ public class IntakeIOSpark implements IntakeIO {
         .d(Constants.Intake.IntakekD)
         .outputRange(-1.0, 1.0);
 
-    LeftRotato.configure(RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    RightRotato.configure(RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    LeftRotato.configure(
+        RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    RightRotato.configure(
+        RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     MovMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -63,13 +65,13 @@ public class IntakeIOSpark implements IntakeIO {
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
 
-    inputs.rotatoOutput =     LeftRotato.getAppliedOutput();
+    inputs.rotatoOutput = LeftRotato.getAppliedOutput();
     inputs.rotatoBusVoltage = LeftRotato.getBusVoltage();
-    inputs.rotatoCurrent =    LeftRotato.getOutputCurrent();
+    inputs.rotatoCurrent = LeftRotato.getOutputCurrent();
 
-    inputs.armMotorOutput =     MovMotor.getAppliedOutput();
+    inputs.armMotorOutput = MovMotor.getAppliedOutput();
     inputs.armMotorBusVoltage = MovMotor.getBusVoltage();
-    inputs.armMotorCurrent =    MovMotor.getOutputCurrent();
+    inputs.armMotorCurrent = MovMotor.getOutputCurrent();
 
     inputs.positionRad = armEncoder.getPosition();
     inputs.rotatoRpm = LeftRotatoEncoder.getVelocity();
