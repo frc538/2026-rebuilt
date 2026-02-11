@@ -47,6 +47,7 @@ public final class Constants {
     public static final double FeedSpeed = 1.0;
     public static final int FeedCanId = 3;
     public static final int SpindexCanId = 4;
+  
   }
 
   public final class Intake {
@@ -70,7 +71,11 @@ public final class Constants {
     public static final double IntakekP = 0.1;
     public static final double IntakekI = 0.01;
     public static final double IntakekD = 0.0;
+    
+    public static final double IntakePositionConversionFactor = 0.5;
 
+    public static final double IntakeVelocityConversionFactor = 0.5;
+    public static final int ExtensionCurrentLimit = 1;
     // public static final int IntakeCurrentLimit = 1;
     // public static final int IntakePositionConversionFactor = 1;
     // public static final int IntakeVelocityConversionFactor = 1;

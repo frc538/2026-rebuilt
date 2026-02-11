@@ -10,6 +10,7 @@ public interface IntakeIO {
     public double rotatoBusVoltage = 0.0;
     public double rotatoCurrent = 0.0;
 
+    public double MovEncoderValue = 1;
     public double armMotorOutput = 0.0;
     public double armMotorBusVoltage = 0.0;
     public double armMotorCurrent = 0.0;
