@@ -17,6 +17,8 @@ public interface LauncherIO {
 
   public default void updateInputs(LauncherIOInputs inputs) {}
 
+  // Need to update this IO interface to add an RPM or rad/s function that sets the flywheel speed
+
   // Set launcher voltage
   public default void setVoltage(double voltage) {}
 
