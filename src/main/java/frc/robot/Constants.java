@@ -47,7 +47,6 @@ public final class Constants {
     public static final double FeedSpeed = 1.0;
     public static final int FeedCanId = 3;
     public static final int SpindexCanId = 4;
-  
   }
 
   public final class Intake {
@@ -56,7 +55,7 @@ public final class Constants {
     public static final int LeftRotatoCanId = 2;
     public static final int MovMotorCanId = 5;
 
-    public static final double UprightPos = 60;
+    public static final double UprightPos = Math.PI / 2;
     public static final double ReadyPos = 0;
 
     public static final double IntakeSpeed = 1;
@@ -71,10 +70,11 @@ public final class Constants {
     public static final double IntakekP = 0.1;
     public static final double IntakekI = 0.01;
     public static final double IntakekD = 0.0;
-    
-    public static final double IntakePositionConversionFactor = 0.5;
 
-    public static final double IntakeVelocityConversionFactor = 0.5;
+    public static final double IntakePositionConversionFactor = Math.PI * 2 / 15; // is in radians
+    public static final double IntakeVelocityConversionFactor =
+        Math.PI * 2 / 60; // radians per second
+
     public static final int ExtensionCurrentLimit = 1;
     // public static final int IntakeCurrentLimit = 1;
     // public static final int IntakePositionConversionFactor = 1;

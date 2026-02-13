@@ -5,28 +5,25 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
-
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOSim implements IntakeIO {
   SparkMax MovMotor;
   SparkRelativeEncoder MovMotorEncoder;
   SparkMaxConfig movConfig;
 
-  TrapezoidProfile commandProfile;
-  Constraints profileConstraints;
-  TrapezoidProfile.State mCurrentState;
-  TrapezoidProfile.State mDesiredState;
+  SingleJointedArmSim TooLongName;
 
   private boolean firstFrame = true;
 
@@ -54,37 +51,58 @@ public class IntakeIOSim implements IntakeIO {
   public IntakeIOSim(int MovMotorCanId) {
     MovMotor = new SparkMax(MovMotorCanId, MotorType.kBrushless);
     MovMotorEncoder = (SparkRelativeEncoder) MovMotor.getEncoder();
+    movConfig = new SparkMaxConfig();
 
-    MovMotorSim = new SparkMaxSim(MovMotor, null);
+    MovMotorSim = new SparkMaxSim(MovMotor, DCMotor.getNEO(1));
     movMotorEncoderSim = MovMotorSim.getRelativeEncoderSim();
 
-    movConfig 
-    .idleMode(IdleMode.kBrake)
+    TooLongName =
+        new SingleJointedArmSim(
+            DCMotor.getNEO(1), 15, 0.01, 0.25, 0, Math.PI / 2.0, true, Math.PI / 2.0);
+
+    movConfig
+        .idleMode(IdleMode.kBrake)
         .inverted(false)
         .smartCurrentLimit(Constants.Intake.ExtensionCurrentLimit);
     movConfig
-    .encoder
+        .encoder
         .positionConversionFactor(Constants.Intake.IntakePositionConversionFactor)
         .velocityConversionFactor(Constants.Intake.IntakeVelocityConversionFactor);
     movConfig
-    .closedLoop
+        .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(0, 0, 0)
+        .pid(0.1, 0, 0)
         .outputRange(-1, 1);
-        MovMotor.configure(movConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    MovMotor.configure(movConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        movMotorController =  MovMotor.getClosedLoopController(); 
-        profileConstraints = new Constraints(maxV, maxA);
-        mCurrentState = new TrapezoidProfile.State();
+    movMotorController = MovMotor.getClosedLoopController();
   }
-  //I barely know what im doing D:
+  // I barely know what im doing D:
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
+
+    TooLongName.update(0.02);
+    MovMotorSim.iterate(TooLongName.getVelocityRadPerSec(), 12, 0.02);
+    movMotorEncoderSim.iterate(TooLongName.getVelocityRadPerSec(), 0.02);
+
     inputs.armMotorBusVoltage = MovMotorSim.getAppliedOutput() * RoboRioSim.getVInVoltage();
     inputs.armMotorCurrent = MovMotorSim.getMotorCurrent();
     inputs.armMotorOutput = MovMotorSim.getAppliedOutput();
     // inputs.height = m_elevatorSim.getPositionMeters();
 
     inputs.MovEncoderValue = MovMotorEncoder.getPosition();
+  }
+
+  public void setIntakePosition(double radians) {
+    movMotorController.setSetpoint(radians, ControlType.kPosition);
+
+    Logger.recordOutput("Intake/Sim/PositionalValue", MovMotorSim.getPosition());
+    Logger.recordOutput("Intake/Sim/VelocityValue", MovMotorSim.getVelocity());
+    Logger.recordOutput("Intake/Sim/");
+    Logger.recordOutput("Intake/Sim/");
+    Logger.recordOutput("Intake/Sim/");
+    Logger.recordOutput("Intake/Sim/");
+    Logger.recordOutput("Intake/Sim/");
+    Logger.recordOutput("Intake/Sim/");
   }
 }

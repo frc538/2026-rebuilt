@@ -34,6 +34,7 @@ import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOSpark;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -113,7 +114,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
                 new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
         hopper = new Hopper(new HopperIO() {});
-        intake = new Intake(new IntakeIO() {});
+        intake = new Intake(new IntakeIOSim(Constants.Intake.MovMotorCanId) {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
@@ -205,7 +206,7 @@ public class RobotContainer {
 
     controller.start().onTrue(hopper.HopperToggle());
 
-    controller.y().onTrue(intake.runIntake(Constants.Intake.IntakeSpeed));
+    controller.y().onTrue(intake.togglePosition());
   }
 
   /**

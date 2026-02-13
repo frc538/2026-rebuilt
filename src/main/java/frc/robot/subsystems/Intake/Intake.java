@@ -19,6 +19,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
+    Logger.recordOutput("Intake/FlipFlop", FlipFlop);
   }
 
   public Command runIntake(double speed) {
@@ -40,11 +41,11 @@ public class Intake extends SubsystemBase {
   public Command togglePosition() {
     return runOnce(
         () -> {
-          if (FlipFlop = true) {
-            runIntake(Constants.Intake.ReadyPos);
+          if (FlipFlop == true) {
+            io.setIntakePosition(Constants.Intake.ReadyPos);
             FlipFlop = false;
-          } else if (FlipFlop = false) {
-            runIntake(Constants.Intake.UprightPos);
+          } else {
+            io.setIntakePosition(Constants.Intake.UprightPos);
             FlipFlop = true;
           }
         });
