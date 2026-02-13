@@ -20,6 +20,10 @@ public class Intake extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
     Logger.recordOutput("Intake/FlipFlop", FlipFlop);
+    Logger.recordOutput("Intake/Sim/", inputs.MovEncoderValue);
+    Logger.recordOutput("Intake/Sim/", inputs.positionRad);
+    Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
+    Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
   }
 
   public Command runIntake(double speed) {

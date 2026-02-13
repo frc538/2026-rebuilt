@@ -98,11 +98,6 @@ public class IntakeIOSim implements IntakeIO {
 
     Logger.recordOutput("Intake/Sim/PositionalValue", MovMotorSim.getPosition());
     Logger.recordOutput("Intake/Sim/VelocityValue", MovMotorSim.getVelocity());
-    Logger.recordOutput("Intake/Sim/");
-    Logger.recordOutput("Intake/Sim/");
-    Logger.recordOutput("Intake/Sim/");
-    Logger.recordOutput("Intake/Sim/");
-    Logger.recordOutput("Intake/Sim/");
-    Logger.recordOutput("Intake/Sim/");
+    
   }
 }
