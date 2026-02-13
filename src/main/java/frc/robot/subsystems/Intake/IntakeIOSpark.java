@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.Intake;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -65,16 +65,21 @@ public class IntakeIOSpark implements IntakeIO {
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
 
-    inputs.rotatoOutput = LeftRotato.getAppliedOutput();
-    inputs.rotatoBusVoltage = LeftRotato.getBusVoltage();
-    inputs.rotatoCurrent = LeftRotato.getOutputCurrent();
+    inputs.RightrotatoOutput = LeftRotato.getAppliedOutput();
+    inputs.RightrotatoBusVoltage = LeftRotato.getBusVoltage();
+    inputs.RightrotatoCurrent = LeftRotato.getOutputCurrent();
+
+    inputs.LeftrotatoOutput = LeftRotato.getAppliedOutput();
+    inputs.LeftrotatoBusVoltage = LeftRotato.getBusVoltage();
+    inputs.LeftrotatoCurrent = LeftRotato.getOutputCurrent();
 
     inputs.armMotorOutput = MovMotor.getAppliedOutput();
     inputs.armMotorBusVoltage = MovMotor.getBusVoltage();
     inputs.armMotorCurrent = MovMotor.getOutputCurrent();
 
     inputs.positionRad = armEncoder.getPosition();
-    inputs.rotatoRpm = LeftRotatoEncoder.getVelocity();
+    inputs.RightrotatoRpm = LeftRotatoEncoder.getVelocity();
+    inputs.LeftrotatoRpm = LeftRotatoEncoder.getVelocity();
     inputs.MovementMotorRPM = armEncoder.getVelocity();
     inputs.MovementMotorRotation = armEncoder.getPosition();
   }

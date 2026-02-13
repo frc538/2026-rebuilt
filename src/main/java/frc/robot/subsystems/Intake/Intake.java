@@ -1,15 +1,15 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
 import org.littletonrobotics.junction.Logger;
+import frc.robot.subsystems.Intake.IntakeIO.IntakeIOInputs;
 
 public class Intake extends SubsystemBase {
 
   private final IntakeIO io;
-  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  private final IntakeIOInputs inputs = new IntakeIOInputs();
   public boolean FlipFlop = false;
 
   public Intake(IntakeIO io) {
@@ -26,11 +26,10 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    if(inputs.positionRad > Constants.IntakeConstants.RotatoThresholdRAD){
+    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(0);
-    }
-    else{
-      io.runRotato(Constants.IntakeConstants.RotatoRPM);
+    } else {
+      io.runRotato(Constants.Intake.RotatoRPM);
     }
   }
 

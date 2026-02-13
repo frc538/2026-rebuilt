@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.Intake;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -98,6 +98,5 @@ public class IntakeIOSim implements IntakeIO {
 
     Logger.recordOutput("Intake/Sim/PositionalValue", MovMotorSim.getPosition());
     Logger.recordOutput("Intake/Sim/VelocityValue", MovMotorSim.getVelocity());
-    
   }
 }
