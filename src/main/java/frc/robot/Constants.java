@@ -71,6 +71,9 @@ public final class Constants {
     public static final double IntakekI = 0.01;
     public static final double IntakekD = 0.0;
 
+    public static final double RotatoThresholdRAD = Math.PI/4.0;
+    public static final double RotatoRPM = 300;
+
     public static final double IntakePositionConversionFactor = Math.PI * 2 / 15; // is in radians
     public static final double IntakeVelocityConversionFactor =
         Math.PI * 2 / 60; // radians per second

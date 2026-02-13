@@ -15,9 +15,9 @@ import frc.robot.Constants;
 public class IntakeIOSparkMax implements IntakeIO {
 
   private final SparkMax movementMotor =
-      new SparkMax(Constants.Intake.movementMotorCANid, MotorType.kBrushless);
+      new SparkMax(Constants.IntakeConstants.movementMotorCANid, MotorType.kBrushless);
   private final SparkFlex rotato =
-      new SparkFlex(Constants.Intake.rotatoMotorCANid, MotorType.kBrushless);
+      new SparkFlex(Constants.IntakeConstants.rotatoMotorCANid, MotorType.kBrushless);
 
   private final RelativeEncoder armEncoder = movementMotor.getEncoder();
   private final RelativeEncoder rotatoEncoder = rotato.getEncoder();

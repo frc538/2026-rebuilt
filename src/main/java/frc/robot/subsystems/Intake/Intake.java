@@ -3,6 +3,8 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Intake.IntakeIO.IntakeIOInputs;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -24,6 +26,13 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.positionRad);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
+
+    if(inputs.positionRad > Constants.IntakeConstants.RotatoThresholdRAD){
+      io.runRotato(0);
+    }
+    else{
+      io.runRotato(Constants.IntakeConstants.RotatoRPM);
+    }
   }
 
   public Command runIntake(double speed) {
