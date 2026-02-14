@@ -71,4 +71,39 @@ public final class Constants {
     public static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
     public static final double kWheelRadius = 0.050165; // m
   }
+  
+  public final class Intake {
+
+    public static final int RightRotatoCanId = 1;
+    public static final int LeftRotatoCanId = 2;
+    public static final int MovMotorCanId = 5;
+
+    public static final double UprightPos = Math.PI / 2;
+    public static final double ReadyPos = 0;
+
+    public static final double IntakeSpeed = 1;
+    public static final double MovementMotorVelocity = 1;
+
+    public static final double RotatoPosConFac = 2 * Math.PI;
+    public static final double RotatoVelConFac = Math.PI / 30;
+
+    public static final double ArmPosConFac = 2 * Math.PI;
+    public static final double ArmVelConFac = Math.PI / 30;
+
+    public static final double IntakekP = 0.1;
+    public static final double IntakekI = 0.01;
+    public static final double IntakekD = 0.0;
+
+    public static final double RotatoThresholdRAD = Math.PI / 4.0;
+    public static final double RotatoRPM = 300;
+
+    public static final double IntakePositionConversionFactor = Math.PI * 2 / 15; // is in radians
+    public static final double IntakeVelocityConversionFactor =
+        Math.PI * 2 / 60; // radians per second
+
+    public static final int ExtensionCurrentLimit = 1;
+    // public static final int IntakeCurrentLimit = 1;
+    // public static final int IntakePositionConversionFactor = 1;
+    // public static final int IntakeVelocityConversionFactor = 1;
+  }
 }
