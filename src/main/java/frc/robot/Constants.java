@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -47,6 +49,27 @@ public final class Constants {
     public static final double FeedSpeed = 1.0;
     public static final int FeedCanId = 3;
     public static final int SpindexCanId = 4;
+  }
+
+  public final class launcherConstants {
+    public static final int launchMotorID = 5;
+    public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
+    public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());
+    public static final Pose2d leftRed = new Pose2d(14.000, 1.7, new Rotation2d());
+    public static final Pose2d rightRed = new Pose2d(14.000, 6.250, new Rotation2d());
+    public static final Pose2d leftBlue = new Pose2d(2.500, 6.250, new Rotation2d());
+    public static final Pose2d rightBlue = new Pose2d(2.5000, 1.7, new Rotation2d());
+    public static final double hubHeight = 1.8288; // meters
+    public static final double launcherHeight = 0.508; // meters estimate
+    public static final double launcherAngle = 1.0472; // radians
+
+    public static final double launchWheelRadius = 0.050165; // meters
+    public static final double fuelMass = 0.2268; // kg
+    public static final double fuelRadius = 0.075; // meters
+    public static final double kFuelMomentOfInertia =
+        2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
+    public static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
+    public static final double kWheelRadius = 0.050165; // m
   }
 
   public final class Intake {
