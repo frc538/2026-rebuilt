@@ -98,12 +98,16 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
+  PoseConsumer consumer;
+
   public Drive(
+      PoseConsumer consumer,
       GyroIO gyroIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
+    this.consumer = consumer;
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0, TunerConstants.FrontLeft);
     modules[1] = new Module(frModuleIO, 1, TunerConstants.FrontRight);
@@ -206,6 +210,8 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+    consumer.accept(poseEstimator.getEstimatedPosition(), getVelocity());
   }
 
   /**
@@ -323,6 +329,11 @@ public class Drive extends SubsystemBase {
     return getPose().getRotation();
   }
 
+  @AutoLogOutput
+  public ChassisSpeeds getVelocity() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation());
+  }
+
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
@@ -335,6 +346,12 @@ public class Drive extends SubsystemBase {
       Matrix<N3, N1> visionMeasurementStdDevs) {
     poseEstimator.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+  }
+
+  // add pose
+
+  public void addPose(Pose2d robotPose2d) {
+    poseEstimator.getEstimatedPosition();
   }
 
   /** Returns the maximum linear speed in meters per sec. */
@@ -355,5 +372,10 @@ public class Drive extends SubsystemBase {
       new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
       new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
     };
+  }
+
+  @FunctionalInterface
+  public static interface PoseConsumer {
+    public void accept(Pose2d robotPose, ChassisSpeeds robotVelocity);
   }
 }

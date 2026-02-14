@@ -35,6 +35,9 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSparkMax;
+import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherIO;
+import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -55,6 +58,8 @@ public class RobotContainer {
   private final Intake intake;
   private final ClimberSubsystem climberSubsystem;
 
+  private final Launcher launcher;
+
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -68,8 +73,10 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
+        launcher = new Launcher(new LauncherIOSim());
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIOPigeon2(),
                 new ModuleIOTalonFX(TunerConstants.FrontLeft),
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
@@ -96,8 +103,10 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
+        launcher = new Launcher(new LauncherIOSim());
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIO() {},
                 new ModuleIOSim(TunerConstants.FrontLeft),
                 new ModuleIOSim(TunerConstants.FrontRight),
@@ -117,8 +126,10 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
+        launcher = new Launcher(new LauncherIO() {});
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
@@ -189,6 +200,11 @@ public class RobotContainer {
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
     controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+
+    controller.button(1).onTrue(launcher.fullSpeed());
+    controller.button(3).onTrue(launcher.lowSpeed());
+    controller.button(4).onTrue(launcher.off());
+    controller.button(2).onTrue(launcher.feed());
 
     // Reset gyro to 0° when B button is pressed
     controller
