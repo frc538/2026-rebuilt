@@ -329,6 +329,7 @@ public class Drive extends SubsystemBase {
     return getPose().getRotation();
   }
 
+  @AutoLogOutput
   public ChassisSpeeds getVelocity() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation());
   }

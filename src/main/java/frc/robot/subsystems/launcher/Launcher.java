@@ -1,15 +1,16 @@
 package frc.robot.subsystems.launcher;
 
+import static frc.robot.Constants.launcherConstants.*;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.launcherConstants.*;
 import org.littletonrobotics.junction.Logger;
-import org.opencv.core.Mat;
 
 public class Launcher extends SubsystemBase {
   private Pose2d robotPose = new Pose2d();
@@ -22,6 +23,9 @@ public class Launcher extends SubsystemBase {
   private double targetAzimuth;
   private double launchSpeed;
   private boolean shootSide = false;
+  Pose2d aimPointComp = new Pose2d(0, 0, new Rotation2d());
+  double finalWheelRotationVelocity;
+  double initialWheelRotVelocity;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -75,13 +79,23 @@ public class Launcher extends SubsystemBase {
     double deltaY = y2 - y1;
     double deltaX = x2 - x1;
 
-    targetAzimuth = Math.toDegrees(Math.atan2(deltaY, deltaX) + robotPose.getRotation().getDegrees());
+    // toDegrees contains too much... need to just put the atan2 result in degrees,
+    // then add to the
+    // robotPose
+    // Need to make sure our pose rotation is the correct reference and we're
+    // combining it properly
+    // i.e. Pose2D defines the rotation as a mathematical one... 0 degrees toward
+    // positive x,
+    // increases counter-clockwise
+    targetAzimuth =
+        Math.toDegrees(Math.atan2(deltaY, deltaX))
+            + ((90 - robotPose.getRotation().getDegrees()) + 360);
   }
 
   public void aimDownSights() {
     if (DriverStation.getAlliance().isPresent()) {
       if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        if (shootSide == true) {
+        if (robotPose.getX() >= hubBlue.getX()) {
           if (robotPose.getY() >= 4.030) {
             aimPoint = leftBlue;
           } else {
@@ -91,7 +105,7 @@ public class Launcher extends SubsystemBase {
           aimPoint = hubBlue;
         }
       } else {
-        if (shootSide == true) {
+        if (robotPose.getX() <= hubRed.getX()) {
           if (robotPose.getY() >= 4.030) {
             aimPoint = rightRed;
           } else {
@@ -105,51 +119,64 @@ public class Launcher extends SubsystemBase {
   }
 
   public void getShootSpeed() {
-    double finalWheelRotationVelocity;
 
     finalWheelRotationVelocity = (2 * launchSpeed) / launchWheelRadius;
 
-    double initialWheelRotVelocity;
+    initialWheelRotVelocity =
+        (launchSpeed
+            * (kFuelMomentOfInertia * Math.pow(launchWheelRadius, 2)
+                + 4 * kFlywheelMomentOfInertia * (Math.pow(fuelRadius, 2))
+                + fuelMass * (Math.pow(fuelRadius, 2)) * (Math.pow(kWheelRadius, 2)))
+            / (2 * kFlywheelMomentOfInertia * (Math.pow(fuelRadius, 2)) * kWheelRadius));
+  }
 
-    initialWheelRotVelocity = (launchSpeed * (kFuelMomentOfInertia * Math.pow(launchWheelRadius, 2)
-        + 4 * kFlywheelMomentOfInertia * (Math.pow(fuelRadius, 2)) + fuelMass
-            * (Math.pow(fuelRadius, 2)) * (Math.pow(kWheelRadius, 2)))
-        / (2 * kFlywheelMomentOfInertia
-            * (Math.pow(fuelRadius, 2)) * kWheelRadius));
+  private void aimComp() {
+    double aimPointX = aimPoint.getX() - robotVelocity.vxMetersPerSecond * timeFlight;
+    double aimPointY = aimPoint.getY() - robotVelocity.vyMetersPerSecond * timeFlight;
+
+    aimPointComp = new Pose2d(aimPointX, aimPointY, new Rotation2d());
+
+    distanceX = aimPointComp.getX() - robotPose.getX();
+    distanceX = Math.pow(distanceX, 2);
+    distanceY = aimPointComp.getY() - robotPose.getY();
+    distanceY = Math.pow(distanceY, 2);
+
+    endDistance = Math.sqrt(distanceX + distanceY);
+
+    timeFlight =
+        Math.sqrt((hubHeight - launcherHeight - endDistance * Math.tan(launcherAngle) / -9.81));
+
+    launchSpeed = endDistance / (Math.cos(launcherAngle) * timeFlight);
+  }
+
+  private void shoot() {
+    io.setRadPerS(initialWheelRotVelocity);
+  }
+
+  private void setAz() {
+    io.pointAt(targetAzimuth);
   }
 
   @Override
   public void periodic() {
 
-    aimDownSights();
-    getAzimuth();
-
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
 
-    double aimPointX = aimPoint.getX() - robotVelocity.vxMetersPerSecond;
-    double aimPointY = aimPoint.getY() - robotVelocity.vyMetersPerSecond;
+    aimDownSights(); // sets the target
+    getAzimuth(); // sets the target rotation
+    aimComp(); // compensates for robot velocity
+    setAz(); // point turret
+    getShootSpeed(); // flywheel speed
+    shoot();
 
-    aimPoint = new Pose2d(aimPointX, aimPointY, null);
-
-    distanceX = aimPoint.getX() - robotPose.getX();
-    distanceX = Math.pow(distanceX, 2);
-    distanceY = aimPoint.getY() - robotPose.getY();
-    distanceY = Math.pow(distanceY, 2);
-
-    endDistance = Math.sqrt(distanceX + distanceY);
-
-    timeFlight = Math.sqrt(
-        (hubHeight
-            - launcherHeight
-            - endDistance * Math.tan(launcherAngle) / -9.81));
-
-    launchSpeed = endDistance / Math.cos(launcherAngle * timeFlight);
-
-    Logger.recordOutput("aimpoint", aimPoint = new Pose2d());
-    Logger.recordOutput("azimuth", targetAzimuth);
-    Logger.recordOutput("distance", endDistance);
-    Logger.recordOutput("time flight", timeFlight);
-    Logger.recordOutput("launch speed", launchSpeed);
+    Logger.recordOutput("Launcher/aimPoint", aimPoint);
+    Logger.recordOutput("Launcher/aimPointComp", aimPointComp);
+    Logger.recordOutput("Launcher/targetAzimuth", targetAzimuth);
+    Logger.recordOutput("Launcher/endDistance", endDistance);
+    Logger.recordOutput("Launcher/timeFlight", timeFlight);
+    Logger.recordOutput("Launcher/launchSpeed", launchSpeed);
+    Logger.recordOutput("Launcher/initialWheelRotVelocity", initialWheelRotVelocity);
+    Logger.recordOutput("Launcher/finalWheelRotationVelocity", finalWheelRotationVelocity);
   }
 }
