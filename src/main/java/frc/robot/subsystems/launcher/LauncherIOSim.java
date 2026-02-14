@@ -53,7 +53,7 @@ public class LauncherIOSim implements LauncherIO {
   private static final double kTurretMomentOfInertia = 0.005; // kg * m^2
   private static final double kTurretGearing = 50; // Total guess at the gearing for motor to turret
   private SparkMax m_turretSparkMax =
-      new SparkMax(Constants.launcherConstants.launchMotorID, MotorType.kBrushless);
+      new SparkMax(Constants.launcherConstants.launchMotorCanId, MotorType.kBrushless);
   private SparkMaxConfig m_turretConfig = new SparkMaxConfig();
   private SparkMaxSim m_turretSparkMaxSim = new SparkMaxSim(m_turretSparkMax, DCMotor.getNEO(1));
   private final SparkClosedLoopController turretClosedLoopController;
