@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 // ClimberID 13
 // Hopper, includes Feed 3 and Spindex 4
 // Launcher 5, may need futher implementation
-// Intake RotatoRight 1, RotatoLeft 2
-// Intake MovementMotor 6
+// Intake RotatoRight 1, RotatoLeft 6
+// Intake MovementMotor 2
 
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
@@ -91,8 +91,8 @@ public final class Constants {
   public final class Intake {
 
     public static final int RightRotatoCanId = 1;
-    public static final int LeftRotatoCanId = 2;
-    public static final int MovMotorCanId = 6;
+    public static final int LeftRotatoCanId = 6;
+    public static final int MovMotorCanId = 2;
 
     public static final double UprightPos = Math.PI / 2;
     public static final double ReadyPos = 0;
