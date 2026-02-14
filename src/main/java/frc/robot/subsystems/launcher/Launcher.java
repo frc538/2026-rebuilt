@@ -79,11 +79,6 @@ public class Launcher extends SubsystemBase {
     double deltaY = y2 - y1;
     double deltaX = x2 - x1;
 
-    // toDegrees contains too much... need to just put the atan2 result in degrees,
-    // then add to the
-    // robotPose
-    // Need to make sure our pose rotation is the correct reference and we're
-    // combining it properly
     // i.e. Pose2D defines the rotation as a mathematical one... 0 degrees toward
     // positive x,
     // increases counter-clockwise
@@ -118,6 +113,7 @@ public class Launcher extends SubsystemBase {
     }
   }
 
+  // Need to call this function at some point, and then command the IO layer
   public void getShootSpeed() {
 
     finalWheelRotationVelocity = (2 * launchSpeed) / launchWheelRadius;
