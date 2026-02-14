@@ -1,14 +1,11 @@
 package frc.robot.subsystems.Intake;
 
 import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.LogTable;
-import org.littletonrobotics.junction.inputs.LoggableInputs;
-import frc.robot.subsystems.Intake.IntakeIO.IntakeIOInputs;
 
 public interface IntakeIO {
 
   @AutoLog
-  public static class IntakeIOInputs implements LoggableInputs {
+  public static class IntakeIOInputs {
     public double RightrotatoOutput = 0.0;
     public double RightrotatoBusVoltage = 0.0;
     public double RightrotatoCurrent = 0.0;
@@ -26,6 +23,7 @@ public interface IntakeIO {
 
     /** Gives rpm of rotato */
     public double RightrotatoRpm = 0.0;
+
     public double LeftrotatoRpm = 0.0;
 
     /** Gives rpm of movement motor */
@@ -33,18 +31,6 @@ public interface IntakeIO {
 
     /** Gives position in rotations of the up/down motor */
     public double MovementMotorRotation = 0.0;
-
-    @Override
-    public void toLog(LogTable table) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'toLog'");
-    }
-
-    @Override
-    public void fromLog(LogTable table) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'fromLog'");
-    }
   }
 
   /** Updates all sensor inputs */
