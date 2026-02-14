@@ -1,5 +1,7 @@
 package frc.robot.subsystems.launcher;
 
+import java.util.ArrayList;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkMaxSim;
@@ -10,17 +12,25 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
 
 public class LauncherIOSim implements LauncherIO {
   private FlywheelSim flywheelSim;
+  private ArrayList<ArrayList<Pose3d>> fuelTrajectory = new ArrayList<>(30);
+  private Pose2d robotPose;
+  private Pose2d robotVelocity;
 
   // MOI calculated from prototype launcher
   private static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
@@ -114,8 +124,13 @@ public class LauncherIOSim implements LauncherIO {
 
       isFuel = false;
 
-      // TODO: Generate a fuel simulated projectile with the right parameters
+      ArrayList<Pose3d> shot = new ArrayList<>(30);
+      for (int i = 0; i < 30; i++) {
+        // Generate 3 seconds worth of trajectory info at 10Hz
+        double time = (double)i * 0.1;
 
+        //shot[i] = new Pose3d(new Translation3d())  
+      }
     }
 
     inputs.rpm = flywheelSim.getAngularVelocityRPM();
@@ -152,5 +167,11 @@ public class LauncherIOSim implements LauncherIO {
   @Override
   public void pointAt(double angle) {
     turretClosedLoopController.setSetpoint(Math.toRadians(angle), ControlType.kPosition);
+  }
+
+  @Override
+  public void updateRobotInfo(Pose2d robotPose, Pose2d robotVelocity) {
+    this.robotPose = robotPose;
+    this.robotVelocity = robotVelocity;
   }
 }

@@ -2,6 +2,8 @@ package frc.robot.subsystems.launcher;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.geometry.Pose2d;
+
 public interface LauncherIO {
   @AutoLog
   public static class LauncherIOInputs {
@@ -31,4 +33,5 @@ public interface LauncherIO {
 
   // Simulate feeding a projectile into the launcher
   public default void simLaunch() {}
+  public default void updateRobotInfo(Pose2d robotPose, Pose2d robotVelocity) {};
 }
