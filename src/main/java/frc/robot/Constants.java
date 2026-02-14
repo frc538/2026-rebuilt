@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj.RobotBase;
  * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics sim) and "replay"
  * (log replay from a file).
  */
-//CanID List 
-//ClimberID 13
-//Hopper, includes Feed 3 and Spindex 4
-//Launcher 5, may need futher implementation
-//Intake RotatoRight 1, RotatoLeft 2
-//Intake MovementMotor 6 
+// CanID List
+// ClimberID 13
+// Hopper, includes Feed 3 and Spindex 4
+// Launcher 5, may need futher implementation
+// Intake RotatoRight 1, RotatoLeft 2
+// Intake MovementMotor 6
 
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
