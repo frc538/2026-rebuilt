@@ -22,7 +22,8 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
-import frc.robot.subsystems.Intake.IntakeIOSparkMax;
+import frc.robot.subsystems.Intake.IntakeIOSim;
+import frc.robot.subsystems.Intake.IntakeIOSpark;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -85,10 +86,7 @@ public class RobotContainer {
         hopper =
             new Hopper(
                 new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
-        intake =
-            new Intake(
-                new IntakeIOSparkMax(
-                    Constants.Intake.movementMotorCANid, Constants.Intake.rotatoMotorCANid) {});
+        intake = new Intake(new IntakeIOSpark() {});
         climberSubsystem =
             new ClimberSubsystem(
                 new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
@@ -111,7 +109,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
                 new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
         hopper = new Hopper(new HopperIO() {});
-        intake = new Intake(new IntakeIO() {});
+        intake = new Intake(new IntakeIOSim(Constants.Intake.MovMotorCanId) {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
@@ -203,7 +201,7 @@ public class RobotContainer {
 
     controller.start().onTrue(hopper.HopperToggle());
 
-    controller.y().onTrue(intake.runIntake(Constants.Intake.IntakeSpeed));
+    controller.y().onTrue(intake.togglePosition());
   }
 
   /**

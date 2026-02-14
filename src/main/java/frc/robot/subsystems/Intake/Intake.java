@@ -19,6 +19,17 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
+    Logger.recordOutput("Intake/FlipFlop", FlipFlop);
+    Logger.recordOutput("Intake/Sim/", inputs.MovEncoderValue);
+    Logger.recordOutput("Intake/Sim/", inputs.positionRad);
+    Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
+    Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
+
+    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
+      io.runRotato(0);
+    } else {
+      io.runRotato(Constants.Intake.RotatoRPM);
+    }
   }
 
   public Command runIntake(double speed) {
@@ -40,11 +51,11 @@ public class Intake extends SubsystemBase {
   public Command togglePosition() {
     return runOnce(
         () -> {
-          if (FlipFlop = true) {
-            runIntake(Constants.Intake.ReadyPos);
+          if (FlipFlop == true) {
+            io.setIntakePosition(Constants.Intake.ReadyPos);
             FlipFlop = false;
-          } else if (FlipFlop = false) {
-            runIntake(Constants.Intake.UprightPos);
+          } else {
+            io.setIntakePosition(Constants.Intake.UprightPos);
             FlipFlop = true;
           }
         });
