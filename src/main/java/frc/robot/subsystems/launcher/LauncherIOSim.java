@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
@@ -124,13 +125,24 @@ public class LauncherIOSim implements LauncherIO {
 
       isFuel = false;
 
+      double projectileVelocity = wwf * kWheelRadius / 2.0;
+      double horizontalVelocity = projectileVelocity * Math.cos(Constants.launcherConstants.launcherAngle);
+      double verticalVelocity   = projectileVelocity * Math.sin(Constants.launcherConstants.launcherAngle);
+      double launchAzimuthRad   = turretSim.getAngleRads() + robotPose.getRotation().getRadians();
+      double xVelocityProjectile = horizontalVelocity * Math.cos(launchAzimuthRad);
+      double yVelocityProjectile = horizontalVelocity * Math.sin(launchAzimuthRad);
+
       ArrayList<Pose3d> shot = new ArrayList<>(30);
       for (int i = 0; i < 30; i++) {
         // Generate 3 seconds worth of trajectory info at 10Hz
         double time = (double)i * 0.1;
 
-        //shot[i] = new Pose3d(new Translation3d())  
+        double pointX = robotPose.getX()+robotVelocity.getX()+xVelocityProjectile*time;
+        double pointY = robotPose.getY()+robotVelocity.getY()+yVelocityProjectile*time;
+        double pointZ = Constants.launcherConstants.launcherHeight + verticalVelocity*time - 9.81 * time * time;
+        shot.add(new Pose3d(new Translation3d(pointX, pointY, pointZ),new Rotation3d()));  
       }
+      fuelTrajectory.add(shot);
     }
 
     inputs.rpm = flywheelSim.getAngularVelocityRPM();
