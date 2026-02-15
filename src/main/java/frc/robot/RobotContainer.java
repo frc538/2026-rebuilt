@@ -234,7 +234,7 @@ public class RobotContainer {
     controller.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());
 
     //////////////////////////////////////////////////////////////
-    /// Hopper Commands
+    /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
     controller.start().onTrue(hopper.HopperToggle());
