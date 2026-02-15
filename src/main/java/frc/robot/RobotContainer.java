@@ -12,6 +12,7 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -176,6 +177,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    //////////////////////////////////////////////////////////////
+    /// Drive Commands
+    //////////////////////////////////////////////////////////////
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -196,13 +202,6 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
-
-    controller.button(1).onTrue(launcher.fullSpeed());
-    controller.button(3).onTrue(launcher.lowSpeed());
-    controller.button(4).onTrue(launcher.off());
-    controller.button(2).onTrue(launcher.feed());
 
     // Reset gyro to 0° when B button is pressed
     controller
@@ -215,7 +214,34 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    //////////////////////////////////////////////////////////////
+    /// Climber Commands
+    //////////////////////////////////////////////////////////////
+
+    controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+
+    //////////////////////////////////////////////////////////////
+    /// Launcher Commands
+    //////////////////////////////////////////////////////////////
+
+    /// Teleop Commands
+
+    /// Test mode commands
+    controller.button(1).and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
+    controller.button(2).and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
+    controller.button(3).and(DriverStation::isTest).onTrue(launcher.simFeed());
+    controller.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());
+
+    //////////////////////////////////////////////////////////////
+    /// Hopper Commands
+    //////////////////////////////////////////////////////////////
+
     controller.start().onTrue(hopper.HopperToggle());
+
+    //////////////////////////////////////////////////////////////
+    /// Intake Commands
+    //////////////////////////////////////////////////////////////
 
     controller.y().onTrue(intake.togglePosition());
   }
