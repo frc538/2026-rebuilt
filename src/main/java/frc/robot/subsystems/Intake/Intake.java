@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Intake;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -10,9 +11,11 @@ public class Intake extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public boolean FlipFlop = false;
+  public double SpeedThingy;
 
   public Intake(IntakeIO io) {
     this.io = io;
+    SpeedThingy = (Constants.Intake.RotatoRPM);
   }
 
   @Override
@@ -28,7 +31,7 @@ public class Intake extends SubsystemBase {
     if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(0);
     } else {
-      io.runRotato(Constants.Intake.RotatoRPM);
+      io.runRotato(SpeedThingy);
     }
   }
 
@@ -40,7 +43,14 @@ public class Intake extends SubsystemBase {
         });
   }
 
-  public Command setIntakePosition(double radians) {
+  public Command testIntake() {
+    return run(
+        () -> {
+          io.runRotato(.1);
+        });
+  }
+
+  public Command changeIntakePosition(double radians) {
     return runOnce(
         () -> {
           io.setIntakePosition(radians);
@@ -58,6 +68,21 @@ public class Intake extends SubsystemBase {
             io.setIntakePosition(Constants.Intake.UprightPos);
             FlipFlop = true;
           }
+        });
+  }
+
+  public Command testToggle() {
+    return runOnce(
+        () -> {
+          if (FlipFlop == true) {
+            changeIntakePosition(Constants.Intake.ReadyPos);
+            
+            FlipFlop = false;
+          } else {
+            changeIntakePosition(Constants.Intake.UprightPos);
+            FlipFlop = true;
+          }
+          SpeedThingy = Constants.Intake.TestRotatoRPM;
         });
   }
 }

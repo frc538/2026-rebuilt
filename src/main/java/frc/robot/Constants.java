@@ -112,6 +112,8 @@ public final class Constants {
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
     public static final double RotatoRPM = 300;
+    
+    public static final double TestRotatoRPM = 100;
 
     public static final double IntakePositionConversionFactor = Math.PI * 2 / 15; // is in radians
     public static final double IntakeVelocityConversionFactor =
