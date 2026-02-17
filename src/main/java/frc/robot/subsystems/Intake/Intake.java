@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Intake;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -76,7 +75,7 @@ public class Intake extends SubsystemBase {
         () -> {
           if (FlipFlop == true) {
             changeIntakePosition(Constants.Intake.ReadyPos);
-            
+
             FlipFlop = false;
           } else {
             changeIntakePosition(Constants.Intake.UprightPos);
