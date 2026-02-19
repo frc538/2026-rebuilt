@@ -11,7 +11,7 @@ import frc.robot.Constants;
 
 public class HopperIOSparkMax implements HopperIO {
 
-  private final SparkMax fdSparkMax;
+  private final SparkMax fdSparkMax; // feed is just below the Launcher
   private final SparkMax sdSparkMax;
 
   SparkMaxConfig sdConfig = new SparkMaxConfig();
