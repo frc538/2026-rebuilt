@@ -14,7 +14,7 @@ import frc.robot.Constants;
 public class LauncherIOHardware implements LauncherIO {
     private final SparkMax turnMotor;
     private final SparkMax yeetMotor;
-    private final SparkClosedLoopController pid = turnMotor.GetClosedLoopController();
+    private final SparkClosedLoopController pid;
     SparkMaxConfig turnConf = new SparkMaxConfig();
     SparkMaxConfig yeetConf = new SparkMaxConfig();
     SparkRelativeEncoder turnCoder;
@@ -25,69 +25,69 @@ public class LauncherIOHardware implements LauncherIO {
         yeetMotor = new SparkMax(turnID, MotorType.kBrushless);
         turnCoder = (SparkRelativeEncoder) turnMotor.getEncoder();
         yeetCoder = (SparkRelativeEncoder) yeetMotor.getEncoder();
-
-        turnCoder
+        pid = turnMotor.getClosedLoopController();
+        turnConf
         .idleMode(IdleMode.kBrake)
         // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
         .inverted(false);
-        yeetCoder
+        yeetConf
             .idleMode(IdleMode.kBrake)
             // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
             .inverted(false);
-        turnCoder
+        turnConf
             .encoder
             .positionConversionFactor(Constants.Hopper.FDConversionFactor)
             .velocityConversionFactor(Constants.Hopper.FDConversionFactor);
-        yeetCoder
+        yeetConf
             .encoder
             .positionConversionFactor(Constants.Hopper.SDConversionFactor)
             .velocityConversionFactor(Constants.Hopper.SDConversionFactor);
-        turnCoder.closedLoop.p(0.1).i(0.0).d(0.01).outputRange(-1.0,1.0);
+        turnConf.closedLoop.p(0.1).i(0.0).d(0.01).outputRange(-1.0,1.0);
         
 
     turnMotor.configure(
-        turnCoder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        turnConf, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     yeetMotor.configure(
-        yeetCoder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        yeetConf, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void updateInputs(LauncherIOInputs inputs){
-        // Launcher Flywheel
-        inputs.rpm;
-        inputs.projectileSpeed;
-        inputs.projectileRotationalSpeed;
+        //Launcher Flywheel
+        inputs.rpm = yeetMotor.get();
+        inputs.projectileSpeed = 0;
+        inputs.projectileRotationalSpeed = 0;
 
-        // Turret
-        inputs.turretAngle;
-        inputs.turretSpeed;
+        // Turret (will hopefully get named yeeter mc yeeterson)
+        inputs.turretAngle = 0;
+        inputs.turretSpeed = 0;
     }
     @Override
     // Need to update this IO interface to add an RPM or rad/s function that sets the flywheel speed
-    public default void setRadPerS(double rps) {
+    public void setRadPerS(double rps) {
         turnMotor.set(rps);
     }
 
     @Override
     // Set launcher voltage
-    public default void setVoltage(double voltage) {
+    public void setVoltage(double voltage) {
         yeetMotor.setVoltage(voltage);
     }
 
     // Command to point the launcher at an angle in degrees
     @Override
-    public default void pointAt(double angle) {
+    public void pointAt(double angle) {
         pid.setSetpoint(angle, ControlType.kPosition);
     }
 
     // Sets the minimum and maximum accepted angles in degrees
     @Override
-    public default void setLockout(double minAngle, double maxAngle) {
-        return
+    public void setLockout(double minAngle, double maxAngle) {
+        
     }
 
     // Simulate feeding a projectile into the launcher
     @Override
-    public default void simLaunch() {
+    public void simLaunch() {
         
     }
 
