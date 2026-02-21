@@ -71,6 +71,7 @@ public class Launcher extends SubsystemBase {
   public void updateOdometry(Pose2d robotPose, ChassisSpeeds robotVelocity) {
     this.robotPose = robotPose;
     this.robotVelocity = robotVelocity;
+    io.updateRobotInfo(robotPose, robotVelocity);
   }
 
   public void getAzimuth() {

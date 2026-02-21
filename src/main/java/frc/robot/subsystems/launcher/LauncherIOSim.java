@@ -1,7 +1,5 @@
 package frc.robot.subsystems.launcher;
 
-import java.util.ArrayList;
-
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkMaxSim;
@@ -12,26 +10,27 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import java.util.ArrayList;
+import org.littletonrobotics.junction.Logger;
 
 public class LauncherIOSim implements LauncherIO {
   private FlywheelSim flywheelSim;
   private ArrayList<ArrayList<Pose3d>> fuelTrajectory = new ArrayList<>(30);
   private Pose2d robotPose;
-  private Pose2d robotVelocity;
+  private ChassisSpeeds robotVelocity;
 
   // MOI calculated from prototype launcher
   private static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
@@ -126,21 +125,28 @@ public class LauncherIOSim implements LauncherIO {
       isFuel = false;
 
       double projectileVelocity = wwf * kWheelRadius / 2.0;
-      double horizontalVelocity = projectileVelocity * Math.cos(Constants.launcherConstants.launcherAngle);
-      double verticalVelocity   = projectileVelocity * Math.sin(Constants.launcherConstants.launcherAngle);
-      double launchAzimuthRad   = turretSim.getAngleRads() + robotPose.getRotation().getRadians();
+      double horizontalVelocity =
+          projectileVelocity * Math.cos(Constants.launcherConstants.launcherAngle);
+      double verticalVelocity =
+          projectileVelocity * Math.sin(Constants.launcherConstants.launcherAngle);
+      double launchAzimuthRad = turretSim.getAngleRads() + robotPose.getRotation().getRadians();
       double xVelocityProjectile = horizontalVelocity * Math.cos(launchAzimuthRad);
       double yVelocityProjectile = horizontalVelocity * Math.sin(launchAzimuthRad);
 
       ArrayList<Pose3d> shot = new ArrayList<>(30);
       for (int i = 0; i < 30; i++) {
         // Generate 3 seconds worth of trajectory info at 10Hz
-        double time = (double)i * 0.1;
+        double time = (double) i * 0.1;
 
-        double pointX = robotPose.getX()+robotVelocity.getX()+xVelocityProjectile*time;
-        double pointY = robotPose.getY()+robotVelocity.getY()+yVelocityProjectile*time;
-        double pointZ = Constants.launcherConstants.launcherHeight + verticalVelocity*time - 9.81 * time * time;
-        shot.add(new Pose3d(new Translation3d(pointX, pointY, pointZ),new Rotation3d()));  
+        double pointX =
+            robotPose.getX() + robotVelocity.vxMetersPerSecond + xVelocityProjectile * time;
+        double pointY =
+            robotPose.getY() + robotVelocity.vyMetersPerSecond + yVelocityProjectile * time;
+        double pointZ =
+            Constants.launcherConstants.launcherHeight
+                + verticalVelocity * time
+                - 9.81 * time * time;
+        shot.add(new Pose3d(new Translation3d(pointX, pointY, pointZ), new Rotation3d()));
       }
       fuelTrajectory.add(shot);
     }
@@ -151,6 +157,10 @@ public class LauncherIOSim implements LauncherIO {
 
     inputs.turretAngle = Math.toDegrees(turretSim.getAngleRads());
     inputs.turretSpeed = Math.toDegrees(turretSim.getVelocityRadPerSec());
+
+    if (!fuelTrajectory.isEmpty() && !fuelTrajectory.get(0).isEmpty()) {
+      Logger.recordOutput("Launcher/trajectories/trajectory1", fuelTrajectory.get(0).get(0));
+    }
   }
 
   @Override
@@ -182,7 +192,7 @@ public class LauncherIOSim implements LauncherIO {
   }
 
   @Override
-  public void updateRobotInfo(Pose2d robotPose, Pose2d robotVelocity) {
+  public void updateRobotInfo(Pose2d robotPose, ChassisSpeeds robotVelocity) {
     this.robotPose = robotPose;
     this.robotVelocity = robotVelocity;
   }
