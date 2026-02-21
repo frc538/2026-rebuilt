@@ -34,13 +34,13 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.navigation.NavigationSubsystem;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSparkMax;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOSim;
+import frc.robot.subsystems.navigation.NavigationSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -79,6 +79,7 @@ public class RobotContainer {
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
         launcher = new Launcher(new LauncherIOSim());
+        navSys = new NavigationSubsystem();
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -231,13 +232,13 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
-    controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
-    controller.button(1).onTrue(launcher.fullSpeed());
-    controller.button(3).onTrue(launcher.lowSpeed());
-    controller.button(4).onTrue(launcher.off());
-    controller.button(2).onTrue(launcher.feed());
+    pilotController.button(1).onTrue(launcher.fullSpeed());
+    pilotController.button(3).onTrue(launcher.lowSpeed());
+    pilotController.button(4).onTrue(launcher.off());
+    pilotController.button(2).onTrue(launcher.feed());
 
     // Reset gyro to 0° when B button is pressed
     pilotController
@@ -250,9 +251,9 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.start().onTrue(hopper.HopperToggle());
+    pilotController.start().onTrue(hopper.HopperToggle());
 
-    controller.y().onTrue(intake.togglePosition());
+    pilotController.y().onTrue(intake.togglePosition());
   }
 
   /**
