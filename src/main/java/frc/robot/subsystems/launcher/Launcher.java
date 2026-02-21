@@ -88,7 +88,10 @@ public class Launcher extends SubsystemBase {
     // increases counter-clockwise
     targetAzimuth =
         Math.toDegrees(Math.atan2(deltaY, deltaX))
-            + ((90 - robotPose.getRotation().getDegrees()) + 360);
+            + ((90 - robotPose.getRotation().getDegrees()) + 360) % 360.0;
+    if (targetAzimuth < 0) {
+      targetAzimuth += 360;
+    }
   }
 
   public void aimDownSights() {

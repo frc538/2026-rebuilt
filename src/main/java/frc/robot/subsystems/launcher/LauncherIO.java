@@ -15,6 +15,10 @@ public interface LauncherIO {
     // Turret
     public double turretAngle;
     public double turretSpeed;
+
+    public double turretBusVoltage;
+    public double turretCurrent;
+    public double turretOutput;
   }
 
   public default void updateInputs(LauncherIOInputs inputs) {}
