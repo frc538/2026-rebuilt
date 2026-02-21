@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.*;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,6 +21,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOSim;
+import frc.robot.subsystems.Intake.IntakeIOSpark;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -26,6 +35,16 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.navigation.NavigationSubsystem;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperIO;
+import frc.robot.subsystems.hopper.HopperIOSparkMax;
+import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherIO;
+import frc.robot.subsystems.launcher.LauncherIOSim;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -38,6 +57,12 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final NavigationSubsystem navSys;
+  private final Vision vision;
+  private final Hopper hopper;
+  private final Intake intake;
+  private final ClimberSubsystem climberSubsystem;
+
+  private final Launcher launcher;
 
   // Controller
   private final CommandXboxController pilotController = new CommandXboxController(0);
@@ -53,51 +78,61 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
+        launcher = new Launcher(new LauncherIOSim());
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIOPigeon2(),
                 new ModuleIOTalonFX(TunerConstants.FrontLeft),
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-
-        navSys = new NavigationSubsystem();
-
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
-        //
-        // drive =
-        // new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
-        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
-        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
-        // new ModuleIOTalonFXS(TunerConstants.BackRight));
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOLimelight(camera0Name, drive::getRotation),
+                new VisionIOLimelight(camera1Name, drive::getRotation),
+                new VisionIOLimelight(camera2Name, drive::getRotation),
+                new VisionIOLimelight(camera3Name, drive::getRotation));
+        hopper =
+            new Hopper(
+                new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        intake = new Intake(new IntakeIOSpark() {});
+        climberSubsystem =
+            new ClimberSubsystem(
+                new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
+        launcher = new Launcher(new LauncherIOSim());
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIO() {},
                 new ModuleIOSim(TunerConstants.FrontLeft),
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         navSys = new NavigationSubsystem();
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
+                new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
+                new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
+        hopper = new Hopper(new HopperIO() {});
+        intake = new Intake(new IntakeIOSim(Constants.Intake.MovMotorCanId) {});
+        climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
       default:
         // Replayed robot, disable IO implementations
+        launcher = new Launcher(new LauncherIO() {});
         drive =
             new Drive(
+                launcher::updateOdometry,
                 new GyroIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
@@ -105,6 +140,16 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         navSys = new NavigationSubsystem();
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIO() {},
+                new VisionIO() {},
+                new VisionIO() {},
+                new VisionIO() {});
+        hopper = new Hopper(new HopperIO() {});
+        intake = new Intake(new IntakeIO() {});
+        climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
 
@@ -186,6 +231,13 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
+    controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+
+    controller.button(1).onTrue(launcher.fullSpeed());
+    controller.button(3).onTrue(launcher.lowSpeed());
+    controller.button(4).onTrue(launcher.off());
+    controller.button(2).onTrue(launcher.feed());
 
     // Reset gyro to 0° when B button is pressed
     pilotController
@@ -197,6 +249,10 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller.start().onTrue(hopper.HopperToggle());
+
+    controller.y().onTrue(intake.togglePosition());
   }
 
   /**
