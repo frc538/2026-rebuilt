@@ -63,7 +63,7 @@ public class Intake extends SubsystemBase {
           if (FlipFlop == true) {
             io.setIntakePosition(Constants.Intake.ReadyPos);
             FlipFlop = false;
-          } else {
+          } else if (FlipFlop = false) {
             io.setIntakePosition(Constants.Intake.UprightPos);
             FlipFlop = true;
           }
