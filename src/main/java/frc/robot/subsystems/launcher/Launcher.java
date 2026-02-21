@@ -34,23 +34,26 @@ public class Launcher extends SubsystemBase {
     io = IO;
   }
 
-  public Command fullSpeed() {
-    return Commands.runOnce(
-        () -> {
-          io.setVoltage(12.0);
-          Logger.recordOutput("Launcher/voltageCmd", 12.0);
-        });
+  // Test Commands
+  public Command testFullSpeed() {
+    return Commands.run(
+            () -> {
+              io.setVoltage(12.0);
+              Logger.recordOutput("Launcher/voltageCmd", 12.0);
+            })
+        .finallyDo(() -> io.setVoltage(0));
   }
 
-  public Command lowSpeed() {
-    return Commands.runOnce(
-        () -> {
-          io.setVoltage(3.0);
-          Logger.recordOutput("Launcher/voltageCmd", 3.0);
-        });
+  public Command testLowSpeed() {
+    return Commands.run(
+            () -> {
+              io.setVoltage(3.0);
+              Logger.recordOutput("Launcher/voltageCmd", 3.0);
+            })
+        .finallyDo(() -> io.setVoltage(0));
   }
 
-  public Command off() {
+  public Command testOff() {
     return Commands.runOnce(
         () -> {
           io.setVoltage(0.0);
@@ -58,7 +61,7 @@ public class Launcher extends SubsystemBase {
         });
   }
 
-  public Command feed() {
+  public Command simFeed() {
     return Commands.runOnce(
         () -> {
           io.simLaunch();
