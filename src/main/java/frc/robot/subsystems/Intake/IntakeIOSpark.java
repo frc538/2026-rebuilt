@@ -19,7 +19,7 @@ public class IntakeIOSpark implements IntakeIO {
   private final SparkFlex Rightrotato =
       new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
   private final SparkFlex Leftrotato =
-      new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
+      new SparkFlex(Constants.Intake.LeftRotatoCanId, MotorType.kBrushless);
 
   private final RelativeEncoder armEncoder = movementMotor.getEncoder();
   private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();
@@ -40,7 +40,7 @@ public class IntakeIOSpark implements IntakeIO {
         .positionConversionFactor(radiansPerRotation)
         .velocityConversionFactor(radiansPerRotation / 60.0);
 
-    config.closedLoop.p(0.1).i(0.0).d(0.01).outputRange(-1.0, 1.0);
+    config.closedLoop.p(0.1).i(0.0).d(0.01).outputRange(-1.0, .0);
 
     movementMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 

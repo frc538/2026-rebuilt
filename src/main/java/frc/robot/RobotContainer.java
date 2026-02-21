@@ -9,17 +9,12 @@ package frc.robot;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
-import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Intake.IntakeIOSpark;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,19 +24,14 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
-  // private final Drive drive;
-  // private final Vision vision;
   // private final Hopper hopper;
   private final Intake intake;
   // private final ClimberSubsystem climberSubsystem;
-
-  // private final Launcher launcher;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -50,26 +40,25 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        // launcher = new Launcher(new LauncherIOSim());
-        // drive =
-        //    new Drive(
-        //        launcher::updateOdometry,
-        //        new GyroIOPigeon2(),
-        //        new ModuleIOTalonFX(TunerConstants.FrontLeft),
-        //        new ModuleIOTalonFX(TunerConstants.FrontRight),
-        //        new ModuleIOTalonFX(TunerConstants.BackLeft),
-        //        new ModuleIOTalonFX(TunerConstants.BackRight));
-        // vision =
-        //    new Vision(
-        //        drive::addVisionMeasurement,
-        //        new VisionIOLimelight(camera0Name, drive::getRotation),
-        //        new VisionIOLimelight(camera1Name, drive::getRotation),
-        //        new VisionIOLimelight(camera2Name, drive::getRotation),
-        //        new VisionIOLimelight(camera3Name, drive::getRotation));
+        /*  drive =
+        new Drive(
+            new GyroIOPigeon2(),
+            new ModuleIOTalonFX(TunerConstants.FrontLeft),
+            new ModuleIOTalonFX(TunerConstants.FrontRight),
+            new ModuleIOTalonFX(TunerConstants.BackLeft),
+            new ModuleIOTalonFX(TunerConstants.BackRight));*/
+        /*vision =
+        new Vision(
+            drive::addVisionMeasurement,
+            new VisionIOLimelight(camera0Name, drive::getRotation),
+            new VisionIOLimelight(camera1Name, drive::getRotation),
+            new VisionIOLimelight(camera2Name, drive::getRotation),
+            new VisionIOLimelight(camera3Name, drive::getRotation));
+            */
         // hopper =
-        //    new Hopper(
-        //        new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
-        intake = new Intake(new IntakeIOSpark() {});
+        //     new Hopper(
+        //         new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        intake = new Intake(new IntakeIOSpark());
         // climberSubsystem =
         //    new ClimberSubsystem(
         //        new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
@@ -77,45 +66,45 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        // launcher = new Launcher(new LauncherIOSim());
-        // drive =
-        //    new Drive(
-        //        launcher::updateOdometry,
-        //        new GyroIO() {},
-        //        new ModuleIOSim(TunerConstants.FrontLeft),
-        //        new ModuleIOSim(TunerConstants.FrontRight),
-        //        new ModuleIOSim(TunerConstants.BackLeft),
-        //        new ModuleIOSim(TunerConstants.BackRight));
-        // vision =
-        //    new Vision(
-        //        drive::addVisionMeasurement,
-        //        new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
-        //        new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
-        //        new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
-        //        new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
+        /*drive =
+        new Drive(
+            new GyroIO() {},
+            new ModuleIOSim(TunerConstants.FrontLeft),
+            new ModuleIOSim(TunerConstants.FrontRight),
+            new ModuleIOSim(TunerConstants.BackLeft),
+            new ModuleIOSim(TunerConstants.BackRight));
+            */
+        /*  vision =
+        new Vision(
+            drive::addVisionMeasurement,
+            new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+            new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
+            new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
+            new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
+            */
         // hopper = new Hopper(new HopperIO() {});
-        intake = new Intake(new IntakeIOSim(Constants.Intake.MovMotorCanId) {});
+        intake = new Intake(new IntakeIO() {});
         // climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        // launcher = new Launcher(new LauncherIO() {});
-        // drive =
-        //    new Drive(
-        //        launcher::updateOdometry,
-        //        new GyroIO() {},
-        //        new ModuleIO() {},
-        //        new ModuleIO() {},
-        //        new ModuleIO() {},
-        //        new ModuleIO() {});
-        // vision =
-        //    new Vision(
-        //        drive::addVisionMeasurement,
-        //        new VisionIO() {},
-        //        new VisionIO() {},
-        //        new VisionIO() {},
-        //        new VisionIO() {});
+        /* drive =
+        new Drive(
+            new GyroIO() {},
+            new ModuleIO() {},
+            new ModuleIO() {},
+            new ModuleIO() {},
+            new ModuleIO() {});
+            */
+        /* vision =
+        new Vision(
+            drive::addVisionMeasurement,
+            new VisionIO() {},
+            new VisionIO() {},
+            new VisionIO() {},
+            new VisionIO() {});
+            */
         // hopper = new Hopper(new HopperIO() {});
         intake = new Intake(new IntakeIO() {});
         // climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
@@ -123,24 +112,24 @@ public class RobotContainer {
     }
 
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    /*autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());*/
 
-    // Set up SysId routines
-    // autoChooser.addOption(
-    //    "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    // autoChooser.addOption(
-    //    "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    // autoChooser.addOption(
-    //    "Drive SysId (Quasistatic Forward)",
-    //    drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //    "Drive SysId (Quasistatic Reverse)",
-    //    drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //    "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //    "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
+    /* // Set up SysId routines
+        autoChooser.addOption(
+            "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+        autoChooser.addOption(
+            "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+        autoChooser.addOption(
+            "Drive SysId (Quasistatic Forward)",
+            drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption(
+            "Drive SysId (Quasistatic Reverse)",
+            drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        autoChooser.addOption(
+            "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption(
+            "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    */
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -153,48 +142,43 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
-    // drive.setDefaultCommand(
-    //    DriveCommands.joystickDrive(
-    //        drive,
-    //        () -> -controller.getLeftY(),
-    //        () -> -controller.getLeftX(),
-    //        () -> -controller.getRightX()));
-    //
-    //// Lock to 0° when A button is held
-    // controller
-    //    .a()
-    //    .whileTrue(
-    //        DriveCommands.joystickDriveAtAngle(
-    //            drive,
-    //            () -> -controller.getLeftY(),
-    //            () -> -controller.getLeftX(),
-    //            () -> Rotation2d.kZero));
-    //
-    //// Switch to X pattern when X button is pressed
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    /*  drive.setDefaultCommand(
+    DriveCommands.joystickDrive(
+        drive,
+        () -> -controller.getLeftY(),
+        () -> -controller.getLeftX(),
+        () -> -controller.getRightX()));
+        */
+
+    // Lock to 0° when A button is held
+    /*  controller
+    .a()
+    .whileTrue(
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> Rotation2d.kZero));
+             */
+
+    // Switch to X pattern when X button is pressed
+    /* controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));*/
     // controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
     // controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
-    // controller.button(1).onTrue(launcher.fullSpeed());
-    // controller.button(3).onTrue(launcher.lowSpeed());
-    // controller.button(4).onTrue(launcher.off());
-    // controller.button(2).onTrue(launcher.feed());
-
-    // Reset gyro to 0° when B button is pressed
-    // controller
-    //    .b()
-    //    .onTrue(
-    //        Commands.runOnce(
-    //                () ->
-    //                    drive.setPose(
-    //                        new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-    //                drive)
-    //            .ignoringDisable(true));
-
-    // controller.start().onTrue(hopper.HopperToggle());
+    /*   // Reset gyro to 0° when B button is pressed
+    controller
+        .b()
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                    drive)
+                .ignoringDisable(true));
+                */
 
     controller.y().onTrue(intake.togglePosition());
-    controller.y().and(DriverStation::isTest).onTrue(intake.testToggle());
   }
 
   /**
@@ -202,7 +186,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  /*public Command getAutonomousCommand() {
     return autoChooser.get();
-  }
+  }*/
 }

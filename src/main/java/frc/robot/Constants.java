@@ -52,8 +52,8 @@ public final class Constants {
 
   public final class Hopper {
 
-    public static final int FeedCanId = 3;
-    public static final int SpindexCanId = 4;
+    public static final int FeedCanId = 6;
+    public static final int SpindexCanId = 7;
 
     public static final double SpindexGearing = 1.0;
     public static final double FeedGearing = 1.0;
@@ -90,12 +90,12 @@ public final class Constants {
 
   public final class Intake {
 
-    public static final int RightRotatoCanId = 1;
-    public static final int LeftRotatoCanId = 6;
+    public static final int RightRotatoCanId = 3;
+    public static final int LeftRotatoCanId = 4;
     public static final int MovMotorCanId = 2;
 
-    public static final double UprightPos = Math.PI / 2;
-    public static final double ReadyPos = 0;
+    public static final double UprightPos = 60;
+    public static final double ReadyPos = 180;
 
     public static final double IntakeSpeed = 1;
     public static final double MovementMotorVelocity = 1;
@@ -108,7 +108,7 @@ public final class Constants {
 
     public static final double IntakekP = 0.1;
     public static final double IntakekI = 0.01;
-    public static final double IntakekD = 0.0;
+    public static final double IntakekD = 0.1;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
     public static final double RotatoRPM = 1;
