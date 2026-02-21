@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.hopper.HopperIOSparkMax;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOSim;
+import frc.robot.subsystems.navigation.NavigationSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -55,6 +57,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final NavigationSubsystem navSys;
   private final Vision vision;
   private final Hopper hopper;
   private final Intake intake;
@@ -63,7 +66,8 @@ public class RobotContainer {
   private final Launcher launcher;
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController pilotController = new CommandXboxController(0);
+  private final CommandXboxController navController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -76,6 +80,7 @@ public class RobotContainer {
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
         launcher = new Launcher(new LauncherIOSim());
+        navSys = new NavigationSubsystem();
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -111,6 +116,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        navSys = new NavigationSubsystem();
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -134,6 +140,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+
+        navSys = new NavigationSubsystem();
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -146,6 +154,8 @@ public class RobotContainer {
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
+
+    SmartDashboard.putData(navSys.m_field);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -186,25 +196,53 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -pilotController.getLeftY(),
+            () -> -pilotController.getLeftX(),
+            () -> -pilotController.getRightX()));
 
     // Lock to 0° when A button is held
-    controller
+    pilotController
         .a()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
+                () -> -pilotController.getLeftY(),
+                () -> -pilotController.getLeftX(),
                 () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    pilotController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // Blue
+    navController.y().onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
+    navController.b().onTrue(navSys.generatePath(Constants.navigationConstants.centerPointBlue));
+    navController
+        .a()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointBlue));
+    // Red
+    navController
+        .povLeft()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPointRed));
+    navController
+        .povUp()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointRed));
+    navController
+        .povDown()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointRed));
+    // Center
+    navController
+        .rightBumper()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPoint));
+    navController.start().onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
+    navController
+        .leftBumper()
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
+    // controller.rightBumper().onTrue(navSys.showPath());
+    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
     // Reset gyro to 0° when B button is pressed
-    controller
+    pilotController
         .b()
         .onTrue(
             Commands.runOnce(
@@ -218,8 +256,8 @@ public class RobotContainer {
     /// Climber Commands
     //////////////////////////////////////////////////////////////
 
-    controller.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    controller.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
     //////////////////////////////////////////////////////////////
     /// Launcher Commands
@@ -228,22 +266,22 @@ public class RobotContainer {
     /// Teleop Commands
 
     /// Test mode commands
-    controller.button(1).and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
-    controller.button(2).and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
-    controller.button(3).and(DriverStation::isTest).onTrue(launcher.simFeed());
-    controller.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());
+    pilotController.button(1).and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
+    pilotController.button(2).and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
+    pilotController.button(3).and(DriverStation::isTest).onTrue(launcher.simFeed());
+    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    controller.start().onTrue(hopper.HopperToggle());
+    pilotController.start().onTrue(hopper.HopperToggle());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    controller.y().onTrue(intake.togglePosition());
+    pilotController.y().onTrue(intake.togglePosition());
   }
 
   /**
