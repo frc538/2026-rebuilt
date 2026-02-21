@@ -57,16 +57,23 @@ public class Intake extends SubsystemBase {
         });
   }
 
+  int foo = 0;
+
+  private void doFlipFlop() {
+    foo++;
+    Logger.recordOutput("Intake/Foo", foo);
+    if (FlipFlop == true) {
+      io.setIntakePosition(Constants.Intake.ReadyPos);
+    } else {
+      io.setIntakePosition(Constants.Intake.UprightPos);
+    }
+    FlipFlop = !FlipFlop;
+  }
+
   public Command togglePosition() {
     return runOnce(
         () -> {
-          if (FlipFlop == true) {
-            io.setIntakePosition(Constants.Intake.ReadyPos);
-            FlipFlop = false;
-          } else if (FlipFlop = false) {
-            io.setIntakePosition(Constants.Intake.UprightPos);
-            FlipFlop = true;
-          }
+          doFlipFlop();
         });
   }
 
