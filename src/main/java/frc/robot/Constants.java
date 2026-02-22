@@ -94,11 +94,11 @@ public final class Constants {
     public static final int LeftRotatoCanId = 4;
     public static final int MovMotorCanId = 2;
 
-    public static final double UprightPos = 0.0;
-    public static final double ReadyPos = Math.PI / 2.0;
+    public static final double UprightPos = -1;
+    public static final double ReadyPos = Math.PI / 1;
 
     public static final double IntakeSpeed = 1;
-    public static final double MovementMotorVelocity = 1;
+    public static final double MovementMotorVelocity = 0.5;
 
     public static final double RotatoPosConFac = 2 * Math.PI;
     public static final double RotatoVelConFac = Math.PI / 30;
