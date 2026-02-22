@@ -40,6 +40,23 @@ public class Hopper extends SubsystemBase {
           }
         });
   }
+  
+  public Command TestHopperToggle() {
+    return runOnce(
+        () -> {
+          if (HopperActivated) {
+            // HopperOFF();
+            io.SpindexSpeedCommand(0);
+            io.FeedSpeedCommand(0);
+            HopperActivated = false;
+          } else {
+            // HopperON();
+            io.SpindexSpeedCommand(Constants.Hopper.TestSpindexSpeed);
+            io.FeedSpeedCommand(Constants.Hopper.TestFeedSpeed);
+            HopperActivated = true;
+          }
+        });
+  }
 
   public Command HopperOFF() {
     return run(
