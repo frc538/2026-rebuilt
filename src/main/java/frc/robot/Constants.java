@@ -96,6 +96,8 @@ public final class Constants {
 
   public final class launcherConstants {
     public static final int launchMotorCanId = 5;
+    public static final int turnMotorCanId = 0;
+    public static final int CurrentLimit = 50;
 
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
     public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());
