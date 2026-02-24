@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5,
-        "y": 4.0
+        "x": 3.6121555555555567,
+        "y": 4.015511111111111
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5,
-        "y": 4.0
+        "x": 2.0530444444444447,
+        "y": 3.4990555555555565
       },
       "isLocked": false,
       "linkedName": "centerStartPointBlue"
     },
     {
       "anchor": {
-        "x": 3.4349880668257757,
-        "y": 5.500155131264917
+        "x": 3.6121555555555567,
+        "y": 0.6634222222222217
       },
       "prevControl": {
-        "x": 2.8591309470081745,
-        "y": 5.480959893937664
+        "x": 2.9690222222222222,
+        "y": 0.6536777777777774
       },
       "nextControl": {
-        "x": 4.06291169451074,
-        "y": 5.521085918854415
+        "x": 4.240355829520802,
+        "y": 0.672940408191392
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.574606205250596,
-        "y": 5.500155131264917
+        "x": 6.554977777777778,
+        "y": 0.6634222222222217
       },
       "prevControl": {
-        "x": 5.574606205250596,
-        "y": 5.500155131264917
+        "x": 5.554977777777778,
+        "y": 0.6634222222222219
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,21 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.0779156327543484,
+      "maxWaypointRelativePos": 1.760794044665003,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -61,7 +75,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Middle Blue",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
