@@ -141,5 +141,8 @@ public final class Constants {
     // public static final int IntakeCurrentLimit = 1;
     // public static final int IntakePositionConversionFactor = 1;
     // public static final int IntakeVelocityConversionFactor = 1;
+
+    public static final double MaxV = 1;
+    public static final double MaxA = 1;
   }
 }

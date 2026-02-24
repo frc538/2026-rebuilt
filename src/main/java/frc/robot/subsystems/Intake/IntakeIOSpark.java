@@ -10,6 +10,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants;
 
 public class IntakeIOSpark implements IntakeIO {
@@ -20,6 +22,7 @@ public class IntakeIOSpark implements IntakeIO {
       new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
   private final SparkFlex Leftrotato =
       new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
+      private double GravityCompensation = 0;
 
   private final RelativeEncoder armEncoder = movementMotor.getEncoder();
   private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();
@@ -48,6 +51,7 @@ public class IntakeIOSpark implements IntakeIO {
         RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     Leftrotato.configure(
         RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
   }
 
   @Override
@@ -81,5 +85,10 @@ public class IntakeIOSpark implements IntakeIO {
   @Override
   public void setIntakePosition(double radians) {
     pid.setSetpoint(radians, ControlType.kPosition);
+  }
+
+  @Override
+  public void ffCommand(double angle) {
+    movementMotor.setVoltage(angle * GravityCompensation);
   }
 }

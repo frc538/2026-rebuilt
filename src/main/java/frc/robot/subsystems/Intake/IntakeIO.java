@@ -41,4 +41,7 @@ public interface IntakeIO {
 
   /** Extends/retracts intake to a position in radians */
   public default void setIntakePosition(double radians) {}
+
+  /*Complicated Trapezoid Stuff. */
+  public default void ffCommand(double angle) {}
 }
