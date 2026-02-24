@@ -36,7 +36,9 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    io.ffCommand(inputs.positionRad);
+    mCurrentState =  mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
+    io.setIntakePosition(mCurrentState.position, inputs.positionRad);
+
     if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(0);
     } else {
@@ -55,7 +57,7 @@ public class Intake extends SubsystemBase {
   public Command setIntakePosition(double radians) {
     return runOnce(
         () -> {
-          io.setIntakePosition(radians);
+          io.setIntakePosition(radians, mReference);
           Logger.recordOutput("IntakeArm/Set Intake Position Command", radians);
         });
   }
@@ -64,17 +66,18 @@ public class Intake extends SubsystemBase {
     return runOnce(
         () -> {
           if (FlipFlop == true) {
-            io.setIntakePosition(Constants.Intake.ReadyPos);
+            SetReference(Constants.Intake.ReadyPos);
             FlipFlop = false;
           } else {
-            io.setIntakePosition(Constants.Intake.UprightPos);
+            SetReference(Constants.Intake.UprightPos);
             FlipFlop = true;
           }
         });
   }
+
   public void SetReference(double position) {
     mReference = position;
     mDesiredState = new TrapezoidProfile.State(mReference, 0);
-    Logger.recordOutput("Elevator/Commanded Position", position);
+    Logger.recordOutput("Intake/Commanded Position", position);
   }
 }
