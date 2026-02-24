@@ -79,30 +79,72 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        launcher = new Launcher(new LauncherIOSim());
+        if (Features.LauncherEnabled){
+            launcher = new Launcher(new LauncherIOSim());
+        } else {
+            launcher = new Launcher(new LauncherIO() {});
+        }
         navSys = new NavigationSubsystem();
-        drive =
+
+        if (Feature.DriveEnabled){
+            drive =                                             
+                new Drive(
+                    launcher::updateOdometry,
+                    new GyroIOPigeon2(),
+                    new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                    new ModuleIOTalonFX(TunerConstants.FrontRight),
+                    new ModuleIOTalonFX(TunerConstants.BackLeft),
+                    new ModuleIOTalonFX(TunerConstants.BackRight));
+        } else {
+            drive =
             new Drive(
                 launcher::updateOdometry,
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
-        vision =
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+        }
+        if (Features.VisionEnabled){
+            vision =
+                new Vision(
+                    drive::addVisionMeasurement,
+                    new VisionIOLimelight(camera0Name, drive::getRotation),
+                    new VisionIOLimelight(camera1Name, drive::getRotation));
+        }else{
+            vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(camera0Name, drive::getRotation),
-                new VisionIOLimelight(camera1Name, drive::getRotation));
+                new VisionIO() {},
+                new VisionIO() {},
+                new VisionIO() {},
+                new VisionIO() {});
+        }
+
+        
         // new VisionIOLimelight(camera2Name, drive::getRotation),
         // new VisionIOLimelight(camera3Name, drive::getRotation));
-        hopper =
-            new Hopper(
-                new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
-        intake = new Intake(new IntakeIOSpark() {});
-        climberSubsystem =
-            new ClimberSubsystem(
-                new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
+        if (Features.HopperEnabled){
+            hopper =
+                new Hopper(
+                    new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        } else {
+            hopper = new Hopper(new HopperIO() {});
+        }
+        if (Features.IntakeEnabled){
+            intake = new Intake(new IntakeIOSpark() {});
+        }else{
+            intake = new Intake(new IntakeIO() {});
+        }
+        if (Features.ClimberEnabled){
+            climberSubsystem =
+                new ClimberSubsystem(
+                    new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
+        } else {
+            climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
+        }
+        
+
         break;
 
       case SIM:
