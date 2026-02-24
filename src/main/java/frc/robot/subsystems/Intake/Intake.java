@@ -36,7 +36,7 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    mCurrentState =  mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
+    mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
     io.setIntakePosition(mCurrentState.position, inputs.positionRad);
 
     if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {

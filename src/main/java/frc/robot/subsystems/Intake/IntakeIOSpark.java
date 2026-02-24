@@ -82,11 +82,10 @@ public class IntakeIOSpark implements IntakeIO {
 
   @Override
   public void setIntakePosition(double radians, double CurrentRads) {
-    pid.setSetpoint(radians, ControlType.kPosition, ClosedLoopSlot.kSlot0, Math.cos(CurrentRads));
-  }
-
-  @Override
-  public void ffCommand(double angle) {
-    movementMotor.setVoltage(angle * GravityCompensation);
+    pid.setSetpoint(
+        radians,
+        ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        Constants.Intake.IntakeKg * Math.cos(CurrentRads));
   }
 }

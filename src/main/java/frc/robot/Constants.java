@@ -116,6 +116,7 @@ public final class Constants {
 
     public static final double UprightPos = Math.PI / 2;
     public static final double ReadyPos = 0;
+    public static final double IntakeKg = 0;
 
     public static final double IntakeSpeed = 1;
     public static final double MovementMotorVelocity = 1;
@@ -142,7 +143,7 @@ public final class Constants {
     // public static final int IntakePositionConversionFactor = 1;
     // public static final int IntakeVelocityConversionFactor = 1;
 
-    public static final double MaxV = 1;
-    public static final double MaxA = 1;
+    public static final double MaxV = 4 * Math.PI / 2; //4 * Math.PI / 2 up and down in a quarter second 
+    public static final double MaxA = 10;
   }
 }
