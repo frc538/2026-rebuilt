@@ -79,7 +79,10 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        launcher = new Launcher(new LauncherIOSim());
+        hopper =
+            new Hopper(
+                new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        launcher = new Launcher(new LauncherIOSim(), hopper::FirePermit);
         navSys = new NavigationSubsystem();
         drive =
             new Drive(
@@ -96,9 +99,6 @@ public class RobotContainer {
                 new VisionIOLimelight(camera1Name, drive::getRotation));
         // new VisionIOLimelight(camera2Name, drive::getRotation),
         // new VisionIOLimelight(camera3Name, drive::getRotation));
-        hopper =
-            new Hopper(
-                new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
         intake = new Intake(new IntakeIOSpark() {});
         climberSubsystem =
             new ClimberSubsystem(
@@ -107,7 +107,8 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        launcher = new Launcher(new LauncherIOSim());
+        hopper = new Hopper(new HopperIO() {});
+        launcher = new Launcher(new LauncherIOSim(), hopper::FirePermit);
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -124,14 +125,14 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         // new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
         // new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
-        hopper = new Hopper(new HopperIO() {});
         intake = new Intake(new IntakeIOSim(Constants.Intake.MovMotorCanId) {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        launcher = new Launcher(new LauncherIO() {});
+        hopper = new Hopper(new HopperIO() {});
+        launcher = new Launcher(new LauncherIO() {}, hopper::FirePermit);
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -149,7 +150,6 @@ public class RobotContainer {
                 new VisionIO() {},
                 new VisionIO() {},
                 new VisionIO() {});
-        hopper = new Hopper(new HopperIO() {});
         intake = new Intake(new IntakeIO() {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;

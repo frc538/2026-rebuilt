@@ -50,10 +50,19 @@ public class Hopper extends SubsystemBase {
         });
   }
 
+  public void FirePermit(boolean canFire) {
+    if (canFire == true) {
+      HopperON();
+    } else {
+      HopperOFF();
+    }
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Hopper", inputs);
     Logger.recordOutput("Hopper/Activated", HopperActivated);
+    FirePermit(false);
   }
 }

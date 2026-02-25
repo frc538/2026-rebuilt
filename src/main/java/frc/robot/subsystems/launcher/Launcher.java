@@ -30,7 +30,7 @@ public class Launcher extends SubsystemBase {
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
-  public Launcher(LauncherIO IO) {
+  public Launcher(LauncherIO IO, LauncherConsumer consumer) {
     io = IO;
   }
 
@@ -177,5 +177,10 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/launchSpeed", launchSpeed);
     Logger.recordOutput("Launcher/initialWheelRotVelocity", initialWheelRotVelocity);
     Logger.recordOutput("Launcher/finalWheelRotationVelocity", finalWheelRotationVelocity);
+  }
+
+  @FunctionalInterface
+  public static interface LauncherConsumer {
+    public void accept(boolean Fire);
   }
 }
