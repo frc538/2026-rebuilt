@@ -22,6 +22,7 @@ public class Launcher extends SubsystemBase {
   private double timeFlight;
   private double targetAzimuth;
   private double launchSpeed;
+  private double targetAzimuthVariance;
   private boolean shootSide = false;
   Pose2d aimPointComp = new Pose2d(0, 0, new Rotation2d());
   double finalWheelRotationVelocity;
@@ -168,6 +169,7 @@ public class Launcher extends SubsystemBase {
     setAz(); // point turret
     getShootSpeed(); // flywheel speed
     shoot();
+    targetAzimuthVariance = targetAzimuth - 1;
 
     Logger.recordOutput("Launcher/aimPoint", aimPoint);
     Logger.recordOutput("Launcher/aimPointComp", aimPointComp);
@@ -180,7 +182,7 @@ public class Launcher extends SubsystemBase {
   }
 
   @FunctionalInterface
-  public static interface LauncherConsumer {
-    public void accept(boolean Fire);
+  public interface LauncherConsumer {
+    public void accept(double targetAzimuthVariance, double rpm);
   }
 }

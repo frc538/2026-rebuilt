@@ -50,8 +50,10 @@ public class Hopper extends SubsystemBase {
         });
   }
 
-  public void FirePermit(boolean canFire) {
-    if (canFire == true) {
+  // double spindexRPM, double TurretAngle, we either need two more "Required" variables for each or
+  // do that Calulation in Launcher
+  public void FirePermit(double hello, double AAAAA) {
+    if (true) {
       HopperON();
     } else {
       HopperOFF();
@@ -63,6 +65,5 @@ public class Hopper extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Hopper", inputs);
     Logger.recordOutput("Hopper/Activated", HopperActivated);
-    FirePermit(false);
   }
 }
