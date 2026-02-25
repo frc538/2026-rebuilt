@@ -3,6 +3,7 @@ package frc.robot.subsystems.hopper;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.HubTracker;
 import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends SubsystemBase {
@@ -53,7 +54,11 @@ public class Hopper extends SubsystemBase {
   // double spindexRPM, double TurretAngle, we either need two more "Required" variables for each or
   // do that Calulation in Launcher
   public void FirePermit(double hello, double AAAAA) {
-    if (true) {
+    if ((hello >= 5)
+        && (hello <= -5)
+        && (AAAAA <= 5)
+        && (AAAAA >= -5)
+        && HubTracker.isActive(null, null)) {
       HopperON();
     } else {
       HopperOFF();
