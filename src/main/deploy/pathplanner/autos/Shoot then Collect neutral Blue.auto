@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "right shoot path blue"
+            "pathName": "neutral shoot path blue start"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 8.0
+            "pathName": "Collect from neutral Blue"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "General Blue",
   "choreoAuto": false
 }

@@ -25,7 +25,7 @@
       },
       "nextControl": {
         "x": 2.84884240941148,
-        "y": 3.3397678087391602
+        "y": 3.3397678087391625
       },
       "isLocked": false,
       "linkedName": null
@@ -65,15 +65,15 @@
     {
       "anchor": {
         "x": 6.324867469879519,
-        "y": 5.685084337349398
+        "y": 4.0
       },
       "prevControl": {
-        "x": 5.286734939759036,
-        "y": 5.696012048192772
+        "x": 6.859686162624821,
+        "y": 6.0081455064194005
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Blue Shoot End"
     }
   ],
   "rotationTargets": [],

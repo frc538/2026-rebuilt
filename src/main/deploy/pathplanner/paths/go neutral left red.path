@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 11.976566666666667,
-        "y": 0.6244444444444435
+        "y": 0.6244444444444436
       },
       "isLocked": false,
       "linkedName": "leftStartPointRed"
@@ -25,26 +25,31 @@
       },
       "nextControl": {
         "x": 9.969556695836648,
-        "y": 0.6035136568549433
+        "y": 0.6035136568549434
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.215132530120481,
-        "y": 2.505120481927711
+        "x": 10.534265335235377,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 10.170166666666667,
-        "y": 1.813266666666666
+        "x": 10.489299471781562,
+        "y": 3.308146184738955
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red Shoot End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Left Red",

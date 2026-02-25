@@ -32,35 +32,56 @@
     },
     {
       "anchor": {
-        "x": 13.395577777777778,
-        "y": 2.924133333333333
+        "x": 13.843822222222222,
+        "y": 2.8122967189728967
       },
       "prevControl": {
-        "x": 13.616166013071894,
-        "y": 3.0417803921568654
+        "x": 14.064410457516338,
+        "y": 2.9299437777964292
       },
       "nextControl": {
-        "x": 12.983858266135671,
-        "y": 2.7045495937908686
+        "x": 13.432102710580116,
+        "y": 2.5927129794304324
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.784066666666668,
-        "y": 2.5635888888888907
+        "x": 11.830865081691826,
+        "y": 2.558183915075286
       },
       "prevControl": {
-        "x": 12.625766666666667,
-        "y": 2.6707777777777784
+        "x": 12.591524670169978,
+        "y": 2.551152150512907
+      },
+      "nextControl": {
+        "x": 10.935363766048502,
+        "y": 2.566462196861627
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 10.534265335235377,
+        "y": 4.0
+      },
+      "prevControl": {
+        "x": 10.366062767475034,
+        "y": 2.514707560627676
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red Shoot End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 3.6162046908315673,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -77,8 +98,8 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.4714640198511164,
-      "maxWaypointRelativePos": 3.0,
+      "minWaypointRelativePos": 2.4523970290344446,
+      "maxWaypointRelativePos": 4.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 1.0,
