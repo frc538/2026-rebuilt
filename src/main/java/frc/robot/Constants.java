@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
-
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
  * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics sim) and "replay"
@@ -40,12 +39,12 @@ public final class Constants {
   }
 
   public static class Features {
-    public static bool ClimberEnabled = true;
-    public static bool DriveEnabled = true;
-    public static bool HopperEnabled = true;
-    public static bool IntakeEnabled = true;
-    public static bool LauncherEnabled = true;
-    public static bool VisionEnabled = true;
+    public static boolean ClimberEnabled = true;
+    public static boolean DriveEnabled = true;
+    public static boolean HopperEnabled = true;
+    public static boolean IntakeEnabled = true;
+    public static boolean LauncherEnabled = true;
+    public static boolean VisionEnabled = true;
   }
 
   public static class navigationConstants {
