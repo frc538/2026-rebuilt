@@ -47,47 +47,47 @@ public class Launcher extends SubsystemBase {
   }
 
   public Command testRealFullSpeed() {
-    return Commands.run (
-      () -> {
-        io.testFlyWheelTurn(12.0);
-        Logger.recordOutput("Launcher/flywheelVoltageCmd", 12.0);
-      })
-      .finallyDo(() -> io.testFlyWheelTurn(0));
+    return Commands.run(
+            () -> {
+              io.testFlyWheelTurn(12.0);
+              Logger.recordOutput("Launcher/flywheelVoltageCmd", 12.0);
+            })
+        .finallyDo(() -> io.testFlyWheelTurn(0));
   }
 
   public Command testRealLowSpeed() {
-    return Commands.run (
-      () -> {
-        io.testFlyWheelTurn(3.0);
-        Logger.recordOutput("Launcher/flywheelVoltageCmd", 3.0);
-      })
-      .finallyDo(() -> io.testFlyWheelTurn(0));
+    return Commands.run(
+            () -> {
+              io.testFlyWheelTurn(5.0);
+              Logger.recordOutput("Launcher/flywheelVoltageCmd", 5.0);
+            })
+        .finallyDo(() -> io.testFlyWheelTurn(0));
   }
 
   public Command testRealOff() {
-    return Commands.run (
-      () -> {
-        io.testFlyWheelTurn(0.0);
-        Logger.recordOutput("Launcher/flywheelVoltageCmd", 0.0);
-      });
+    return Commands.run(
+        () -> {
+          io.testFlyWheelTurn(0.0);
+          Logger.recordOutput("Launcher/flywheelVoltageCmd", 0.0);
+        });
   }
 
   public Command testTurn() {
-    return Commands.run (
-      () -> {
-        io.testTurn(3.0);
-        Logger.recordOutput("Launcher/testTurn", 3.0);
-      })
-      .finallyDo(() -> io.testFlyWheelTurn(0));
+    return Commands.run(
+            () -> {
+              io.testTurn(3.0);
+              Logger.recordOutput("Launcher/testTurn", 3.0);
+            })
+        .finallyDo(() -> io.testTurn(0));
   }
-  
+
   public Command invertTestTurn() {
-    return Commands.run (
-      () -> {
-        io.testTurn(-3.0);
-        Logger.recordOutput("Launcher/testTurn", -3.0);
-      })
-      .finallyDo(() -> io.testFlyWheelTurn(0));
+    return Commands.run(
+            () -> {
+              io.testTurn(-3.0);
+              Logger.recordOutput("Launcher/testTurn", -3.0);
+            })
+        .finallyDo(() -> io.testTurn(0));
   }
 
   public Command simFeed() {
@@ -178,14 +178,19 @@ public class Launcher extends SubsystemBase {
   }
 
   private void shoot() {
-    io.setRadPerS(initialWheelRotVelocity);
+    if (!DriverStation.isTest()) {
+      io.setRadPerS(initialWheelRotVelocity);
+    }
   }
 
   private void setAz() {
     mDesiredState.position = targetAzimuth;
 
     mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
-    io.pointAt(mCurrentState.position);
+
+    if (!DriverStation.isTest()) {
+      io.pointAt(mCurrentState.position);
+    }
   }
 
   @Override

@@ -40,6 +40,7 @@ import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSparkMax;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIO;
+import frc.robot.subsystems.launcher.LauncherIOHardware;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.navigation.NavigationSubsystem;
 import frc.robot.subsystems.vision.Vision;
@@ -80,7 +81,7 @@ public class RobotContainer {
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
         if (Constants.Features.LauncherEnabled) {
-          launcher = new Launcher(new LauncherIOSim());
+          launcher = new Launcher(new LauncherIOHardware());
         } else {
           launcher = new Launcher(new LauncherIO() {});
         }
@@ -241,7 +242,13 @@ public class RobotContainer {
             () -> -pilotController.getRightX()));
 
     // Switch to X pattern when X button is pressed
-    pilotController.x().and(()->{return !DriverStation.isTest();}).onTrue(Commands.runOnce(drive::stopWithX, drive));
+    pilotController
+        .x()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Blue
     navController.y().onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
@@ -272,7 +279,10 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     pilotController
         .b()
-        .and(()->{return !DriverStation.isTest();})
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -296,10 +306,10 @@ public class RobotContainer {
 
     /// Test mode commands
 
-    pilotController.a().and(DriverStation::isTest).onTrue(launcher.testRealFullSpeed());
-    pilotController.b().and(DriverStation::isTest).onTrue(launcher.testRealLowSpeed());
-    pilotController.x().and(DriverStation::isTest).onTrue(launcher.testTurn());
-    pilotController.y().and(DriverStation::isTest).onTrue(launcher.invertTestTurn());
+    pilotController.a().and(DriverStation::isTest).whileTrue(launcher.testRealFullSpeed());
+    pilotController.b().and(DriverStation::isTest).whileTrue(launcher.testRealLowSpeed());
+    pilotController.x().and(DriverStation::isTest).whileTrue(launcher.testTurn());
+    pilotController.y().and(DriverStation::isTest).whileTrue(launcher.invertTestTurn());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
@@ -311,7 +321,13 @@ public class RobotContainer {
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.y().and(()->{return !DriverStation.isTest();}).onTrue(intake.togglePosition());
+    pilotController
+        .y()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(intake.togglePosition());
   }
 
   /**

@@ -1,13 +1,9 @@
 package frc.robot.subsystems.launcher;
 
 import static edu.wpi.first.units.Units.Amps;
-import static frc.robot.Constants.launcherConstants.allowedClosedLoopError;
-import static frc.robot.Constants.launcherConstants.maxA;
 import static frc.robot.Constants.launcherConstants.turnD;
 import static frc.robot.Constants.launcherConstants.turnI;
 import static frc.robot.Constants.launcherConstants.turnP;
-
-import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -20,25 +16,20 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 
 public class LauncherIOHardware implements LauncherIO {
-  private final TalonFXConfiguration launcherMotorConfig =
-      new TalonFXConfiguration()
-          .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
-          .withCurrentLimits(
-              new CurrentLimitsConfigs()
-                  .withStatorCurrentLimit(Amps.of(120))
-                  .withStatorCurrentLimitEnable(true));
+  private final TalonFXConfiguration launcherMotorConfig;
   private final TalonFX launcherMotor;
   private final SparkMax turnMotor =
-      new SparkMax(Constants.launcherConstants.launchMotorCanId, null);
+      new SparkMax(Constants.launcherConstants.turnMotorCanId, MotorType.kBrushless);
   private final SparkMaxConfig turnConfig = new SparkMaxConfig();
   private final Slot0Configs launcherSlot0 = new Slot0Configs();
   private final SparkClosedLoopController turnController;
@@ -46,6 +37,13 @@ public class LauncherIOHardware implements LauncherIO {
 
   public LauncherIOHardware() {
     launcherMotor = new TalonFX(Constants.launcherConstants.launchMotorCanId);
+    launcherMotorConfig =
+        new TalonFXConfiguration()
+            .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(Amps.of(120))
+                    .withStatorCurrentLimitEnable(true));
     launcherMotor.getConfigurator().apply(launcherMotorConfig);
 
     turnConfig.idleMode(IdleMode.kBrake);
@@ -63,6 +61,33 @@ public class LauncherIOHardware implements LauncherIO {
     launcherSlot0.kD = 0.1;
 
     launcherMotor.getConfigurator().apply(launcherSlot0);
+  }
+
+  @Override
+  public void updateInputs(LauncherIOInputs inputs) {
+    /*
+    inputs.rpm = flywheelSim.getAngularVelocityRPM();
+    inputs.projectileRotationalSpeed = fuelRotationalVelocity;
+    inputs.projectileSpeed = fuelLinearVelocity;
+
+    inputs.turretAngle = Math.toDegrees(turretSim.getAngleRads());
+    inputs.turretSpeed = Math.toDegrees(turretSim.getVelocityRadPerSec());*/
+
+    inputs.launcherMotorVoltage = launcherMotor.getMotorVoltage().getValueAsDouble();
+    inputs.launcherStatorCurrent = launcherMotor.getStatorCurrent().getValueAsDouble();
+    inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
+    inputs.launcherAcceleration = launcherMotor.getAcceleration().getValueAsDouble();
+    inputs.launcherClosedLoopError = launcherMotor.getClosedLoopError().getValueAsDouble();
+    inputs.launcherVelocity = launcherMotor.getVelocity().getValueAsDouble();
+    inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
+
+    inputs.turnMotorAppliedOutput = turnMotor.getAppliedOutput();
+    inputs.turnMotorBusVoltage = turnMotor.getBusVoltage();
+    inputs.turnMotorOutputCurrent = turnMotor.getOutputCurrent();
+
+    inputs.turnEncoderVelocity = turnEncoder.getVelocity();
+    inputs.turnEncoderPosition = turnEncoder.getPosition();
   }
 
   @Override

@@ -95,8 +95,8 @@ public final class Constants {
   }
 
   public final class launcherConstants {
-    public static final int launchMotorCanId = 5;
-    public static final int turnMotorCanId = 0;
+    public static final int launchMotorCanId = 37;
+    public static final int turnMotorCanId = 62;
     public static final int CurrentLimit = 50;
 
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
@@ -123,7 +123,7 @@ public final class Constants {
     public static final double maxV = 1;
     public static final double maxA = 5;
 
-    public static double allowedClosedLoopError = Math.PI/6;
+    public static double allowedClosedLoopError = Math.PI / 6;
 
     public static double turnP = 0.1;
     public static double turnI = 0;
