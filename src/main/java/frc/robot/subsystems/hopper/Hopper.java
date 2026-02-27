@@ -24,20 +24,30 @@ public class Hopper extends SubsystemBase {
         });
   }
 
-  public Command HopperToggle() {
-    return runOnce(
-        () -> {
-          if (HopperActivated) {
+  public void HopperToggler(double SpinSpeed, double FeedSpeed) {
+    if (HopperActivated) {
             // HopperOFF();
             io.SpindexSpeedCommand(0);
             io.FeedSpeedCommand(0);
             HopperActivated = false;
           } else {
             // HopperON();
-            io.SpindexSpeedCommand(Constants.Hopper.SpindexSpeed);
-            io.FeedSpeedCommand(Constants.Hopper.FeedSpeed);
+            io.SpindexSpeedCommand(SpinSpeed);
+            io.FeedSpeedCommand(FeedSpeed);
             HopperActivated = true;
           }
+  }
+
+  public Command HopperToggle() {
+    return runOnce(
+        () -> {
+          HopperToggler(Constants.Hopper.SpindexSpeed, Constants.Hopper.FeedSpeed);
+        });
+  }
+  public Command TestHopperToggle() {
+    return runOnce(
+        () -> {
+          HopperToggler(Constants.Hopper.TestSpindexSpeed, Constants.Hopper.TestFeedSpeed);
         });
   }
 

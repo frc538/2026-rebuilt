@@ -83,6 +83,9 @@ public final class Constants {
 
     public static final double SpindexSpeed = 1.0;
     public static final double FeedSpeed = 1.0;
+
+    public static final double TestSpindexSpeed = 0.1;
+    public static final double TestFeedSpeed = 0.1;
   }
 
   public final class launcherConstants {
