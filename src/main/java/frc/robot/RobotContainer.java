@@ -240,18 +240,8 @@ public class RobotContainer {
             () -> -pilotController.getLeftX(),
             () -> -pilotController.getRightX()));
 
-    // Lock to 0° when A button is held
-    pilotController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -pilotController.getLeftY(),
-                () -> -pilotController.getLeftX(),
-                () -> Rotation2d.kZero));
-
     // Switch to X pattern when X button is pressed
-    pilotController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    pilotController.x().and(()->{return !DriverStation.isTest();}).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Blue
     navController.y().onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
@@ -278,12 +268,11 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
-    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
     // Reset gyro to 0° when B button is pressed
     pilotController
         .b()
+        .and(()->{return !DriverStation.isTest();})
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -306,17 +295,11 @@ public class RobotContainer {
     /// Teleop Commands
 
     /// Test mode commands
-    
-    /*
-    pilotController.button(1).and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
-    pilotController.button(2).and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
-    pilotController.button(3).and(DriverStation::isTest).onTrue(launcher.simFeed());
-    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());*/
 
-    pilotController.button(1).and(DriverStation::isTest).onTrue(launcher.testRealFullSpeed());
-    pilotController.button(2).and(DriverStation::isTest).onTrue(launcher.testRealLowSpeed());
-    pilotController.button(3).and(DriverStation::isTest).onTrue(launcher.testTurn());
-    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.invertTestTurn());
+    pilotController.a().and(DriverStation::isTest).onTrue(launcher.testRealFullSpeed());
+    pilotController.b().and(DriverStation::isTest).onTrue(launcher.testRealLowSpeed());
+    pilotController.x().and(DriverStation::isTest).onTrue(launcher.testTurn());
+    pilotController.y().and(DriverStation::isTest).onTrue(launcher.invertTestTurn());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
@@ -328,7 +311,7 @@ public class RobotContainer {
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.y().onTrue(intake.togglePosition());
+    pilotController.y().and(()->{return !DriverStation.isTest();}).onTrue(intake.togglePosition());
   }
 
   /**

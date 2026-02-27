@@ -46,16 +46,6 @@ public class Launcher extends SubsystemBase {
     mDesiredState = new TrapezoidProfile.State();
   }
 
-  // Test Commands
-  public Command testFullSpeed() {
-    return Commands.run(
-            () -> {
-              io.setVoltage(12.0);
-              Logger.recordOutput("Launcher/voltageCmd", 12.0);
-            })
-        .finallyDo(() -> io.setVoltage(0));
-  }
-
   public Command testRealFullSpeed() {
     return Commands.run (
       () -> {
@@ -65,15 +55,6 @@ public class Launcher extends SubsystemBase {
       .finallyDo(() -> io.testFlyWheelTurn(0));
   }
 
-  public Command testLowSpeed() {
-    return Commands.run(
-            () -> {
-              io.setVoltage(3.0);
-              Logger.recordOutput("Launcher/voltageCmd", 3.0);
-            })
-        .finallyDo(() -> io.setVoltage(0));
-  }
-
   public Command testRealLowSpeed() {
     return Commands.run (
       () -> {
@@ -81,14 +62,6 @@ public class Launcher extends SubsystemBase {
         Logger.recordOutput("Launcher/flywheelVoltageCmd", 3.0);
       })
       .finallyDo(() -> io.testFlyWheelTurn(0));
-  }
-
-  public Command testOff() {
-    return Commands.runOnce(
-        () -> {
-          io.setVoltage(0.0);
-          Logger.recordOutput("Launcher/voltageCmd", 0.0);
-        });
   }
 
   public Command testRealOff() {
@@ -111,9 +84,10 @@ public class Launcher extends SubsystemBase {
   public Command invertTestTurn() {
     return Commands.run (
       () -> {
-        io.invertTurn();
+        io.testTurn(-3.0);
+        Logger.recordOutput("Launcher/testTurn", -3.0);
       })
-      .finallyDo(() -> io.deinvertTurn());
+      .finallyDo(() -> io.testFlyWheelTurn(0));
   }
 
   public Command simFeed() {
