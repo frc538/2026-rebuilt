@@ -306,10 +306,17 @@ public class RobotContainer {
     /// Teleop Commands
 
     /// Test mode commands
+    
+    /*
     pilotController.button(1).and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
     pilotController.button(2).and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
     pilotController.button(3).and(DriverStation::isTest).onTrue(launcher.simFeed());
-    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());
+    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());*/
+
+    pilotController.button(1).and(DriverStation::isTest).onTrue(launcher.testRealFullSpeed());
+    pilotController.button(2).and(DriverStation::isTest).onTrue(launcher.testRealLowSpeed());
+    pilotController.button(3).and(DriverStation::isTest).onTrue(launcher.testTurn());
+    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.invertTestTurn());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)

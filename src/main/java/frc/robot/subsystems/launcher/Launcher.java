@@ -56,6 +56,15 @@ public class Launcher extends SubsystemBase {
         .finallyDo(() -> io.setVoltage(0));
   }
 
+  public Command testRealFullSpeed() {
+    return Commands.run (
+      () -> {
+        io.testFlyWheelTurn(12.0);
+        Logger.recordOutput("Launcher/flywheelVoltageCmd", 12.0);
+      })
+      .finallyDo(() -> io.testFlyWheelTurn(0));
+  }
+
   public Command testLowSpeed() {
     return Commands.run(
             () -> {
@@ -65,12 +74,46 @@ public class Launcher extends SubsystemBase {
         .finallyDo(() -> io.setVoltage(0));
   }
 
+  public Command testRealLowSpeed() {
+    return Commands.run (
+      () -> {
+        io.testFlyWheelTurn(3.0);
+        Logger.recordOutput("Launcher/flywheelVoltageCmd", 3.0);
+      })
+      .finallyDo(() -> io.testFlyWheelTurn(0));
+  }
+
   public Command testOff() {
     return Commands.runOnce(
         () -> {
           io.setVoltage(0.0);
           Logger.recordOutput("Launcher/voltageCmd", 0.0);
         });
+  }
+
+  public Command testRealOff() {
+    return Commands.run (
+      () -> {
+        io.testFlyWheelTurn(0.0);
+        Logger.recordOutput("Launcher/flywheelVoltageCmd", 0.0);
+      });
+  }
+
+  public Command testTurn() {
+    return Commands.run (
+      () -> {
+        io.testTurn(3.0);
+        Logger.recordOutput("Launcher/testTurn", 3.0);
+      })
+      .finallyDo(() -> io.testFlyWheelTurn(0));
+  }
+  
+  public Command invertTestTurn() {
+    return Commands.run (
+      () -> {
+        io.invertTurn();
+      })
+      .finallyDo(() -> io.deinvertTurn());
   }
 
   public Command simFeed() {

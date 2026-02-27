@@ -85,6 +85,16 @@ public class LauncherIOHardware implements LauncherIO {
     launcherMotor.setVoltage(voltage);
   }
 
+  @Override
+  public void invertTurn() {
+    turnConfig.inverted(true);
+  }
+
+  @Override
+  public void deinvertTurn() {
+    turnConfig.inverted(false);
+  }
+
   public void resetEncoder() {
     turnEncoder.setPosition(0);
   }

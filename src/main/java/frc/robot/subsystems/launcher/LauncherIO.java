@@ -34,6 +34,10 @@ public interface LauncherIO {
 
   public default void testTurn(double voltage) {}
 
+  public default void invertTurn() {}
+
+  public default void deinvertTurn() {}
+
   public default void testFlyWheelTurn(double voltage) {}
 
   public default void resetEncoder() {}
