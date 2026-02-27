@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.Features;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Intake.Intake;
@@ -80,7 +79,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        if (Features.LauncherEnabled) {
+        if (Constants.Features.LauncherEnabled) {
           launcher = new Launcher(new LauncherIOSim());
         } else {
           launcher = new Launcher(new LauncherIO() {});
@@ -106,7 +105,7 @@ public class RobotContainer {
                   new ModuleIO() {},
                   new ModuleIO() {});
         }
-        if (Features.VisionEnabled) {
+        if (Constants.Features.VisionEnabled) {
           vision =
               new Vision(
                   drive::addVisionMeasurement,
@@ -124,19 +123,19 @@ public class RobotContainer {
 
         // new VisionIOLimelight(camera2Name, drive::getRotation),
         // new VisionIOLimelight(camera3Name, drive::getRotation));
-        if (Features.HopperEnabled) {
+        if (Constants.Features.HopperEnabled) {
           hopper =
               new Hopper(
                   new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
         } else {
           hopper = new Hopper(new HopperIO() {});
         }
-        if (Features.IntakeEnabled) {
+        if (Constants.Features.IntakeEnabled) {
           intake = new Intake(new IntakeIOSpark() {});
         } else {
           intake = new Intake(new IntakeIO() {});
         }
-        if (Features.ClimberEnabled) {
+        if (Constants.Features.ClimberEnabled) {
           climberSubsystem =
               new ClimberSubsystem(
                   new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
