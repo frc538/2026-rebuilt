@@ -69,8 +69,8 @@ public class LauncherIOSim implements LauncherIO {
   // Turret azimuth state
   private SingleJointedArmSim turretSim;
   private static double commandedAzimuth = 0.0;
-  private static final double kTurretMomentOfInertia = 0.005; // kg * m^2
-  private static final double kTurretGearing = 50; // Total guess at the gearing for motor to turret
+  private static final double kTurretMomentOfInertia = 0.05; // kg * m^2
+  private static final double kTurretGearing = 20; // Total guess at the gearing for motor to turret
   private SparkMax m_turretSparkMax =
       new SparkMax(Constants.launcherConstants.launchMotorCanId, MotorType.kBrushless);
   private final SparkClosedLoopController turretClosedLoopController;
@@ -88,8 +88,12 @@ public class LauncherIOSim implements LauncherIO {
     m_turretConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(0.2, 0, 0)
+        .pid(-0.1, 0, 0)
         .outputRange(-1, 1);
+    m_turretConfig
+        .encoder
+        .positionConversionFactor(1.0 / 20.0 * 2 * Math.PI) // Radians
+        .velocityConversionFactor(1.0 / 20.0 * 2 * Math.PI * 60.0); // Radians per second
 
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -120,9 +124,7 @@ public class LauncherIOSim implements LauncherIO {
     turretSim.setInput(m_turretSparkMaxSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
     turretSim.update(0.020);
     m_turretSparkMaxSim.iterate(
-        Units.radiansPerSecondToRotationsPerMinute(turretSim.getVelocityRadPerSec()),
-        RobotController.getBatteryVoltage(),
-        0.020);
+        turretSim.getVelocityRadPerSec(), RobotController.getBatteryVoltage(), 0.020);
 
     // Compensate for a piece of fuel if required
     if (isFuel) {
@@ -181,9 +183,9 @@ public class LauncherIOSim implements LauncherIO {
     inputs.turretAngle = Math.toDegrees(turretSim.getAngleRads());
     inputs.turretSpeed = Math.toDegrees(turretSim.getVelocityRadPerSec());
 
-    inputs.turretBusVoltage = m_turretSparkMaxSim.getAppliedOutput() * RoboRioSim.getVInVoltage();
-    inputs.turretCurrent = m_turretSparkMaxSim.getMotorCurrent();
-    inputs.turretOutput = m_turretSparkMaxSim.getAppliedOutput();
+    inputs.turretBusVoltage = m_turretSparkMax.getAppliedOutput() * RoboRioSim.getVInVoltage();
+    inputs.turretCurrent = m_turretSparkMax.getOutputCurrent();
+    inputs.turretOutput = m_turretSparkMax.getAppliedOutput();
 
     // Handle old trajectories
     for (int i = 0; i < 30; i++) {
@@ -267,10 +269,15 @@ public class LauncherIOSim implements LauncherIO {
       setpoint = setpoint - 360;
     }
 
-    Logger.recordOutput("Launcher/turretSetpointDeg", Units.radiansToDegrees(setpoint));
+    Logger.recordOutput("Launcher/turretSetpointDeg", setpoint);
 
     // Turret closed loop controller is in radians around zero being over the intake
-    turretClosedLoopController.setSetpoint(setpoint, ControlType.kPosition);
+    turretClosedLoopController.setSetpoint(Units.degreesToRadians(setpoint), ControlType.kPosition);
+  }
+
+  @Override
+  public void turretVoltage(double voltage) {
+    m_turretSparkMax.setVoltage(voltage);
   }
 
   @Override

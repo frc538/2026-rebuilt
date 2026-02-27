@@ -198,17 +198,7 @@ public class RobotContainer {
             drive,
             () -> -pilotController.getLeftY(),
             () -> -pilotController.getLeftX(),
-            () -> -pilotController.getRightX()));
-
-    // Lock to 0° when A button is held
-    pilotController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -pilotController.getLeftY(),
-                () -> -pilotController.getLeftX(),
-                () -> Rotation2d.kZero));
+            () -> pilotController.getRawAxis(5)));
 
     // Switch to X pattern when X button is pressed
     pilotController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -266,10 +256,51 @@ public class RobotContainer {
     /// Teleop Commands
 
     /// Test mode commands
-    pilotController.button(1).and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
-    pilotController.button(2).and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
-    pilotController.button(3).and(DriverStation::isTest).onTrue(launcher.simFeed());
-    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());
+    pilotController
+        .button(1)
+        .and(
+            () -> {
+              return Constants.currentMode == Constants.Mode.SIM;
+            })
+        .whileTrue(launcher.testFullSpeed());
+    pilotController
+        .button(2)
+        .and(
+            () -> {
+              return Constants.currentMode == Constants.Mode.SIM;
+            })
+        .whileTrue(launcher.testLowSpeed());
+    pilotController
+        .button(3)
+        .and(
+            () -> {
+              return Constants.currentMode == Constants.Mode.SIM;
+            })
+        .onTrue(launcher.simFeed());
+    pilotController
+        .button(4)
+        .and(
+            () -> {
+              return Constants.currentMode == Constants.Mode.SIM;
+            })
+        .onTrue(launcher.testOff());
+
+    pilotController
+        .button(7)
+        .and(DriverStation::isTest)
+        .whileTrue(launcher.testTurretRotateClockwise());
+    pilotController
+        .button(9)
+        .and(DriverStation::isTest)
+        .whileTrue(launcher.testTurretRotateCounterclockwise());
+    pilotController
+        .button(6)
+        .and(DriverStation::isTest)
+        .onTrue(launcher.testTurretRotateDisableAuto());
+    pilotController
+        .button(8)
+        .and(DriverStation::isTest)
+        .onTrue(launcher.testTurretRotateEnableAuto());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)

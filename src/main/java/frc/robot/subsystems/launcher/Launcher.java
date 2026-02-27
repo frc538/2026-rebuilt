@@ -5,6 +5,7 @@ import static frc.robot.Constants.launcherConstants.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,9 +24,15 @@ public class Launcher extends SubsystemBase {
   private double targetAzimuth;
   private double launchSpeed;
   private boolean shootSide = false;
+  private boolean autoRotate = false;
   Pose2d aimPointComp = new Pose2d(0, 0, new Rotation2d());
   double finalWheelRotationVelocity;
   double initialWheelRotVelocity;
+
+  TrapezoidProfile.Constraints turretConstraints= new TrapezoidProfile.Constraints(1,10);
+  TrapezoidProfile turretProfile = new TrapezoidProfile(turretConstraints);
+  TrapezoidProfile.State currentState = new TrapezoidProfile.State();
+  TrapezoidProfile.State desiredState = new TrapezoidProfile.State();
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -65,6 +72,40 @@ public class Launcher extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           io.simLaunch();
+        });
+  }
+
+  public Command testTurretRotateClockwise() {
+    return Commands.run(
+            () -> {
+              if (autoRotate == false) {
+                io.turretVoltage(-1.0);
+              }
+            })
+        .finallyDo(() -> io.turretVoltage(0));
+  }
+
+  public Command testTurretRotateCounterclockwise() {
+    return Commands.run(
+            () -> {
+              if (autoRotate == false) {
+                io.turretVoltage(1.0);
+              }
+            })
+        .finallyDo(() -> io.turretVoltage(0));
+  }
+
+  public Command testTurretRotateDisableAuto() {
+    return Commands.runOnce(
+        () -> {
+          autoRotate = false;
+        });
+  }
+
+  public Command testTurretRotateEnableAuto() {
+    return Commands.runOnce(
+        () -> {
+          autoRotate = true;
         });
   }
 
@@ -157,7 +198,13 @@ public class Launcher extends SubsystemBase {
   }
 
   private void setAz() {
-    io.pointAt(targetAzimuth);
+    if (autoRotate) {
+      desiredState.position = targetAzimuth;
+      currentState.position = Math.toRadians(inputs.turretAngle);
+      currentState.velocity = Math.toRadians(inputs.turretSpeed);
+      currentState = turretProfile.calculate(0.02, currentState, desiredState);
+      io.pointAt(currentState.position);
+    }
   }
 
   @Override
@@ -173,6 +220,7 @@ public class Launcher extends SubsystemBase {
     getShootSpeed(); // flywheel speed
     shoot();
 
+    Logger.recordOutput("Launcher/autoRotate", autoRotate);
     Logger.recordOutput("Launcher/aimPoint", aimPoint);
     Logger.recordOutput("Launcher/aimPointComp", aimPointComp);
     Logger.recordOutput("Launcher/targetAzimuth", targetAzimuth);

@@ -26,11 +26,14 @@ public interface LauncherIO {
   // Need to update this IO interface to add an RPM or rad/s function that sets the flywheel speed
   public default void setRadPerS(double rps) {}
 
-  // Set launcher voltage
+  // Set flywheel voltage
   public default void setVoltage(double voltage) {}
 
   // Command to point the launcher at an angle in degrees
   public default void pointAt(double angle) {}
+
+  // Command to set the turret motor voltage
+  public default void turretVoltage(double voltage) {}
 
   // Sets the minimum and maximum accepted angles in degrees
   public default void setLockout(double minAngle, double maxAngle) {}
