@@ -38,6 +38,15 @@ public final class Constants {
     REPLAY
   }
 
+  public static class Features {
+    public static final boolean ClimberEnabled = true;
+    public static final boolean DriveEnabled = true;
+    public static final boolean HopperEnabled = true;
+    public static final boolean IntakeEnabled = true;
+    public static final boolean LauncherEnabled = true;
+    public static final boolean VisionEnabled = true;
+  }
+
   public static class navigationConstants {
     // NAV MAP
     // Blue
