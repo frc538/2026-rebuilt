@@ -39,7 +39,7 @@ public class ClimberSubsystem extends SubsystemBase {
         });
   }
 
-   public Command TestClimberExtend() {
+  public Command TestClimberExtend() {
     return runEnd(
         () -> {
           motorSpeed = 0.2;
@@ -49,10 +49,9 @@ public class ClimberSubsystem extends SubsystemBase {
           motorSpeed = 0;
           io.setOutput(motorSpeed);
         });
+  }
 
-   }
-
-   public Command TestClimberRetract() {
+  public Command TestClimberRetract() {
     return runEnd(
         () -> {
           motorSpeed = -0.2;
@@ -62,9 +61,7 @@ public class ClimberSubsystem extends SubsystemBase {
           motorSpeed = 0;
           io.setOutput(motorSpeed);
         });
-
-
-   }
+  }
 
   @Override
   public void periodic() {

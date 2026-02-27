@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Intake;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,21 +26,27 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
+    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD && !DriverStation.isTest()) {
       io.runRotato(0);
-    } else {
+    } else if (!DriverStation.isTest()) {
       io.runRotato(Constants.Intake.RotatoRPM);
+    }
+
+    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD && DriverStation.isTest()) {
+      io.runRotato(0);
+    } else if (DriverStation.isTest()) {
+      io.runRotato(Constants.Intake.testRotatoRPM);
     }
   }
 
   public void FlipFlop() {
-          if (FlipFlop == true) {
-            io.setIntakePosition(Constants.Intake.ReadyPos);
-            FlipFlop = false;
-          } else {
-            io.setIntakePosition(Constants.Intake.UprightPos);
-            FlipFlop = true;
-          }
+    if (FlipFlop == true) {
+      io.setIntakePosition(Constants.Intake.ReadyPos);
+      FlipFlop = false;
+    } else {
+      io.setIntakePosition(Constants.Intake.UprightPos);
+      FlipFlop = true;
+    }
   }
 
   public Command runIntake(double speed) {

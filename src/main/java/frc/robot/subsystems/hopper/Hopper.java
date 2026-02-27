@@ -26,16 +26,16 @@ public class Hopper extends SubsystemBase {
 
   public void HopperToggler(double SpinSpeed, double FeedSpeed) {
     if (HopperActivated) {
-            // HopperOFF();
-            io.SpindexSpeedCommand(0);
-            io.FeedSpeedCommand(0);
-            HopperActivated = false;
-          } else {
-            // HopperON();
-            io.SpindexSpeedCommand(SpinSpeed);
-            io.FeedSpeedCommand(FeedSpeed);
-            HopperActivated = true;
-          }
+      // HopperOFF();
+      io.SpindexSpeedCommand(0);
+      io.FeedSpeedCommand(0);
+      HopperActivated = false;
+    } else {
+      // HopperON();
+      io.SpindexSpeedCommand(SpinSpeed);
+      io.FeedSpeedCommand(FeedSpeed);
+      HopperActivated = true;
+    }
   }
 
   public Command HopperToggle() {
@@ -44,6 +44,7 @@ public class Hopper extends SubsystemBase {
           HopperToggler(Constants.Hopper.SpindexSpeed, Constants.Hopper.FeedSpeed);
         });
   }
+
   public Command TestHopperToggle() {
     return runOnce(
         () -> {
