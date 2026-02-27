@@ -39,12 +39,12 @@ public final class Constants {
   }
 
   public static class Features {
-    public static boolean ClimberEnabled = true;
-    public static boolean DriveEnabled = true;
-    public static boolean HopperEnabled = true;
-    public static boolean IntakeEnabled = true;
-    public static boolean LauncherEnabled = true;
-    public static boolean VisionEnabled = true;
+    public static final boolean ClimberEnabled = true;
+    public static final boolean DriveEnabled = true;
+    public static final boolean HopperEnabled = true;
+    public static final boolean IntakeEnabled = true;
+    public static final boolean LauncherEnabled = true;
+    public static final boolean VisionEnabled = true;
   }
 
   public static class navigationConstants {
