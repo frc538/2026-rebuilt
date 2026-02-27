@@ -5,6 +5,8 @@ import static frc.robot.Constants.launcherConstants.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,12 +28,22 @@ public class Launcher extends SubsystemBase {
   Pose2d aimPointComp = new Pose2d(0, 0, new Rotation2d());
   double finalWheelRotationVelocity;
   double initialWheelRotVelocity;
+  Constraints profileConstraints;
+  TrapezoidProfile turnProfile;
+  TrapezoidProfile.State mCurrentState;
+  TrapezoidProfile.State mDesiredState;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
   public Launcher(LauncherIO IO) {
     io = IO;
+
+    profileConstraints = new Constraints(maxV, maxA);
+    turnProfile = new TrapezoidProfile(profileConstraints);
+
+    mCurrentState = new TrapezoidProfile.State();
+    mDesiredState = new TrapezoidProfile.State();
   }
 
   // Test Commands
@@ -153,7 +165,10 @@ public class Launcher extends SubsystemBase {
   }
 
   private void setAz() {
-    io.pointAt(targetAzimuth);
+    mDesiredState.position = targetAzimuth;
+
+    mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
+    io.pointAt(mCurrentState.position);
   }
 
   @Override
@@ -177,5 +192,7 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/launchSpeed", launchSpeed);
     Logger.recordOutput("Launcher/initialWheelRotVelocity", initialWheelRotVelocity);
     Logger.recordOutput("Launcher/finalWheelRotationVelocity", finalWheelRotationVelocity);
+    Logger.recordOutput("Launcher/mDesiredState", mDesiredState);
+    Logger.recordOutput("Launcher/mCurrentState", mCurrentState);
   }
 }

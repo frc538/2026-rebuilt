@@ -117,6 +117,17 @@ public final class Constants {
         2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
     public static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
     public static final double kWheelRadius = 0.050165; // m
+
+    public static final double minrange = -(3 * Math.PI) / 4;
+    public static final double maxrange = (3 * Math.PI) / 4;
+    public static final double maxV = 1;
+    public static final double maxA = 5;
+
+    public static double allowedClosedLoopError = Math.PI/6;
+
+    public static double turnP = 0.1;
+    public static double turnI = 0;
+    public static double turnD = 0;
   }
 
   public final class Intake {
