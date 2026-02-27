@@ -32,6 +32,16 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  public void FlipFlop() {
+          if (FlipFlop == true) {
+            io.setIntakePosition(Constants.Intake.ReadyPos);
+            FlipFlop = false;
+          } else {
+            io.setIntakePosition(Constants.Intake.UprightPos);
+            FlipFlop = true;
+          }
+  }
+
   public Command runIntake(double speed) {
     return run(
         () -> {
@@ -40,24 +50,10 @@ public class Intake extends SubsystemBase {
         });
   }
 
-  public Command setIntakePosition(double radians) {
-    return runOnce(
-        () -> {
-          io.setIntakePosition(radians);
-          Logger.recordOutput("IntakeArm/Set Intake Position Command", radians);
-        });
-  }
-
   public Command togglePosition() {
     return runOnce(
         () -> {
-          if (FlipFlop == true) {
-            io.setIntakePosition(Constants.Intake.ReadyPos);
-            FlipFlop = false;
-          } else {
-            io.setIntakePosition(Constants.Intake.UprightPos);
-            FlipFlop = true;
-          }
+          FlipFlop();
         });
   }
 }
