@@ -26,17 +26,14 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD && !DriverStation.isTest()) {
+    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(0);
     } else if (!DriverStation.isTest()) {
       io.runRotato(Constants.Intake.RotatoRPM);
-    }
-
-    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD && DriverStation.isTest()) {
-      io.runRotato(0);
-    } else if (DriverStation.isTest()) {
+    } else{
       io.runRotato(Constants.Intake.testRotatoRPM);
     }
+
   }
 
   public void FlipFlop() {
