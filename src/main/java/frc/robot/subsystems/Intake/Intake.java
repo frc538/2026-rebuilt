@@ -26,14 +26,13 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
-      io.runRotato(0);
-    } else if (!DriverStation.isTest()) {
-      io.runRotato(Constants.Intake.RotatoRPM);
-    } else{
-      io.runRotato(Constants.Intake.testRotatoRPM);
+    if (!DriverStation.isTest()) {
+      if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
+        io.runRotato(0);
+      } else {
+        io.runRotato(Constants.Intake.testRotatoRPM);
+      }
     }
-
   }
 
   public void FlipFlop() {
@@ -51,7 +50,16 @@ public class Intake extends SubsystemBase {
         () -> {
           io.runRotato(speed);
           Logger.recordOutput("Intake/rotato command", speed);
-        });
+        }).finallyDo(() ->io.runRotato(0));
+  }
+
+  public Command testIntake() {
+    return run(
+        () -> {
+          io.runRotato(Constants.Intake.testRotatoRPM);
+          Logger.recordOutput("Intake/Rightrotato command", inputs.RightrotatoRpm);
+          Logger.recordOutput("Intake/Leftrotato command", inputs.LeftrotatoRpm);
+        }).finallyDo(() ->io.runRotato(0));
   }
 
   public Command togglePosition() {

@@ -333,6 +333,7 @@ public class RobotContainer {
     //////////////////////////////////////////////////////////////
 
     pilotController.y().onTrue(intake.togglePosition());
+    pilotController.x().and(DriverStation::isTest).whileTrue(intake.testIntake());
   }
 
   /**
