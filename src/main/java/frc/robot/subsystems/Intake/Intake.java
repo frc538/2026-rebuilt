@@ -1,11 +1,8 @@
 package frc.robot.subsystems.Intake;
 
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj.DriverStation;
-=======
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
->>>>>>> main
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,29 +36,13 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-<<<<<<< HEAD
-    if (!DriverStation.isTest()) {
-      if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
-        io.runRotato(0);
-      } else {
-        io.runRotato(Constants.Intake.RotatoRPM);
-      }
-    }
-  }
-
-  public void FlipFlop() {
-    if (FlipFlop == true) {
-      io.setIntakePosition(Constants.Intake.ReadyPos);
-      FlipFlop = false;
-=======
     mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
     io.setIntakePosition(mCurrentState.position, inputs.positionRad);
 
     if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(0);
->>>>>>> main
     } else {
-      io.setIntakePosition(Constants.Intake.UprightPos);
+      io.setIntakePosition(Constants.Intake.UprightPos, inputs.positionRad);
       FlipFlop = true;
     }
   }
@@ -86,26 +67,20 @@ public class Intake extends SubsystemBase {
   public Command testIntakeUp() {
     return runOnce(
         () -> {
-          io.setIntakePosition(Constants.Intake.UprightPos);
+          io.setIntakePosition(Constants.Intake.UprightPos, inputs.positionRad);
         });
   }
 
-<<<<<<< HEAD
   public Command testIntakeDown() {
     return runOnce(
         () -> {
-          io.setIntakePosition(Constants.Intake.ReadyPos);
+          io.setIntakePosition(Constants.Intake.ReadyPos, inputs.positionRad);
         });
   }
-=======
->>>>>>> main
 
   public Command togglePosition() {
     return runOnce(
         () -> {
-<<<<<<< HEAD
-          FlipFlop();
-=======
           if (FlipFlop == true) {
             SetReference(Constants.Intake.ReadyPos);
             FlipFlop = false;
@@ -113,7 +88,6 @@ public class Intake extends SubsystemBase {
             SetReference(Constants.Intake.UprightPos);
             FlipFlop = true;
           }
->>>>>>> main
         });
   }
 
