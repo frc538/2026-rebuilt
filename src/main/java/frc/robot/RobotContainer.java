@@ -324,9 +324,9 @@ public class RobotContainer {
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    pilotController.start().onTrue(hopper.HopperToggle());
-
-    pilotController.start().and(DriverStation::isTest).onTrue(hopper.HopperToggle());
+    pilotController.b().whileTrue(hopper.HopperToggle());
+    pilotController.b().and(DriverStation::isTest).whileTrue(hopper.testFeed());
+    pilotController.a().and(DriverStation::isTest).whileTrue(hopper.testSpindex());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands

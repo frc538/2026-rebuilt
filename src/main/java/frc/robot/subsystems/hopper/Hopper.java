@@ -45,12 +45,19 @@ public class Hopper extends SubsystemBase {
         });
   }
 
-  public Command TestHopperToggle() {
-    return runOnce(
-        () -> {
-          HopperToggler(Constants.Hopper.TestSpindexSpeed, Constants.Hopper.TestFeedSpeed);
-        });
+  public Command testFeed() {
+    return run(
+    () -> {
+    io.FeedSpeedCommand(Constants.Hopper.TestFeedSpeed);
+    }).finallyDo(() -> io.FeedSpeedCommand(0));
   }
+  public Command testSpindex() {
+    return run(
+      () -> {
+    io.SpindexSpeedCommand(Constants.Hopper.TestSpindexSpeed);
+      }).finallyDo(() -> io.SpindexSpeedCommand(0));
+  }
+
 
   public Command HopperOFF() {
     return run(
