@@ -3,6 +3,7 @@ package frc.robot.subsystems.Intake;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -79,7 +80,11 @@ public class IntakeIOSpark implements IntakeIO {
   }
 
   @Override
-  public void setIntakePosition(double radians) {
-    pid.setSetpoint(radians, ControlType.kPosition);
+  public void setIntakePosition(double radians, double CurrentRads) {
+    pid.setSetpoint(
+        radians,
+        ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        Constants.Intake.IntakeKg * Math.cos(CurrentRads));
   }
 }

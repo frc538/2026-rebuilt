@@ -40,6 +40,7 @@ import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSparkMax;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIO;
+import frc.robot.subsystems.launcher.LauncherIOHardware;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.navigation.NavigationSubsystem;
 import frc.robot.subsystems.vision.Vision;
@@ -80,7 +81,7 @@ public class RobotContainer {
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
         if (Constants.Features.LauncherEnabled) {
-          launcher = new Launcher(new LauncherIOSim());
+          launcher = new Launcher(new LauncherIOHardware());
         } else {
           launcher = new Launcher(new LauncherIO() {});
         }
@@ -240,18 +241,14 @@ public class RobotContainer {
             () -> -pilotController.getLeftX(),
             () -> -pilotController.getRightX()));
 
-    // Lock to 0° when A button is held
-    pilotController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -pilotController.getLeftY(),
-                () -> -pilotController.getLeftX(),
-                () -> Rotation2d.kZero));
-
     // Switch to X pattern when X button is pressed
-    pilotController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    pilotController
+        .x()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Blue
     navController.y().onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
@@ -278,12 +275,14 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
-    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
     // Reset gyro to 0° when B button is pressed
     pilotController
         .b()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -315,10 +314,11 @@ public class RobotContainer {
     /// Teleop Commands
 
     /// Test mode commands
-    pilotController.button(1).and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
-    pilotController.button(2).and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
-    pilotController.button(3).and(DriverStation::isTest).onTrue(launcher.simFeed());
-    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());
+
+    pilotController.a().and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
+    pilotController.b().and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
+    pilotController.x().and(DriverStation::isTest).whileTrue(launcher.testTurn());
+    pilotController.y().and(DriverStation::isTest).whileTrue(launcher.invertTestTurn());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)

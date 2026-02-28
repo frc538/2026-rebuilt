@@ -98,7 +98,9 @@ public final class Constants {
   }
 
   public final class launcherConstants {
-    public static final int launchMotorCanId = 5;
+    public static final int launchMotorCanId = 37;
+    public static final int turnMotorCanId = 62;
+    public static final int CurrentLimit = 50;
 
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
     public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());
@@ -118,6 +120,17 @@ public final class Constants {
         2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
     public static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
     public static final double kWheelRadius = 0.050165; // m
+
+    public static final double minrange = -(3 * Math.PI) / 4;
+    public static final double maxrange = (3 * Math.PI) / 4;
+    public static final double maxV = 1;
+    public static final double maxA = 5;
+
+    public static double allowedClosedLoopError = Math.PI / 6;
+
+    public static double turnP = 0.1;
+    public static double turnI = 0;
+    public static double turnD = 0;
   }
 
   public final class Intake {
@@ -128,6 +141,7 @@ public final class Constants {
 
     public static final double UprightPos = Math.PI / 2;
     public static final double ReadyPos = 0;
+    public static final double IntakeKg = 0;
 
     public static final double IntakeSpeed = 1;
     public static final double MovementMotorVelocity = 1;
@@ -155,5 +169,8 @@ public final class Constants {
     // public static final int IntakeCurrentLimit = 1;
     // public static final int IntakePositionConversionFactor = 1;
     // public static final int IntakeVelocityConversionFactor = 1;
+
+    public static final double MaxV = 4 * Math.PI / 2; //4 * Math.PI / 2 up and down in a quarter second 
+    public static final double MaxA = 10;
   }
 }
