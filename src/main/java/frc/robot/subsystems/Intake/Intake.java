@@ -30,7 +30,7 @@ public class Intake extends SubsystemBase {
       if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
         io.runRotato(0);
       } else {
-        io.runRotato(Constants.Intake.testRotatoRPM);
+        io.runRotato(Constants.Intake.RotatoRPM);
       }
     }
   }
@@ -46,20 +46,34 @@ public class Intake extends SubsystemBase {
   }
 
   public Command runIntake(double speed) {
-    return run(
-        () -> {
+    return run(() -> {
           io.runRotato(speed);
           Logger.recordOutput("Intake/rotato command", speed);
-        }).finallyDo(() ->io.runRotato(0));
+        })
+        .finallyDo(() -> io.runRotato(0));
   }
 
   public Command testIntake() {
-    return run(
-        () -> {
+    return run(() -> {
           io.runRotato(Constants.Intake.testRotatoRPM);
           Logger.recordOutput("Intake/Rightrotato command", inputs.RightrotatoRpm);
           Logger.recordOutput("Intake/Leftrotato command", inputs.LeftrotatoRpm);
-        }).finallyDo(() ->io.runRotato(0));
+        })
+        .finallyDo(() -> io.runRotato(0));
+  }
+
+  public Command testIntakeUp() {
+    return runOnce(
+        () -> {
+          io.setIntakePosition(Constants.Intake.UprightPos);
+        });
+  }
+
+  public Command testIntakeDown() {
+    return runOnce(
+        () -> {
+          io.setIntakePosition(Constants.Intake.ReadyPos);
+        });
   }
 
   public Command togglePosition() {

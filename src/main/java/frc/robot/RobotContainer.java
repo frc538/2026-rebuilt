@@ -332,7 +332,8 @@ public class RobotContainer {
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.y().onTrue(intake.togglePosition());
+    pilotController.leftTrigger().and(DriverStation::isTest).onTrue(intake.testIntakeDown());
+    pilotController.rightTrigger().and(DriverStation::isTest).onTrue(intake.testIntakeUp());
     pilotController.x().and(DriverStation::isTest).whileTrue(intake.testIntake());
   }
 
