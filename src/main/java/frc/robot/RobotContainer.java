@@ -296,8 +296,8 @@ public class RobotContainer {
     /// Climber Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+    pilotController.leftBumper().and(this::isNotTest).whileTrue((climberSubsystem.climberRetract()));
+    pilotController.rightBumper().and(this::isNotTest).whileTrue((climberSubsystem.climberExtend()));
 
     pilotController
         .leftBumper()
@@ -324,7 +324,7 @@ public class RobotContainer {
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    pilotController.b().and(DriverStation::isTest).onFalse(hopper.HopperToggle());
+    pilotController.b().and(this::isNotTest).onTrue(hopper.HopperToggle());
     pilotController.b().and(DriverStation::isTest).whileTrue(hopper.testFeed());
     pilotController.a().and(DriverStation::isTest).whileTrue(hopper.testSpindex());
 
@@ -335,8 +335,11 @@ public class RobotContainer {
     pilotController.leftTrigger().and(DriverStation::isTest).onTrue(intake.testIntakeDown());
     pilotController.rightTrigger().and(DriverStation::isTest).onTrue(intake.testIntakeUp());
     pilotController.x().and(DriverStation::isTest).whileTrue(intake.testIntake());
+  
   }
-
+  private boolean isNotTest() {
+    return (!DriverStation.isTest());
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
