@@ -46,28 +46,28 @@ public class Launcher extends SubsystemBase {
     mDesiredState = new TrapezoidProfile.State();
   }
 
-  public Command testRealFullSpeed() {
+  public Command testFullSpeed() {
     return Commands.run(
             () -> {
-              io.testFlyWheelTurn(12.0);
+              io.setVoltage(12.0);
               Logger.recordOutput("Launcher/flywheelVoltageCmd", 12.0);
             })
-        .finallyDo(() -> io.testFlyWheelTurn(0));
+        .finallyDo(() -> io.setVoltage(0));
   }
 
-  public Command testRealLowSpeed() {
+  public Command testLowSpeed() {
     return Commands.run(
             () -> {
-              io.testFlyWheelTurn(5.0);
+              io.setVoltage(5.0);
               Logger.recordOutput("Launcher/flywheelVoltageCmd", 5.0);
             })
-        .finallyDo(() -> io.testFlyWheelTurn(0));
+        .finallyDo(() -> io.setVoltage(0));
   }
 
-  public Command testRealOff() {
+  public Command testOff() {
     return Commands.run(
         () -> {
-          io.testFlyWheelTurn(0.0);
+          io.setVoltage(0.0);
           Logger.recordOutput("Launcher/flywheelVoltageCmd", 0.0);
         });
   }

@@ -306,8 +306,8 @@ public class RobotContainer {
 
     /// Test mode commands
 
-    pilotController.a().and(DriverStation::isTest).whileTrue(launcher.testRealFullSpeed());
-    pilotController.b().and(DriverStation::isTest).whileTrue(launcher.testRealLowSpeed());
+    pilotController.a().and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
+    pilotController.b().and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
     pilotController.x().and(DriverStation::isTest).whileTrue(launcher.testTurn());
     pilotController.y().and(DriverStation::isTest).whileTrue(launcher.invertTestTurn());
 
