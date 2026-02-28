@@ -13,11 +13,10 @@ public class Intake extends SubsystemBase {
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public boolean FlipFlop = false;
 
-  public TrapezoidProfile.State mCurrentState;
-  public TrapezoidProfile.State mDesiredState;
+  public TrapezoidProfile.State mCurrentState = new TrapezoidProfile.State(Constants.Intake.UprightPos,0);
+  public TrapezoidProfile.State mDesiredState = new TrapezoidProfile.State(Constants.Intake.UprightPos,0);
   public TrapezoidProfile mTrapezoidProfile;
 
-  public double mReference; // ???? why was this called a State? it a double, not a State
   public Constraints mConstraints;
 
   public Intake(IntakeIO io) {
@@ -54,13 +53,6 @@ public class Intake extends SubsystemBase {
         });
   }
 
-  public Command setIntakePosition(double radians) {
-    return runOnce(
-        () -> {
-          io.setIntakePosition(radians, mReference);
-          Logger.recordOutput("IntakeArm/Set Intake Position Command", radians);
-        });
-  }
 
   public Command togglePosition() {
     return runOnce(
@@ -76,8 +68,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void SetReference(double position) {
-    mReference = position;
-    mDesiredState = new TrapezoidProfile.State(mReference, 0);
+    mDesiredState = new TrapezoidProfile.State(position, 0);
     Logger.recordOutput("Intake/Commanded Position", position);
   }
 }
