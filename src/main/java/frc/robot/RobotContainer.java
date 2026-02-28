@@ -302,11 +302,11 @@ public class RobotContainer {
     pilotController
         .leftBumper()
         .and(DriverStation::isTest)
-        .whileTrue(climberSubsystem.climberRetract());
+        .whileTrue(climberSubsystem.TestClimberRetract());
     pilotController
         .rightBumper()
         .and(DriverStation::isTest)
-        .whileTrue(climberSubsystem.climberRetract());
+        .whileTrue(climberSubsystem.TestClimberExtend());
 
     //////////////////////////////////////////////////////////////
     /// Launcher Commands
@@ -324,7 +324,7 @@ public class RobotContainer {
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    pilotController.b().whileTrue(hopper.HopperToggle());
+    pilotController.b().and(DriverStation::isTest).onFalse(hopper.HopperToggle());
     pilotController.b().and(DriverStation::isTest).whileTrue(hopper.testFeed());
     pilotController.a().and(DriverStation::isTest).whileTrue(hopper.testSpindex());
 
