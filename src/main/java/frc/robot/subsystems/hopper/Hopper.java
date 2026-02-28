@@ -38,6 +38,30 @@ public class Hopper extends SubsystemBase {
     }
   }
 
+  public void SpindexToggler(double SpinSpeed) {
+    if (HopperActivated) {
+      // HopperOFF();
+      io.SpindexSpeedCommand(0);
+      HopperActivated = false;
+    } else {
+      // HopperON();
+      io.SpindexSpeedCommand(SpinSpeed);
+      HopperActivated = true;
+    }
+  }
+
+  public void FeedToggler(double FeedSpeed) {
+    if (HopperActivated) {
+      // HopperOFF();
+      io.FeedSpeedCommand(0);
+      HopperActivated = false;
+    } else {
+      // HopperON();
+      io.FeedSpeedCommand(FeedSpeed);
+      HopperActivated = true;
+    }
+  }
+
   public Command HopperToggle() {
     return runOnce(
         () -> {
@@ -57,6 +81,20 @@ public class Hopper extends SubsystemBase {
           io.SpindexSpeedCommand(Constants.Hopper.TestSpindexSpeed);
         })
         .finallyDo(() -> io.SpindexSpeedCommand(0));
+  }
+
+  public Command TestFeedToggle() {
+    return runOnce(
+        () -> {
+          FeedToggler(Constants.Hopper.TestFeedSpeed);
+        });
+  }
+
+  public Command TestSpindexToggle() {
+    return runOnce(
+        () -> {
+          SpindexToggler(Constants.Hopper.TestSpindexSpeed);
+        });
   }
 
   public Command HopperOFF() {
