@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Intake;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,8 +13,10 @@ public class Intake extends SubsystemBase {
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public boolean FlipFlop = false;
 
-  public TrapezoidProfile.State mCurrentState = new TrapezoidProfile.State(Constants.Intake.UprightPos,0);
-  public TrapezoidProfile.State mDesiredState = new TrapezoidProfile.State(Constants.Intake.UprightPos,0);
+  public TrapezoidProfile.State mCurrentState =
+      new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
+  public TrapezoidProfile.State mDesiredState =
+      new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
   public TrapezoidProfile mTrapezoidProfile;
 
   public Constraints mConstraints;

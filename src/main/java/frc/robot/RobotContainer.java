@@ -221,6 +221,14 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+  private boolean isNotTest() {
+    return (!DriverStation.isTest());
+  }
+
+  private boolean isTest() {
+    return (DriverStation.isTest());
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -242,13 +250,7 @@ public class RobotContainer {
             () -> -pilotController.getRightX()));
 
     // Switch to X pattern when X button is pressed
-    pilotController
-        .x()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(Commands.runOnce(drive::stopWithX, drive));
+    pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Blue
     navController.y().onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
@@ -279,10 +281,7 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     pilotController
         .b()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
+        .and(this::isNotTest)
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -295,17 +294,17 @@ public class RobotContainer {
     /// Climber Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.leftBumper().and(this::isNotTest).whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().and(this::isNotTest).whileTrue((climberSubsystem.climberExtend()));
-
     pilotController
         .leftBumper()
-        .and(DriverStation::isTest)
-        .whileTrue(climberSubsystem.TestClimberRetract());
+        .and(this::isNotTest)
+        .whileTrue((climberSubsystem.climberRetract()));
     pilotController
         .rightBumper()
-        .and(DriverStation::isTest)
-        .whileTrue(climberSubsystem.TestClimberExtend());
+        .and(this::isNotTest)
+        .whileTrue((climberSubsystem.climberExtend()));
+
+    pilotController.leftBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberRetract());
+    pilotController.rightBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberExtend());
 
     //////////////////////////////////////////////////////////////
     /// Launcher Commands
@@ -315,31 +314,28 @@ public class RobotContainer {
 
     /// Test mode commands
 
-    pilotController.a().and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
-    pilotController.b().and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
-    pilotController.x().and(DriverStation::isTest).whileTrue(launcher.testTurn());
-    pilotController.y().and(DriverStation::isTest).whileTrue(launcher.invertTestTurn());
+    pilotController.a().and(this::isTest).whileTrue(launcher.testFullSpeed());
+    pilotController.b().and(this::isTest).whileTrue(launcher.testLowSpeed());
+    pilotController.x().and(this::isTest).whileTrue(launcher.testTurn());
+    pilotController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
     pilotController.b().and(this::isNotTest).onTrue(hopper.HopperToggle());
-    pilotController.b().and(DriverStation::isTest).whileTrue(hopper.testFeed());
-    pilotController.a().and(DriverStation::isTest).whileTrue(hopper.testSpindex());
+    pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
+    pilotController.a().and(this::isTest).whileTrue(hopper.testSpindex());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.leftTrigger().and(DriverStation::isTest).onTrue(intake.testIntakeDown());
-    pilotController.rightTrigger().and(DriverStation::isTest).onTrue(intake.testIntakeUp());
-    pilotController.x().and(DriverStation::isTest).whileTrue(intake.testIntake());
-  
+    pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
+    pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
+    pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
   }
-  private boolean isNotTest() {
-    return (!DriverStation.isTest());
-  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
