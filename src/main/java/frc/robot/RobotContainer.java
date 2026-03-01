@@ -221,6 +221,10 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+  boolean isSim() {
+    return Constants.currentMode == Constants.Mode.SIM;
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -239,7 +243,7 @@ public class RobotContainer {
             drive,
             () -> -pilotController.getLeftY(),
             () -> -pilotController.getLeftX(),
-            () -> -pilotController.getRightX()));
+            () -> pilotController.getRawAxis(5)));
 
     // Switch to X pattern when X button is pressed
     pilotController
@@ -348,10 +352,6 @@ public class RobotContainer {
 
     /// Test mode commands
 
-    pilotController.a().and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
-    pilotController.b().and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
-    pilotController.x().and(DriverStation::isTest).whileTrue(launcher.testTurn());
-    pilotController.y().and(DriverStation::isTest).whileTrue(launcher.invertTestTurn());
     navController
         .rightBumper()
         .and(DriverStation::isTest)
@@ -360,6 +360,28 @@ public class RobotContainer {
                 () -> {
                   return navController.getLeftY();
                 }));
+
+    pilotController.button(1).and(this::isSim).whileTrue(launcher.testFullSpeed());
+    pilotController.button(2).and(this::isSim).whileTrue(launcher.testLowSpeed());
+    pilotController.button(3).and(this::isSim).onTrue(launcher.simFeed());
+    pilotController.button(4).and(this::isSim).onTrue(launcher.testOff());
+
+    pilotController
+        .button(7)
+        .and(DriverStation::isTest)
+        .whileTrue(launcher.testTurretRotateClockwise());
+    pilotController
+        .button(9)
+        .and(DriverStation::isTest)
+        .whileTrue(launcher.testTurretRotateCounterclockwise());
+    pilotController
+        .button(6)
+        .and(DriverStation::isTest)
+        .onTrue(launcher.testTurretRotateDisableAuto());
+    pilotController
+        .button(8)
+        .and(DriverStation::isTest)
+        .onTrue(launcher.testTurretRotateEnableAuto());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)

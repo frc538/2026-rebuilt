@@ -35,6 +35,12 @@ public class Launcher extends SubsystemBase {
   private TrapezoidProfile turnProfile;
   private TrapezoidProfile.State mCurrentState;
   private TrapezoidProfile.State mDesiredState;
+  private boolean autoRotate = false;
+
+  TrapezoidProfile.Constraints turretConstraints = new TrapezoidProfile.Constraints(1, 10);
+  TrapezoidProfile turretProfile = new TrapezoidProfile(turretConstraints);
+  TrapezoidProfile.State currentState = new TrapezoidProfile.State();
+  TrapezoidProfile.State desiredState = new TrapezoidProfile.State();
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -118,9 +124,44 @@ public class Launcher extends SubsystemBase {
                     }));
   }
 
+  public Command testTurretRotateClockwise() {
+    return Commands.run(
+            () -> {
+              if (autoRotate == false) {
+                io.turretVoltage(-1.0);
+              }
+            })
+        .finallyDo(() -> io.turretVoltage(0));
+  }
+
+  public Command testTurretRotateCounterclockwise() {
+    return Commands.run(
+            () -> {
+              if (autoRotate == false) {
+                io.turretVoltage(1.0);
+              }
+            })
+        .finallyDo(() -> io.turretVoltage(0));
+  }
+
+  public Command testTurretRotateDisableAuto() {
+    return Commands.runOnce(
+        () -> {
+          autoRotate = false;
+        });
+  }
+
+  public Command testTurretRotateEnableAuto() {
+    return Commands.runOnce(
+        () -> {
+          autoRotate = true;
+        });
+  }
+
   public void updateOdometry(Pose2d robotPose, ChassisSpeeds robotVelocity) {
     this.robotPose = robotPose;
     this.robotVelocity = robotVelocity;
+    io.updateRobotInfo(robotPose, robotVelocity);
   }
 
   public void getAzimuth() {
@@ -137,7 +178,10 @@ public class Launcher extends SubsystemBase {
     // increases counter-clockwise
     targetAzimuth =
         Math.toDegrees(Math.atan2(deltaY, deltaX))
-            + ((90 - robotPose.getRotation().getDegrees()) + 360);
+            + ((90 - robotPose.getRotation().getDegrees()) + 360) % 360.0;
+    if (targetAzimuth < 0) {
+      targetAzimuth += 360;
+    }
   }
 
   public void aimDownSights() {
@@ -210,7 +254,9 @@ public class Launcher extends SubsystemBase {
     mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
 
     if (!DriverStation.isTest()) {
-      io.pointAt(mCurrentState.position);
+      if (autoRotate) {
+        io.pointAt(mCurrentState.position);
+      }
     }
   }
 
@@ -227,6 +273,7 @@ public class Launcher extends SubsystemBase {
     getShootSpeed(); // flywheel speed
     shoot();
 
+    Logger.recordOutput("Launcher/autoRotate", autoRotate);
     Logger.recordOutput("Launcher/aimPoint", aimPoint);
     Logger.recordOutput("Launcher/aimPointComp", aimPointComp);
     Logger.recordOutput("Launcher/targetAzimuth", targetAzimuth);
