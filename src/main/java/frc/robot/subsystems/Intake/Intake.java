@@ -37,14 +37,15 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
-    io.setIntakePosition(mCurrentState.position, inputs.positionRad);
+    if (!DriverStation.isTest()) {
+      mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
+      io.setIntakePosition(mCurrentState.position, inputs.positionRad);
 
-    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
-      io.runRotato(0);
-    } else {
-      io.setIntakePosition(Constants.Intake.UprightPos, inputs.positionRad);
-      FlipFlop = true;
+      if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
+        io.runRotato(0);
+      } else {
+        io.runRotato(Constants.Intake.RotatoRPM);
+      }
     }
   }
 
