@@ -5,15 +5,6 @@ import org.littletonrobotics.junction.AutoLog;
 public interface LauncherIO {
   @AutoLog
   public static class LauncherIOInputs {
-    // Launcher Flywheel
-    public double rpm = 0.0;
-    public double projectileSpeed = 0.0;
-    public double projectileRotationalSpeed = 0.0;
-
-    // Turret
-    public double turretAngle = 0.0;
-    public double turretSpeed = 0.0;
-
     // launcher motor
     public double launcherMotorVoltage = 0.0;
     public double launcherStatorCurrent = 0.0;

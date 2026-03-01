@@ -41,8 +41,6 @@ public class LauncherIOHardware implements LauncherIO {
   private final Slot0Configs launcherSlot0 = new Slot0Configs();
   private final SparkClosedLoopController turnController;
   private final SparkRelativeEncoder turnEncoder;
-  private static double fuelLinearVelocity = 0.0; // m/s
-  private static double fuelRotationalVelocity = 0.0; // radians/sec
 
   public LauncherIOHardware() {
     launcherMotor = new TalonFX(Constants.launcherConstants.launchMotorCanId);
@@ -79,14 +77,6 @@ public class LauncherIOHardware implements LauncherIO {
 
   @Override
   public void updateInputs(LauncherIOInputs inputs) {
-
-    inputs.rpm = flywheelSim.getAngularVelocityRPM();
-    inputs.projectileRotationalSpeed = fuelRotationalVelocity;
-    inputs.projectileSpeed = fuelLinearVelocity;
-
-    inputs.turretAngle = Math.toDegrees(turretSim.getAngleRads());
-    inputs.turretSpeed = Math.toDegrees(turretSim.getVelocityRadPerSec());
-
     inputs.launcherMotorVoltage = launcherMotor.getMotorVoltage().getValueAsDouble();
     inputs.launcherStatorCurrent = launcherMotor.getStatorCurrent().getValueAsDouble();
     inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();

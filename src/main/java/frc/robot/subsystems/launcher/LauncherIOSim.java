@@ -117,13 +117,6 @@ public class LauncherIOSim implements LauncherIO {
       // TODO: Generate a fuel simulated projectile with the right parameters
 
     }
-
-    inputs.rpm = flywheelSim.getAngularVelocityRPM();
-    inputs.projectileRotationalSpeed = fuelRotationalVelocity;
-    inputs.projectileSpeed = fuelLinearVelocity;
-
-    inputs.turretAngle = Math.toDegrees(turretSim.getAngleRads());
-    inputs.turretSpeed = Math.toDegrees(turretSim.getVelocityRadPerSec());
   }
 
   @Override
