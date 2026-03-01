@@ -31,8 +31,6 @@ public class LauncherIOSim implements LauncherIO {
 
   // Fuel launching state
   private static boolean isFuel = false;
-  private static double fuelLinearVelocity = 0.0; // m/s
-  private static double fuelRotationalVelocity = 0.0; // radians/sec
   private static final double fuelMass = 0.2268; // kg
   private static final double fuelRadius = 0.075; // meters
   private static final double kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
@@ -133,8 +131,6 @@ public class LauncherIOSim implements LauncherIO {
     }
 
     isFuel = true;
-    fuelLinearVelocity = 0.0;
-    fuelRotationalVelocity = 0.0;
   }
 
   @Override
