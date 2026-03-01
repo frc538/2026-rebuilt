@@ -13,8 +13,10 @@ public class Intake extends SubsystemBase {
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public boolean FlipFlop = false;
 
-  public TrapezoidProfile.State mCurrentState = new TrapezoidProfile.State(Constants.Intake.UprightPos,0);
-  public TrapezoidProfile.State mDesiredState = new TrapezoidProfile.State(Constants.Intake.UprightPos,0);
+  public TrapezoidProfile.State mCurrentState =
+      new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
+  public TrapezoidProfile.State mDesiredState =
+      new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
   public TrapezoidProfile mTrapezoidProfile;
 
   public Constraints mConstraints;
@@ -52,7 +54,6 @@ public class Intake extends SubsystemBase {
           Logger.recordOutput("Intake/rotato command", speed);
         });
   }
-
 
   public Command togglePosition() {
     return runOnce(

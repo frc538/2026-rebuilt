@@ -251,28 +251,70 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Blue
-    navController.y().onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
-    navController.b().onTrue(navSys.generatePath(Constants.navigationConstants.centerPointBlue));
+    navController
+        .y()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
+    navController
+        .b()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPointBlue));
     navController
         .a()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointBlue));
     // Red
     navController
         .povLeft()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.centerPointRed));
     navController
         .povUp()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointRed));
     navController
         .povDown()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointRed));
     // Center
     navController
         .rightBumper()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPoint));
-    navController.start().onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
+    navController
+        .start()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
     navController
         .leftBumper()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
 
@@ -310,6 +352,14 @@ public class RobotContainer {
     pilotController.b().and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
     pilotController.x().and(DriverStation::isTest).whileTrue(launcher.testTurn());
     pilotController.y().and(DriverStation::isTest).whileTrue(launcher.invertTestTurn());
+    navController
+        .rightBumper()
+        .and(DriverStation::isTest)
+        .whileTrue(
+            launcher.testRPS(
+                () -> {
+                  return navController.getLeftY();
+                }));
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)

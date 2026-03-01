@@ -5,12 +5,15 @@ import static frc.robot.Constants.launcherConstants.turnD;
 import static frc.robot.Constants.launcherConstants.turnI;
 import static frc.robot.Constants.launcherConstants.turnP;
 
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -43,7 +46,12 @@ public class LauncherIOHardware implements LauncherIO {
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(Amps.of(120))
-                    .withStatorCurrentLimitEnable(true));
+                    .withStatorCurrentLimitEnable(true))
+            .withFeedback(
+                new FeedbackConfigs()
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
+            .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(true));
+
     launcherMotor.getConfigurator().apply(launcherMotorConfig);
 
     turnConfig.idleMode(IdleMode.kBrake);
@@ -56,9 +64,9 @@ public class LauncherIOHardware implements LauncherIO {
 
     turnEncoder = (SparkRelativeEncoder) turnMotor.getEncoder();
 
-    launcherSlot0.kP = 2.4;
+    launcherSlot0.kP = 0.3;
     launcherSlot0.kI = 0;
-    launcherSlot0.kD = 0.1;
+    launcherSlot0.kD = 0.0;
 
     launcherMotor.getConfigurator().apply(launcherSlot0);
   }
