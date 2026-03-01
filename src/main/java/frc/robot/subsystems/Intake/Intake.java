@@ -2,6 +2,7 @@ package frc.robot.subsystems.Intake;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -37,21 +38,46 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
-    io.setIntakePosition(mCurrentState.position, inputs.positionRad);
+    if (!DriverStation.isTest()) {
+      mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
+      io.setIntakePosition(mCurrentState.position, inputs.positionRad);
 
-    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
-      io.runRotato(0);
-    } else {
-      io.runRotato(Constants.Intake.RotatoRPM);
+      if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
+        io.runRotato(0);
+      } else {
+        io.runRotato(Constants.Intake.RotatoRPM);
+      }
     }
   }
 
   public Command runIntake(double speed) {
-    return run(
-        () -> {
+    return run(() -> {
           io.runRotato(speed);
           Logger.recordOutput("Intake/rotato command", speed);
+        })
+        .finallyDo(() -> io.runRotato(0));
+  }
+
+  public Command testIntake() {
+    return run(() -> {
+          io.runRotato(Constants.Intake.testRotatoRPM);
+          Logger.recordOutput("Intake/Rightrotato command", inputs.RightrotatoRpm);
+          Logger.recordOutput("Intake/Leftrotato command", inputs.LeftrotatoRpm);
+        })
+        .finallyDo(() -> io.runRotato(0));
+  }
+
+  public Command testIntakeUp() {
+    return runOnce(
+        () -> {
+          io.setIntakePosition(Constants.Intake.UprightPos, inputs.positionRad);
+        });
+  }
+
+  public Command testIntakeDown() {
+    return runOnce(
+        () -> {
+          io.setIntakePosition(Constants.Intake.ReadyPos, inputs.positionRad);
         });
   }
 

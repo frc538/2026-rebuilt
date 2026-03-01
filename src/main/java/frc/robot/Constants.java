@@ -92,6 +92,9 @@ public final class Constants {
 
     public static final double SpindexSpeed = 1.0;
     public static final double FeedSpeed = 1.0;
+
+    public static final double TestSpindexSpeed = 0.1;
+    public static final double TestFeedSpeed = 0.1;
   }
 
   public final class launcherConstants {
@@ -154,7 +157,9 @@ public final class Constants {
     public static final double IntakekD = 0.0;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
-    public static final double RotatoRPM = 300;
+    public static final double RotatoRPM = .5;
+
+    public static final double testRotatoRPM = .2;
 
     public static final double IntakePositionConversionFactor = Math.PI * 2 / 15; // is in radians
     public static final double IntakeVelocityConversionFactor =
