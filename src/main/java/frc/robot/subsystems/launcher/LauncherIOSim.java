@@ -31,8 +31,6 @@ public class LauncherIOSim implements LauncherIO {
 
   // Fuel launching state
   private static boolean isFuel = false;
-  private static double fuelLinearVelocity = 0.0; // m/s
-  private static double fuelRotationalVelocity = 0.0; // radians/sec
   private static final double fuelMass = 0.2268; // kg
   private static final double fuelRadius = 0.075; // meters
   private static final double kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
@@ -117,13 +115,6 @@ public class LauncherIOSim implements LauncherIO {
       // TODO: Generate a fuel simulated projectile with the right parameters
 
     }
-
-    inputs.rpm = flywheelSim.getAngularVelocityRPM();
-    inputs.projectileRotationalSpeed = fuelRotationalVelocity;
-    inputs.projectileSpeed = fuelLinearVelocity;
-
-    inputs.turretAngle = Math.toDegrees(turretSim.getAngleRads());
-    inputs.turretSpeed = Math.toDegrees(turretSim.getVelocityRadPerSec());
   }
 
   @Override
@@ -140,8 +131,6 @@ public class LauncherIOSim implements LauncherIO {
     }
 
     isFuel = true;
-    fuelLinearVelocity = 0.0;
-    fuelRotationalVelocity = 0.0;
   }
 
   @Override
