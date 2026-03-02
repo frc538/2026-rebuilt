@@ -68,17 +68,17 @@ public class Intake extends SubsystemBase {
   }
 
   public Command testIntakeUp() {
-    return runOnce(
+    return run(
         () -> {
-          io.setIntakePosition(Constants.Intake.UprightPos, inputs.positionRad);
-        });
+          io.testArmRun(1 * 0.2);
+        }).finallyDo(() -> io.testArmRun(0));
   }
 
   public Command testIntakeDown() {
-    return runOnce(
+    return run(
         () -> {
-          io.setIntakePosition(Constants.Intake.ReadyPos, inputs.positionRad);
-        });
+          io.testArmRun(0.2 * -1);
+        }).finallyDo(() -> io.testArmRun(0));
   }
 
   public Command togglePosition() {
