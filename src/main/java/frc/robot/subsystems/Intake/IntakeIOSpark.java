@@ -87,4 +87,10 @@ public class IntakeIOSpark implements IntakeIO {
         ClosedLoopSlot.kSlot0,
         Constants.Intake.IntakeKg * Math.cos(CurrentRads));
   }
+  
+  @Override
+  public void testArmRun(double speed) {
+    movementMotor.setVoltage(speed);
+  }
+
 }
