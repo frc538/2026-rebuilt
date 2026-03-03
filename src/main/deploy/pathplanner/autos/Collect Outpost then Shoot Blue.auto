@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost Fuel Collect Neutral blue"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "neutral shoot path blue start"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "General Blue",
+  "choreoAuto": false
+}

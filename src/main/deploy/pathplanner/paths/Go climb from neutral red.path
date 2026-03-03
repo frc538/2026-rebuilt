@@ -3,51 +3,63 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6121555555555567,
-        "y": 4.015511111111111
+        "x": 10.534265335235377,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.460542082738944,
-        "y": 2.747603423680457
+        "x": 10.564476324699653,
+        "y": 4.882482168330956
       },
       "isLocked": false,
-      "linkedName": "centerStartPointBlue"
+      "linkedName": "Red Shoot End"
     },
     {
       "anchor": {
-        "x": 3.6121555555555567,
-        "y": 0.6634222222222217
+        "x": 11.3623395149786,
+        "y": 7.509029957203996
       },
       "prevControl": {
-        "x": 2.9702670274742395,
-        "y": 0.7045872092813104
+        "x": 9.900271041369471,
+        "y": 7.483152639087019
       },
       "nextControl": {
-        "x": 7.428987161198288,
-        "y": 0.418644793152639
+        "x": 14.366425135566896,
+        "y": 7.562199614205561
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.324867469879519,
-        "y": 4.0
+        "x": 14.95928673323823,
+        "y": 4.364935805991441
       },
       "prevControl": {
-        "x": 6.173937232524963,
-        "y": 1.091455064194009
+        "x": 15.192182596291012,
+        "y": 6.085777460770328
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Blue Shoot End"
+      "linkedName": "red climb point"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.1556503198294306,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "climb",
+      "waypointRelativePos": 2.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -61,7 +73,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Middle Blue",
+  "folder": "General Red",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

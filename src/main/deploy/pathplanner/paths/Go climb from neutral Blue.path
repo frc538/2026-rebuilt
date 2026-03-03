@@ -3,56 +3,67 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.395577777777778,
-        "y": 7.309133333333333
+        "x": 6.324867469879519,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 12.138544444444443,
-        "y": 7.435811111111111
+        "x": 6.355078459343795,
+        "y": 4.882482168330956
       },
       "isLocked": false,
-      "linkedName": "rightStartPointRed"
+      "linkedName": "Blue Shoot End"
     },
     {
       "anchor": {
-        "x": 10.959466666666668,
-        "y": 7.416322222222221
+        "x": 4.414279600570612,
+        "y": 7.431398002853067
       },
       "prevControl": {
-        "x": 11.495268704560496,
-        "y": 7.433606158928475
+        "x": 7.390171184022824,
+        "y": 7.845435092724678
       },
       "nextControl": {
-        "x": 10.310612251392204,
-        "y": 7.395391434632721
+        "x": 1.4383880171184003,
+        "y": 7.017360912981455
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.534265335235377,
-        "y": 4.0
+        "x": 1.5807132667617685,
+        "y": 3.6791868758915847
       },
       "prevControl": {
-        "x": 10.625732877001488,
-        "y": 5.350989313179528
+        "x": 1.8136091298145507,
+        "y": 5.400028530670472
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Red Shoot End"
+      "linkedName": "blue climb point"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8102345415778281,
+      "waypointRelativePos": 1.1556503198294306,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.7398720682302615,
       "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "climb",
+      "waypointRelativePos": 2.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -63,13 +74,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 178.69804732742105
   },
   "reversed": false,
-  "folder": "Right Red",
+  "folder": "General Blue",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 178.3106360611725
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

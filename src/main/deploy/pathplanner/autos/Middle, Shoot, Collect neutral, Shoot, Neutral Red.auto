@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "middle shoot path red Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Collect from neutral Red"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "neutral shoot path red start"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Middle Red",
+  "choreoAuto": false
+}
