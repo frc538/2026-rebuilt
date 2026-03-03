@@ -243,7 +243,7 @@ public class RobotContainer {
             drive,
             () -> -pilotController.getLeftY(),
             () -> -pilotController.getLeftX(),
-            () -> pilotController.getRawAxis(5)));
+            () -> -pilotController.getRightX()));
 
     // Switch to X pattern when X button is pressed
     pilotController
