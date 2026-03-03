@@ -40,5 +40,8 @@ public interface IntakeIO {
   public default void runRotato(double speed) {}
 
   /** Extends/retracts intake to a position in radians */
-  public default void setIntakePosition(double radians) {}
+  public default void setIntakePosition(double radians, double CurrentRads) {}
+
+  /** Test Command for the ARM */
+  public default void testArmRun(double speed) {}
 }

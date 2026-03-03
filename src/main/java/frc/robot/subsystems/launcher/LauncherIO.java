@@ -5,14 +5,24 @@ import org.littletonrobotics.junction.AutoLog;
 public interface LauncherIO {
   @AutoLog
   public static class LauncherIOInputs {
-    // Launcher Flywheel
-    public double rpm;
-    public double projectileSpeed;
-    public double projectileRotationalSpeed;
+    // launcher motor
+    public double launcherMotorVoltage = 0.0;
+    public double launcherStatorCurrent = 0.0;
+    public double launcherTorqueCurrent = 0.0;
+    public double launcherAcceleration = 0.0;
+    public double launcherClosedLoopError = 0.0;
+    public double launcherVelocity = 0.0;
+    public double launcherSupplyCurrent = 0.0;
+    public double launcherSupplyVoltage = 0.0;
 
-    // Turret
-    public double turretAngle;
-    public double turretSpeed;
+    // turn motor
+    public double turnMotorAppliedOutput = 0.0;
+    public double turnMotorBusVoltage = 0.0;
+    public double turnMotorOutputCurrent = 0.0;
+
+    // turn encoder
+    public double turnEncoderVelocity = 0.0;
+    public double turnEncoderPosition = 0.0;
   }
 
   public default void updateInputs(LauncherIOInputs inputs) {}
@@ -31,4 +41,14 @@ public interface LauncherIO {
 
   // Simulate feeding a projectile into the launcher
   public default void simLaunch() {}
+
+  public default void testTurn(double voltage) {}
+
+  public default void invertTurn() {}
+
+  public default void deinvertTurn() {}
+
+  public default void testFlyWheelTurn(double voltage) {}
+
+  public default void resetEncoder() {}
 }

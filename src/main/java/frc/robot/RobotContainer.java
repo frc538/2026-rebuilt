@@ -40,6 +40,7 @@ import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSparkMax;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIO;
+import frc.robot.subsystems.launcher.LauncherIOHardware;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.navigation.NavigationSubsystem;
 import frc.robot.subsystems.vision.Vision;
@@ -79,30 +80,70 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        launcher = new Launcher(new LauncherIOSim());
+        if (Constants.Features.LauncherEnabled) {
+          launcher = new Launcher(new LauncherIOHardware());
+        } else {
+          launcher = new Launcher(new LauncherIO() {});
+        }
         navSys = new NavigationSubsystem();
-        drive =
-            new Drive(
-                launcher::updateOdometry,
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOLimelight(camera0Name, drive::getRotation),
-                new VisionIOLimelight(camera1Name, drive::getRotation));
+
+        if (Constants.Features.DriveEnabled) {
+          drive =
+              new Drive(
+                  launcher::updateOdometry,
+                  new GyroIOPigeon2(),
+                  new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                  new ModuleIOTalonFX(TunerConstants.FrontRight),
+                  new ModuleIOTalonFX(TunerConstants.BackLeft),
+                  new ModuleIOTalonFX(TunerConstants.BackRight));
+        } else {
+          drive =
+              new Drive(
+                  launcher::updateOdometry,
+                  new GyroIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {});
+        }
+        if (Constants.Features.VisionEnabled) {
+          vision =
+              new Vision(
+                  drive::addVisionMeasurement,
+                  new VisionIOLimelight(camera0Name, drive::getRotation),
+                  new VisionIOLimelight(camera1Name, drive::getRotation));
+        } else {
+          vision =
+              new Vision(
+                  drive::addVisionMeasurement,
+                  new VisionIO() {},
+                  new VisionIO() {},
+                  new VisionIO() {},
+                  new VisionIO() {});
+        }
+
         // new VisionIOLimelight(camera2Name, drive::getRotation),
         // new VisionIOLimelight(camera3Name, drive::getRotation));
-        hopper =
-            new Hopper(
-                new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
-        intake = new Intake(new IntakeIOSpark() {});
-        climberSubsystem =
-            new ClimberSubsystem(
-                new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
+        if (Constants.Features.HopperEnabled) {
+          hopper =
+              new Hopper(
+                  new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+        } else {
+          hopper = new Hopper(new HopperIO() {});
+        }
+        if (Constants.Features.IntakeEnabled) {
+          intake = new Intake(new IntakeIOSpark() {});
+        } else {
+          intake = new Intake(new IntakeIO() {});
+        }
+        if (Constants.Features.ClimberEnabled) {
+          climberSubsystem =
+              new ClimberSubsystem(
+                  new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
+        } else {
+          climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
+        }
+
         break;
 
       case SIM:
@@ -180,6 +221,14 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+  private boolean isNotTest() {
+    return (!DriverStation.isTest());
+  }
+
+  private boolean isTest() {
+    return (DriverStation.isTest());
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -200,50 +249,81 @@ public class RobotContainer {
             () -> -pilotController.getLeftX(),
             () -> -pilotController.getRightX()));
 
-    // Lock to 0° when A button is held
-    pilotController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -pilotController.getLeftY(),
-                () -> -pilotController.getLeftX(),
-                () -> Rotation2d.kZero));
-
     // Switch to X pattern when X button is pressed
-    pilotController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Blue
-    navController.y().onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
-    navController.b().onTrue(navSys.generatePath(Constants.navigationConstants.centerPointBlue));
+    navController
+        .y()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
+    navController
+        .b()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPointBlue));
     navController
         .a()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointBlue));
     // Red
     navController
         .povLeft()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.centerPointRed));
     navController
         .povUp()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointRed));
     navController
         .povDown()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointRed));
     // Center
     navController
         .rightBumper()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPoint));
-    navController.start().onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
+    navController
+        .start()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
+        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
     navController
         .leftBumper()
+        .and(
+            () -> {
+              return !DriverStation.isTest();
+            })
         .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
-    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
     // Reset gyro to 0° when B button is pressed
     pilotController
         .b()
+        .and(this::isNotTest)
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -256,8 +336,17 @@ public class RobotContainer {
     /// Climber Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+    pilotController
+        .leftBumper()
+        .and(this::isNotTest)
+        .whileTrue((climberSubsystem.climberRetract()));
+    pilotController
+        .rightBumper()
+        .and(this::isNotTest)
+        .whileTrue((climberSubsystem.climberExtend()));
+
+    pilotController.leftBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberRetract());
+    pilotController.rightBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberExtend());
 
     //////////////////////////////////////////////////////////////
     /// Launcher Commands
@@ -266,22 +355,36 @@ public class RobotContainer {
     /// Teleop Commands
 
     /// Test mode commands
-    pilotController.button(1).and(DriverStation::isTest).whileTrue(launcher.testFullSpeed());
-    pilotController.button(2).and(DriverStation::isTest).whileTrue(launcher.testLowSpeed());
-    pilotController.button(3).and(DriverStation::isTest).onTrue(launcher.simFeed());
-    pilotController.button(4).and(DriverStation::isTest).onTrue(launcher.testOff());
+
+    pilotController.a().and(this::isTest).whileTrue(launcher.testFullSpeed());
+    pilotController.b().and(this::isTest).whileTrue(launcher.testLowSpeed());
+    pilotController.x().and(this::isTest).whileTrue(launcher.testTurn());
+    pilotController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+    
+    navController
+        .rightBumper()
+        .and(DriverStation::isTest)
+        .whileTrue(
+            launcher.testRPS(
+                () -> {
+                  return navController.getLeftY();
+                }));
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    pilotController.start().onTrue(hopper.HopperToggle());
+    pilotController.b().and(this::isNotTest).onTrue(hopper.HopperToggle());
+    pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
+    pilotController.a().and(this::isTest).whileTrue(hopper.testSpindex());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.y().onTrue(intake.togglePosition());
+    pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
+    pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
+    pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
   }
 
   /**
