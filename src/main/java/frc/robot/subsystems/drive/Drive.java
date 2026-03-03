@@ -213,6 +213,10 @@ public class Drive extends SubsystemBase {
 
     consumer.accept(poseEstimator.getEstimatedPosition(), getVelocity());
   }
+  
+  public double yawRate() {
+    return gyroInputs.yawVelocityRadPerSec;
+  }
 
   /**
    * Runs the drive at the desired velocity.
