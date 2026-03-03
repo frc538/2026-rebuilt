@@ -223,6 +223,7 @@ public class LauncherIOSim implements LauncherIO {
       traj = new Translation3d[0];
       fuelPublisher.set(traj);
     }
+    inputs.turnEncoderPosition = turretClosedLoopController.getSetpoint();
   }
 
   @Override

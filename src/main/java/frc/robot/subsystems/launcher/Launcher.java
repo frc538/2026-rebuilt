@@ -182,6 +182,7 @@ public class Launcher extends SubsystemBase {
     if (targetAzimuth < 0) {
       targetAzimuth += 360;
     }
+    targetAzimuth = Math.toRadians(targetAzimuth);
   }
 
   public void aimDownSights() {
