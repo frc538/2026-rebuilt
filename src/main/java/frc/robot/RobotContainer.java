@@ -360,7 +360,7 @@ public class RobotContainer {
     pilotController.b().and(this::isTest).whileTrue(launcher.testLowSpeed());
     pilotController.x().and(this::isTest).whileTrue(launcher.testTurn());
     pilotController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
-    
+
     navController
         .rightBumper()
         .and(DriverStation::isTest)
