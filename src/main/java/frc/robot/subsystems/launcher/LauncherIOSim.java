@@ -115,6 +115,7 @@ public class LauncherIOSim implements LauncherIO {
       // TODO: Generate a fuel simulated projectile with the right parameters
 
     }
+    inputs.turnEncoderPosition = turretClosedLoopController.getSetpoint();
   }
 
   @Override

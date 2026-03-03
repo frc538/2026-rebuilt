@@ -138,6 +138,7 @@ public class Launcher extends SubsystemBase {
     targetAzimuth =
         Math.toDegrees(Math.atan2(deltaY, deltaX))
             + ((90 - robotPose.getRotation().getDegrees()) + 360);
+    targetAzimuth = Math.toRadians(targetAzimuth);
   }
 
   public void aimDownSights() {
