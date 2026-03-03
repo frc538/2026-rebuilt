@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "neutral shoot path red start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Go climb from neutral red"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "General Red",
+  "choreoAuto": false
+}

@@ -1,0 +1,195 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 10.534265335235377,
+        "y": 4.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 10.384544444444447,
+        "y": 2.826688888888889
+      },
+      "isLocked": false,
+      "linkedName": "Red Shoot End"
+    },
+    {
+      "anchor": {
+        "x": 11.017933333333337,
+        "y": 0.7024000000000001
+      },
+      "prevControl": {
+        "x": 10.017933333333337,
+        "y": 0.7024000000000002
+      },
+      "nextControl": {
+        "x": 12.017933333333337,
+        "y": 0.7024000000000001
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 12.98631111111573,
+        "y": 0.7024000000000001
+      },
+      "prevControl": {
+        "x": 12.575205555557867,
+        "y": 0.6000833333318907
+      },
+      "nextControl": {
+        "x": 13.397416666673594,
+        "y": 0.8047166666681096
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 15.373700000004622,
+        "y": 2.115344444447329
+      },
+      "prevControl": {
+        "x": 14.636163288302289,
+        "y": 2.034676366604885
+      },
+      "nextControl": {
+        "x": 15.997344444449066,
+        "y": 2.1835555555584416
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 16.016833333337953,
+        "y": 2.115344444447329
+      },
+      "prevControl": {
+        "x": 15.503574246208789,
+        "y": 2.0459851083487925
+      },
+      "nextControl": {
+        "x": 16.377377777782396,
+        "y": 2.1640666666695516
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 14.331044444449065,
+        "y": 3.2846777777806633
+      },
+      "prevControl": {
+        "x": 14.826847153761813,
+        "y": 2.084313323655053
+      },
+      "nextControl": {
+        "x": 14.145900000004621,
+        "y": 3.732922222225108
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 13.756122222226843,
+        "y": 6.695233333336218
+      },
+      "prevControl": {
+        "x": 14.030854019960351,
+        "y": 5.194775053407071
+      },
+      "nextControl": {
+        "x": 13.629444444449064,
+        "y": 7.387088888891774
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 11.924166666671288,
+        "y": 7.426066666669552
+      },
+      "prevControl": {
+        "x": 12.966822222226842,
+        "y": 7.494277777780663
+      },
+      "nextControl": {
+        "x": 10.881511111115735,
+        "y": 7.357855555558441
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 10.534265335235377,
+        "y": 7.016800000002886
+      },
+      "prevControl": {
+        "x": 10.802237557457602,
+        "y": 7.396833333336219
+      },
+      "nextControl": {
+        "x": 10.266293113013152,
+        "y": 6.636766666669552
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 10.534265335235377,
+        "y": 4.0
+      },
+      "prevControl": {
+        "x": 10.465395225072974,
+        "y": 5.330116666666666
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Red Shoot End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake open",
+      "waypointRelativePos": 2.7156327543424283,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intake close",
+      "waypointRelativePos": 4.75235732009926,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "General Red",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
