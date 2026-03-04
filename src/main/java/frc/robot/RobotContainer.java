@@ -80,10 +80,17 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        if (Constants.Features.LauncherEnabled) {
-          launcher = new Launcher(new LauncherIOHardware());
+        if (Constants.Features.HopperEnabled) {
+          hopper =
+              new Hopper(
+                  new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
         } else {
-          launcher = new Launcher(new LauncherIO() {});
+          hopper = new Hopper(new HopperIO() {});
+        }
+        if (Constants.Features.LauncherEnabled) {
+          launcher = new Launcher(new LauncherIOHardware(), hopper::FirePermit);
+        } else {
+          launcher = new Launcher(new LauncherIO() {}, hopper::FirePermit);
         }
         navSys = new NavigationSubsystem();
 
@@ -124,13 +131,7 @@ public class RobotContainer {
 
         // new VisionIOLimelight(camera2Name, drive::getRotation),
         // new VisionIOLimelight(camera3Name, drive::getRotation));
-        if (Constants.Features.HopperEnabled) {
-          hopper =
-              new Hopper(
-                  new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
-        } else {
-          hopper = new Hopper(new HopperIO() {});
-        }
+        
         if (Constants.Features.IntakeEnabled) {
           intake = new Intake(new IntakeIOSpark() {});
         } else {
@@ -148,7 +149,8 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        launcher = new Launcher(new LauncherIOSim());
+        hopper = new Hopper(new HopperIO() {});
+        launcher = new Launcher(new LauncherIOSim(), hopper::FirePermit);
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -165,14 +167,14 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         // new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
         // new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
-        hopper = new Hopper(new HopperIO() {});
         intake = new Intake(new IntakeIOSim(Constants.Intake.MovMotorCanId) {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        launcher = new Launcher(new LauncherIO() {});
+        hopper = new Hopper(new HopperIO() {});
+        launcher = new Launcher(new LauncherIO() {}, hopper::FirePermit);
         drive =
             new Drive(
                 launcher::updateOdometry,
@@ -190,7 +192,6 @@ public class RobotContainer {
                 new VisionIO() {},
                 new VisionIO() {},
                 new VisionIO() {});
-        hopper = new Hopper(new HopperIO() {});
         intake = new Intake(new IntakeIO() {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
