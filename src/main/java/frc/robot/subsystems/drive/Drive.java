@@ -213,7 +213,8 @@ public class Drive extends SubsystemBase {
 
     consumer.accept(poseEstimator.getEstimatedPosition(), getVelocity());
   }
-  
+
+  @AutoLogOutput
   public double yawRate() {
     return gyroInputs.yawVelocityRadPerSec;
   }
