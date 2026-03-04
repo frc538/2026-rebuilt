@@ -357,13 +357,13 @@ public class RobotContainer {
 
     /// Test mode commands
 
-    pilotController.a().and(this::isTest).whileTrue(launcher.testFullSpeed());
-    pilotController.b().and(this::isTest).whileTrue(launcher.testLowSpeed());
-    pilotController.x().and(this::isTest).whileTrue(launcher.testTurn());
-    pilotController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+    navController.a().and(this::isTest).whileTrue(launcher.testFullSpeed());
+    navController.b().and(this::isTest).whileTrue(launcher.testLowSpeed());
+    navController.x().and(this::isTest).whileTrue(launcher.testTurn());
+    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
     
     navController
-        .rightBumper()
+        .start()
         .and(DriverStation::isTest)
         .whileTrue(
             launcher.testRPS(
