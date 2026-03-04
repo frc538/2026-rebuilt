@@ -148,7 +148,7 @@ public class RobotContainer {
         break;
 
       case SIM:
-        // Sim robot, instantiate physics sim IO implementations
+        // Sim robot, instantiate physics sim IO implementations                 
         hopper = new Hopper(new HopperIO() {});
         launcher = new Launcher(new LauncherIOSim(), hopper::FirePermit);
         drive =

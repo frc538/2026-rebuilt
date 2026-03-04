@@ -118,8 +118,8 @@ public class Hopper extends SubsystemBase {
 
 
   // do that Calulation in Launcher
-  public void FirePermit(boolean Aimgood, boolean SpeedGood) {
-    if (Aimgood && SpeedGood && HubTracker.isActive()) {
+  public void FirePermit(boolean Aimgood, boolean SpeedGood, boolean AimAtHub) {
+    if (Aimgood && SpeedGood && AimAtHub && HubTracker.isActive()) {
       HopperON();
     } else {
       HopperOFF();

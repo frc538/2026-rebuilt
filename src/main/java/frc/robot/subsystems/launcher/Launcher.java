@@ -37,6 +37,7 @@ public class Launcher extends SubsystemBase {
   private TrapezoidProfile.State mDesiredState;
   private boolean aimGood; 
   private boolean TurretSpeedGood; 
+  public boolean AimAtHub;
 
 
   LauncherIO io;
@@ -219,6 +220,11 @@ public class Launcher extends SubsystemBase {
     } else {
       TurretSpeedGood = false;
     }
+    if (aimPoint == hubBlue || aimPoint == hubRed) {
+      AimAtHub = true;
+    } else {
+      AimAtHub = false;
+    }
   }
 
   private void setAz() {
@@ -248,6 +254,7 @@ public class Launcher extends SubsystemBase {
     
     Logger.recordOutput("Launcher/TurretSpeedGood", TurretSpeedGood);
     Logger.recordOutput("Launcher/aimGood", aimGood);
+    Logger.recordOutput("Launcher/AimAtHub", AimAtHub);
 
     Logger.recordOutput("Launcher/aimPoint", aimPoint);
     Logger.recordOutput("Launcher/aimPointComp", aimPointComp);
@@ -263,6 +270,6 @@ public class Launcher extends SubsystemBase {
 
   @FunctionalInterface
   public interface LauncherConsumer {
-    public void accept(boolean AimCorrect, boolean SpeedGood);
+    public void accept(boolean AimCorrect, boolean SpeedGood, boolean AimAtHub);
   }
 }
