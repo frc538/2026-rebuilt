@@ -59,7 +59,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               io.setVoltage(12.0);
-              Logger.recordOutput("Launcher/flywheelVoltageCmd", 12.0);
             })
         .finallyDo(() -> io.setVoltage(0));
   }
@@ -68,7 +67,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               io.setVoltage(5.0);
-              Logger.recordOutput("Launcher/flywheelVoltageCmd", 5.0);
             })
         .finallyDo(() -> io.setVoltage(0));
   }
@@ -77,7 +75,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
         () -> {
           io.setVoltage(0.0);
-          Logger.recordOutput("Launcher/flywheelVoltageCmd", 0.0);
         });
   }
 
@@ -285,5 +282,6 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/finalWheelRotationVelocity", finalWheelRotationVelocity);
     Logger.recordOutput("Launcher/mDesiredState", mDesiredState);
     Logger.recordOutput("Launcher/mCurrentState", mCurrentState);
+    Logger.recordOutput("Launcher/testRPSCmd", testRadPerS);
   }
 }

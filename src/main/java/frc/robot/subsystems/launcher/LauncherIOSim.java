@@ -1,5 +1,18 @@
 package frc.robot.subsystems.launcher;
 
+import static edu.wpi.first.units.Units.Amps;
+
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkMaxSim;
@@ -41,6 +54,11 @@ public class LauncherIOSim implements LauncherIO {
   private Pose2d robotPose = new Pose2d();
   private ChassisSpeeds robotVelocity;
 
+  private final TalonFXConfiguration launcherMotorConfig;
+  private final TalonFX launcherMotor;
+  private final Slot0Configs launcherSlot0 = new Slot0Configs();
+  private TalonFXSimState launcherMotorSim;
+
   // MOI calculated from prototype launcher
   private static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
 
@@ -80,6 +98,29 @@ public class LauncherIOSim implements LauncherIO {
           DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
 
   public LauncherIOSim() {
+    launcherMotor = new TalonFX(Constants.launcherConstants.launchMotorCanId);
+    launcherMotorConfig =
+        new TalonFXConfiguration()
+            .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(Amps.of(120))
+                    .withStatorCurrentLimitEnable(true))
+            .withFeedback(
+                new FeedbackConfigs()
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
+            .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(true));
+
+    launcherMotor.getConfigurator().apply(launcherMotorConfig);
+
+    launcherSlot0.kP = 0.3;
+    launcherSlot0.kI = 0;
+    launcherSlot0.kD = 0.0;
+
+    launcherMotor.getConfigurator().apply(launcherSlot0);
+
+    launcherMotorSim = launcherMotor.getSimState();
+
     flywheelSim = new FlywheelSim(m_flywheelPlant, DCMotor.getKrakenX60(1));
 
     m_turretConfig.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit(50);
@@ -117,7 +158,13 @@ public class LauncherIOSim implements LauncherIO {
   @Override
   public void updateInputs(LauncherIOInputs inputs) {
     // Update the sim model based on most recent commands. The standard loop time is 20ms.
+
+    launcherMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+    flywheelSim.setInputVoltage(launcherMotorSim.getMotorVoltage());
     flywheelSim.update(0.020);
+
+    launcherMotorSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (2 * Math.PI));
 
     turretSim.setInput(m_turretSparkMaxSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
     turretSim.update(0.020);
@@ -224,13 +271,28 @@ public class LauncherIOSim implements LauncherIO {
       fuelPublisher.set(traj);
     }
     inputs.turnEncoderPosition = turretClosedLoopController.getSetpoint();
+
+    inputs.launcherMotorVoltage = launcherMotor.getMotorVoltage().getValueAsDouble();
+    inputs.launcherStatorCurrent = launcherMotor.getStatorCurrent().getValueAsDouble();
+    inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
+    inputs.launcherAcceleration = launcherMotor.getAcceleration().getValueAsDouble();
+    inputs.launcherClosedLoopError = launcherMotor.getClosedLoopError().getValueAsDouble();
+    inputs.launcherVelocity = launcherMotor.getVelocity().getValueAsDouble() / (2 * Math.PI);
+    inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
   }
 
   @Override
   public void setVoltage(double voltage) {
     // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
-    flywheelSim.setInput(voltage);
+    launcherMotor.setVoltage(voltage);
+    Logger.recordOutput("Launcher/flywheelVoltageCmd", voltage);
+  }
+
+  @Override
+  public void setRadPerS(double RPS) {
+    launcherMotor.setControl(new VelocityVoltage(RPS / (2 * Math.PI)).withSlot(0));
   }
 
   private void launchFuel() {

@@ -29,6 +29,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class LauncherIOHardware implements LauncherIO {
   private FlywheelSim flywheelSim;
@@ -112,6 +113,7 @@ public class LauncherIOHardware implements LauncherIO {
   @Override
   public void testFlyWheelTurn(double voltage) {
     launcherMotor.setVoltage(voltage);
+    Logger.recordOutput("Launcher/flywheelVoltageCmd", voltage);
   }
 
   @Override
