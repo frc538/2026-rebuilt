@@ -35,19 +35,20 @@ public class Launcher extends SubsystemBase {
   private TrapezoidProfile turnProfile;
   private TrapezoidProfile.State mCurrentState;
   private TrapezoidProfile.State mDesiredState;
-  private boolean aimGood; 
-  private boolean TurretSpeedGood; 
-  public boolean AimAtHub;
-
+  private boolean aimGood;
+  private boolean TurretSpeedGood;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
+  LauncherConsumer thingy;
 
   public Launcher(LauncherIO IO, LauncherConsumer consumer) {
     io = IO;
 
     profileConstraints = new Constraints(maxV, maxA);
     turnProfile = new TrapezoidProfile(profileConstraints);
+
+    thingy = consumer;
 
     mCurrentState = new TrapezoidProfile.State();
     mDesiredState = new TrapezoidProfile.State();
@@ -208,8 +209,10 @@ public class Launcher extends SubsystemBase {
     }
   }
 
-  private void DetermineFirePermit() {// target rpm
-    if ( /*abs = absolute value*/Math.abs(mDesiredState.position - inputs.turnEncoderPosition) <=  Math.PI*2/72){
+  private void DetermineFirePermit() { // target rpm
+    if (
+    /*abs = absolute value*/ Math.abs(mDesiredState.position - inputs.turnEncoderPosition)
+        <= Math.PI * 2 / 72) {
       // make varie with range, not my job though
       aimGood = true;
     } else {
@@ -220,11 +223,7 @@ public class Launcher extends SubsystemBase {
     } else {
       TurretSpeedGood = false;
     }
-    if (aimPoint == hubBlue || aimPoint == hubRed) {
-      AimAtHub = true;
-    } else {
-      AimAtHub = false;
-    }
+    thingy.accept(aimGood, TurretSpeedGood);
   }
 
   private void setAz() {
@@ -250,11 +249,9 @@ public class Launcher extends SubsystemBase {
     getShootSpeed(); // flywheel speed
     shoot();
     DetermineFirePermit();
-    
-    
+
     Logger.recordOutput("Launcher/TurretSpeedGood", TurretSpeedGood);
     Logger.recordOutput("Launcher/aimGood", aimGood);
-    Logger.recordOutput("Launcher/AimAtHub", AimAtHub);
 
     Logger.recordOutput("Launcher/aimPoint", aimPoint);
     Logger.recordOutput("Launcher/aimPointComp", aimPointComp);
@@ -270,6 +267,6 @@ public class Launcher extends SubsystemBase {
 
   @FunctionalInterface
   public interface LauncherConsumer {
-    public void accept(boolean AimCorrect, boolean SpeedGood, boolean AimAtHub);
+    public void accept(boolean AimCorrect, boolean SpeedGood);
   }
 }

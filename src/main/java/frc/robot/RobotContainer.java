@@ -131,7 +131,7 @@ public class RobotContainer {
 
         // new VisionIOLimelight(camera2Name, drive::getRotation),
         // new VisionIOLimelight(camera3Name, drive::getRotation));
-        
+
         if (Constants.Features.IntakeEnabled) {
           intake = new Intake(new IntakeIOSpark() {});
         } else {
@@ -148,7 +148,7 @@ public class RobotContainer {
         break;
 
       case SIM:
-        // Sim robot, instantiate physics sim IO implementations                 
+        // Sim robot, instantiate physics sim IO implementations
         hopper = new Hopper(new HopperIO() {});
         launcher = new Launcher(new LauncherIOSim(), hopper::FirePermit);
         drive =
@@ -361,7 +361,7 @@ public class RobotContainer {
     navController.b().and(this::isTest).whileTrue(launcher.testLowSpeed());
     navController.x().and(this::isTest).whileTrue(launcher.testTurn());
     navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
-    
+
     navController
         .start()
         .and(DriverStation::isTest)
