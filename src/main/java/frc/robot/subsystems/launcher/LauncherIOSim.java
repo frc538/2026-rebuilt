@@ -16,11 +16,13 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -84,15 +86,16 @@ public class LauncherIOSim implements LauncherIO {
 
   // Turret azimuth state
   private SingleJointedArmSim turretSim;
-  private static double commandedAzimuth = 0.0;
   private static final double kTurretMomentOfInertia = 0.05; // kg * m^2
   private static final double kTurretGearing = 20; // Total guess at the gearing for motor to turret
-  private SparkMax m_turretSparkMax =
+  private SparkMax turretSparkMax =
       new SparkMax(Constants.launcherConstants.launchMotorCanId, MotorType.kBrushless);
   private final SparkClosedLoopController turretClosedLoopController;
   private SparkMaxConfig m_turretConfig = new SparkMaxConfig();
+  private final SparkRelativeEncoder turretEncoder;
+  private final SparkRelativeEncoderSim turretEncoderSim;
+  private final SparkMaxSim turretSparkMaxSim;
 
-  private SparkMaxSim m_turretSparkMaxSim = new SparkMaxSim(m_turretSparkMax, DCMotor.getNEO(1));
   private final LinearSystem<N2, N1, N2> m_turretPlant =
       LinearSystemId.createSingleJointedArmSystem(
           DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
@@ -127,16 +130,20 @@ public class LauncherIOSim implements LauncherIO {
     m_turretConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(-0.1, 0, 0)
+        .pid(0.1, 0, 0)
         .outputRange(-1, 1);
     m_turretConfig
         .encoder
-        .positionConversionFactor(1.0 / 20.0 * 2 * Math.PI) // Radians
-        .velocityConversionFactor(1.0 / 20.0 * 2 * Math.PI * 60.0); // Radians per second
+        .positionConversionFactor(1.0 / kTurretGearing * 2 * Math.PI) // Radians
+        .velocityConversionFactor(1.0 / kTurretGearing * 2 * Math.PI * 60.0); // Radians per second
 
-    m_turretSparkMax.configure(
+    turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    turretClosedLoopController = m_turretSparkMax.getClosedLoopController();
+    turretClosedLoopController = turretSparkMax.getClosedLoopController();
+
+    turretEncoder = (SparkRelativeEncoder) turretSparkMax.getEncoder();
+    turretSparkMaxSim = new SparkMaxSim(turretSparkMax, DCMotor.getNEO(1));
+    turretEncoderSim = turretSparkMaxSim.getRelativeEncoderSim();
 
     turretSim =
         new SingleJointedArmSim(
@@ -166,10 +173,16 @@ public class LauncherIOSim implements LauncherIO {
 
     launcherMotorSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (2 * Math.PI));
 
-    turretSim.setInput(m_turretSparkMaxSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
+    turretSparkMaxSim.setBusVoltage(RobotController.getBatteryVoltage());
+
+    turretSim.setInput(turretSparkMaxSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
     turretSim.update(0.020);
-    m_turretSparkMaxSim.iterate(
+    Logger.recordOutput("Launcher/turret sim pos", turretSim.getAngleRads());
+
+    turretSparkMaxSim.iterate(
         turretSim.getVelocityRadPerSec(), RobotController.getBatteryVoltage(), 0.020);
+
+    turretEncoderSim.setPosition(turretSim.getAngleRads());
 
     // Compensate for a piece of fuel if required
     if (isFuel) {
@@ -221,19 +234,6 @@ public class LauncherIOSim implements LauncherIO {
       }
     }
 
-    /*
-    inputs.rpm = flywheelSim.getAngularVelocityRPM();
-    inputs.projectileRotationalSpeed = fuelRotationalVelocity;
-    inputs.projectileSpeed = fuelLinearVelocity;
-
-    inputs.turretAngle = Math.toDegrees(turretSim.getAngleRads());
-    inputs.turretSpeed = Math.toDegrees(turretSim.getVelocityRadPerSec());
-
-    inputs.turretBusVoltage = m_turretSparkMax.getAppliedOutput() * RoboRioSim.getVInVoltage();
-    inputs.turretCurrent = m_turretSparkMax.getOutputCurrent();
-    inputs.turretOutput = m_turretSparkMax.getAppliedOutput();
-    */
-
     // Handle old trajectories
     for (int i = 0; i < 30; i++) {
       if (trajectoryAge.size() > 0) {
@@ -270,7 +270,6 @@ public class LauncherIOSim implements LauncherIO {
       traj = new Translation3d[0];
       fuelPublisher.set(traj);
     }
-    inputs.turnEncoderPosition = turretClosedLoopController.getSetpoint();
 
     inputs.launcherMotorVoltage = launcherMotor.getMotorVoltage().getValueAsDouble();
     inputs.launcherStatorCurrent = launcherMotor.getStatorCurrent().getValueAsDouble();
@@ -280,6 +279,13 @@ public class LauncherIOSim implements LauncherIO {
     inputs.launcherVelocity = launcherMotor.getVelocity().getValueAsDouble() / (2 * Math.PI);
     inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
     inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
+
+    inputs.turnMotorAppliedOutput = turretSparkMax.getAppliedOutput();
+    inputs.turnMotorBusVoltage = turretSparkMax.getBusVoltage();
+    inputs.turnMotorOutputCurrent = turretSparkMax.getOutputCurrent();
+
+    inputs.turnEncoderVelocity = turretEncoder.getVelocity();
+    inputs.turnEncoderPosition = turretEncoder.getPosition();
   }
 
   @Override
@@ -292,6 +298,7 @@ public class LauncherIOSim implements LauncherIO {
 
   @Override
   public void setRadPerS(double RPS) {
+    Logger.recordOutput("Launcher/testRPS", RPS);
     launcherMotor.setControl(new VelocityVoltage(RPS / (2 * Math.PI)).withSlot(0));
   }
 
@@ -338,7 +345,8 @@ public class LauncherIOSim implements LauncherIO {
 
   @Override
   public void turretVoltage(double voltage) {
-    m_turretSparkMax.setVoltage(voltage);
+    Logger.recordOutput("Launcher/testTurnVoltage", voltage);
+    turretSparkMax.setVoltage(voltage);
   }
 
   @Override

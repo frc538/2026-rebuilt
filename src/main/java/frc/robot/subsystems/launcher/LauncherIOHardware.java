@@ -97,6 +97,7 @@ public class LauncherIOHardware implements LauncherIO {
 
   @Override
   public void setRadPerS(double RPS) {
+    Logger.recordOutput("Launcher/testRPS", RPS);
     launcherMotor.setControl(new VelocityVoltage(RPS / (2 * Math.PI)).withSlot(0));
   }
 
@@ -107,6 +108,7 @@ public class LauncherIOHardware implements LauncherIO {
 
   @Override
   public void testTurn(double voltage) {
+    Logger.recordOutput("Launcher/testTurnVoltage", voltage);
     turnMotor.setVoltage(voltage);
   }
 

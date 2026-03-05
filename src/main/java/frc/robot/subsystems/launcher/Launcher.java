@@ -82,7 +82,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               io.testTurn(3.0);
-              Logger.recordOutput("Launcher/testTurn", 3.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -91,7 +90,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               io.testTurn(-3.0);
-              Logger.recordOutput("Launcher/testTurn", -3.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -117,6 +115,7 @@ public class Launcher extends SubsystemBase {
                     })
                 .finallyDo(
                     () -> {
+                      io.setRadPerS(0);
                       io.setVoltage(0);
                     }));
   }
