@@ -33,7 +33,6 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.CircularBuffer;
@@ -326,21 +325,8 @@ public class LauncherIOSim implements LauncherIO {
     // Robot pose is in radians, 0 == intake pointing west, + = counter clockwise
     //  The robot pose is the angle of the intake
 
-    // Setpoint into radians relative to robot pose
-    double setpoint = (angle - 90.0) - robotPose.getRotation().getDegrees();
-    Logger.recordOutput("Launcher/turretSetpointDegPre", setpoint);
-    setpoint = setpoint % 360;
-    if (setpoint < 0) {
-      setpoint += 360;
-    }
-    if (setpoint > 180) {
-      setpoint = setpoint - 360;
-    }
-
-    Logger.recordOutput("Launcher/turretSetpointDeg", setpoint);
-
     // Turret closed loop controller is in radians around zero being over the intake
-    turretClosedLoopController.setSetpoint(Units.degreesToRadians(setpoint), ControlType.kPosition);
+    turretClosedLoopController.setSetpoint(angle, ControlType.kPosition);
   }
 
   @Override
