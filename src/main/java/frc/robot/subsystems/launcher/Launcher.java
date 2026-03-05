@@ -169,16 +169,18 @@ public class Launcher extends SubsystemBase {
     double deltaY = y2 - y1;
     double deltaX = x2 - x1;
 
+    double targetGlobalAzimuth = Math.atan2(deltaY, deltaX);
+    Logger.recordOutput("Launcher/targetGlobalAzimuth", targetGlobalAzimuth);
     // i.e. Pose2D defines the rotation as a mathematical one... 0 degrees toward
     // positive x,
     // increases counter-clockwise
-    targetAzimuth =
-        Math.toDegrees(Math.atan2(deltaY, deltaX))
-            + ((90 - robotPose.getRotation().getDegrees()) + 360) % 360.0;
-    if (targetAzimuth < 0) {
-      targetAzimuth += 360;
+    targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians();
+    if (targetAzimuth < -Math.PI) {
+      targetAzimuth += 2 * Math.PI;
     }
-    targetAzimuth = Math.toRadians(targetAzimuth);
+    if (targetAzimuth > Math.PI) {
+      targetAzimuth -= 2 * Math.PI;
+    }
   }
 
   public void aimDownSights() {
