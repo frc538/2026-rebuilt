@@ -37,11 +37,6 @@ public class Launcher extends SubsystemBase {
   private TrapezoidProfile.State mDesiredState;
   private boolean autoRotate = false;
 
-  TrapezoidProfile.Constraints turretConstraints = new TrapezoidProfile.Constraints(1, 10);
-  TrapezoidProfile turretProfile = new TrapezoidProfile(turretConstraints);
-  TrapezoidProfile.State currentState = new TrapezoidProfile.State();
-  TrapezoidProfile.State desiredState = new TrapezoidProfile.State();
-
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
