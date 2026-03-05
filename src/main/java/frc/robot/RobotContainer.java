@@ -221,8 +221,16 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  boolean isSim() {
+  private boolean isSim() {
     return Constants.currentMode == Constants.Mode.SIM;
+  }
+  
+  private boolean isNotTest() {
+    return (!DriverStation.isTest());
+  }
+
+  private boolean isTest() {
+    return (DriverStation.isTest());
   }
 
   /**
@@ -246,13 +254,7 @@ public class RobotContainer {
             () -> -pilotController.getRightX()));
 
     // Switch to X pattern when X button is pressed
-    pilotController
-        .x()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(Commands.runOnce(drive::stopWithX, drive));
+    pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Blue
     navController
@@ -325,10 +327,7 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     pilotController
         .b()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
+        .and(this::isNotTest)
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -341,8 +340,17 @@ public class RobotContainer {
     /// Climber Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+    pilotController
+        .leftBumper()
+        .and(this::isNotTest)
+        .whileTrue((climberSubsystem.climberRetract()));
+    pilotController
+        .rightBumper()
+        .and(this::isNotTest)
+        .whileTrue((climberSubsystem.climberExtend()));
+
+    pilotController.leftBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberRetract());
+    pilotController.rightBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberExtend());
 
     //////////////////////////////////////////////////////////////
     /// Launcher Commands
@@ -387,19 +395,17 @@ public class RobotContainer {
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    pilotController.start().onTrue(hopper.HopperToggle());
+    pilotController.b().and(this::isNotTest).onTrue(hopper.HopperToggle());
+    pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
+    pilotController.a().and(this::isTest).whileTrue(hopper.testSpindex());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController
-        .y()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(intake.togglePosition());
+    pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
+    pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
+    pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
   }
 
   /**

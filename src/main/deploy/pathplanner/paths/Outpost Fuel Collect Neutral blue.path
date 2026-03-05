@@ -1,0 +1,212 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.324867469879519,
+        "y": 4.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.379577777777778,
+        "y": 5.116633333333333
+      },
+      "isLocked": false,
+      "linkedName": "Blue Shoot End"
+    },
+    {
+      "anchor": {
+        "x": 5.882611111111112,
+        "y": 7.240922222222221
+      },
+      "prevControl": {
+        "x": 6.723273093113109,
+        "y": 6.82953444379571
+      },
+      "nextControl": {
+        "x": 5.424622222222225,
+        "y": 7.465044444444444
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.101766666666667,
+        "y": 7.240922222222221
+      },
+      "prevControl": {
+        "x": 3.766276711255708,
+        "y": 7.373026194014998
+      },
+      "nextControl": {
+        "x": 1.4878666666666667,
+        "y": 7.192200000000001
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.1663000000000003,
+        "y": 6.013122222222222
+      },
+      "prevControl": {
+        "x": 1.7626800545465229,
+        "y": 5.9803540873570284
+      },
+      "nextControl": {
+        "x": 0.27955555555555567,
+        "y": 6.061844444444444
+      },
+      "isLocked": false,
+      "linkedName": "human fuel collect blue"
+    },
+    {
+      "anchor": {
+        "x": 0.7278000000058702,
+        "y": 6.013122222222222
+      },
+      "prevControl": {
+        "x": 0.4778000000058702,
+        "y": 6.013122222229837
+      },
+      "nextControl": {
+        "x": 0.97780000000587,
+        "y": 6.013122222214607
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.1663000000000003,
+        "y": 6.013122222222222
+      },
+      "prevControl": {
+        "x": 0.4452111111081767,
+        "y": 6.052099999997031
+      },
+      "nextControl": {
+        "x": 1.8873888888918227,
+        "y": 5.974144444447413
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.598733333339203,
+        "y": 2.700011111114079
+      },
+      "prevControl": {
+        "x": 2.243061111115513,
+        "y": 4.337077777780746
+      },
+      "nextControl": {
+        "x": 2.954405555562893,
+        "y": 1.062944444447412
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.53420000000587,
+        "y": 0.7024000000029684
+      },
+      "prevControl": {
+        "x": 2.9652271186747114,
+        "y": 0.7409744326355887
+      },
+      "nextControl": {
+        "x": 4.109122222228092,
+        "y": 0.6634222222251913
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.882611111111112,
+        "y": 0.7024000000029684
+      },
+      "prevControl": {
+        "x": 4.927605840296366,
+        "y": 0.7024000000029685
+      },
+      "nextControl": {
+        "x": 6.3795777777836475,
+        "y": 0.7024000000029684
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.324867469879519,
+        "y": 4.0
+      },
+      "prevControl": {
+        "x": 6.447788888894759,
+        "y": 2.446655555558524
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Blue Shoot End"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.8547717842323697,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 5.534439834024877,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 6.146887966804954,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake open",
+      "waypointRelativePos": 2.8853598014888036,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intake close",
+      "waypointRelativePos": 5.0828784119105785,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "General Blue",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
