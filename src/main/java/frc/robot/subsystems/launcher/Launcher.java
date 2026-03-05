@@ -237,7 +237,7 @@ public class Launcher extends SubsystemBase {
   }
 
   private void shoot() {
-    if (!DriverStation.isTest()) {
+    if (!DriverStation.isTest() || autoRotate) {
       io.setRadPerS(initialWheelRotVelocity);
     }
   }
@@ -247,10 +247,8 @@ public class Launcher extends SubsystemBase {
 
     mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
 
-    if (!DriverStation.isTest()) {
-      if (autoRotate) {
-        io.pointAt(mCurrentState.position);
-      }
+    if (!DriverStation.isTest() || autoRotate) {
+      io.pointAt(mCurrentState.position);
     }
   }
 
