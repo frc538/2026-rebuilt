@@ -224,7 +224,7 @@ public class RobotContainer {
   private boolean isSim() {
     return Constants.currentMode == Constants.Mode.SIM;
   }
-  
+
   private boolean isNotTest() {
     return (!DriverStation.isTest());
   }

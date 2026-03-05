@@ -68,17 +68,17 @@ public class Intake extends SubsystemBase {
   }
 
   public Command testIntakeUp() {
-    return run(
-        () -> {
+    return run(() -> {
           io.testArmRun(1 * 0.2);
-        }).finallyDo(() -> io.testArmRun(0));
+        })
+        .finallyDo(() -> io.testArmRun(0));
   }
 
   public Command testIntakeDown() {
-    return run(
-        () -> {
+    return run(() -> {
           io.testArmRun(0.2 * -1);
-        }).finallyDo(() -> io.testArmRun(0));
+        })
+        .finallyDo(() -> io.testArmRun(0));
   }
 
   public Command togglePosition() {
