@@ -327,7 +327,7 @@ public class RobotContainer {
 
     // Reset gyro to 0° when B button is pressed
     pilotController
-        .b()
+        .leftStick()
         .and(this::isNotTest)
         .onTrue(
             Commands.runOnce(
@@ -374,24 +374,6 @@ public class RobotContainer {
                 () -> {
                   return navController.getLeftY();
                 }));
-
-    pilotController
-        .button(7)
-        .and(DriverStation::isTest)
-        .whileTrue(launcher.testTurretRotateClockwise());
-    pilotController
-        .button(9)
-        .and(DriverStation::isTest)
-        .whileTrue(launcher.testTurretRotateCounterclockwise());
-    pilotController
-        .button(6)
-        .and(DriverStation::isTest)
-        .onTrue(launcher.testTurretRotateDisableAuto());
-    pilotController
-        .button(8)
-        .and(DriverStation::isTest)
-        .onTrue(launcher.testTurretRotateEnableAuto());
-
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
@@ -404,9 +386,10 @@ public class RobotContainer {
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
-    pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
-    pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
+    // navController.x().and(this::isTest).onTrue(intake.testIntakeDown());
+    // navController.a().and(this::isTest).onTrue(intake.testIntakeUp());
+    //pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
+    //pilotController.a().and(this::isTest).onTrue(intake.togglePosition());
   }
 
   /**

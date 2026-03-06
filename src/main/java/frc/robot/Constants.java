@@ -81,8 +81,8 @@ public final class Constants {
 
   public final class Hopper {
 
-    public static final int FeedCanId = 3;
-    public static final int SpindexCanId = 4;
+    public static final int FeedCanId = 4;
+    public static final int SpindexCanId = 3;
 
     public static final double SpindexGearing = 1.0;
     public static final double FeedGearing = 1.0;
@@ -93,8 +93,8 @@ public final class Constants {
     public static final double SpindexSpeed = 1.0;
     public static final double FeedSpeed = 1.0;
 
-    public static final double TestSpindexSpeed = 0.1;
-    public static final double TestFeedSpeed = 0.1;
+    public static final double TestSpindexSpeed = 0.3;
+    public static final double TestFeedSpeed = -0.3;
   }
 
   public final class launcherConstants {
