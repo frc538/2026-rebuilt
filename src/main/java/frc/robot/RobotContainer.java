@@ -363,7 +363,7 @@ public class RobotContainer {
     navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
 
     navController
-        .start()
+        .rightBumper()
         .and(DriverStation::isTest)
         .whileTrue(
             launcher.testRPS(
