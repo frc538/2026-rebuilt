@@ -264,7 +264,7 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPointBlue));
     navController
         .b()
         .and(
@@ -278,7 +278,7 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointBlue));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPointBlue));
     // Red
     navController
         .povLeft()
@@ -293,14 +293,14 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointRed));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPointRed));
     navController
         .povDown()
         .and(
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointRed));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPointRed));
     // Center
     navController
         .rightBumper()
@@ -308,7 +308,7 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPoint));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPoint));
     navController
         .start()
         .and(
@@ -322,12 +322,12 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
 
     // Reset gyro to 0° when B button is pressed
     pilotController
-        .b()
+        .rightStick()
         .and(this::isNotTest)
         .onTrue(
             Commands.runOnce(
@@ -362,9 +362,6 @@ public class RobotContainer {
     /// Test mode commands
 
     navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
-    navController.b().and(this::isTest).and(this::isSim).whileTrue(launcher.testLowSpeed());
-    navController.x().and(this::isTest).and(this::isSim).whileTrue(launcher.testTurn());
-    navController.y().and(this::isTest).and(this::isSim).whileTrue(launcher.invertTestTurn());
 
     navController
         .rightBumper()
@@ -376,19 +373,19 @@ public class RobotContainer {
                 }));
 
     pilotController
-        .button(7)
+        .povRight()
         .and(DriverStation::isTest)
         .whileTrue(launcher.testTurretRotateClockwise());
     pilotController
-        .button(9)
+        .povLeft()
         .and(DriverStation::isTest)
         .whileTrue(launcher.testTurretRotateCounterclockwise());
     pilotController
-        .button(6)
+        .rightStick()
         .and(DriverStation::isTest)
         .onTrue(launcher.testTurretRotateDisableAuto());
     pilotController
-        .button(8)
+        .leftStick()
         .and(DriverStation::isTest)
         .onTrue(launcher.testTurretRotateEnableAuto());
 
@@ -398,7 +395,6 @@ public class RobotContainer {
 
     pilotController.b().and(this::isNotTest).onTrue(hopper.HopperToggle());
     pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
-    pilotController.a().and(this::isTest).whileTrue(hopper.testSpindex());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
@@ -406,7 +402,8 @@ public class RobotContainer {
 
     pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
     pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
-    pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
+    pilotController.start().and(this::isTest).whileTrue(intake.testIntake());
+    pilotController.a().and(this::isNotTest).onTrue(intake.togglePosition());
   }
 
   /**
