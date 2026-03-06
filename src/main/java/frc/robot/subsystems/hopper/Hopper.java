@@ -117,9 +117,9 @@ public class Hopper extends SubsystemBase {
   // do that Calulation in Launcher
   public void FirePermit(boolean Aimgood, boolean SpeedGood) {
     if (Aimgood && SpeedGood && HubTracker.isActive()) {
-      HopperON();
+      Logger.recordOutput("Hopper/FirePermit", true);
     } else {
-      HopperOFF();
+      Logger.recordOutput("Hopper/FirePermit", false);
     }
   }
 }
