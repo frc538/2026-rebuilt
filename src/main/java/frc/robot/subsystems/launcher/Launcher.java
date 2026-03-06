@@ -37,6 +37,7 @@ public class Launcher extends SubsystemBase {
   private TrapezoidProfile.State mDesiredState;
   private boolean aimGood;
   private boolean TurretSpeedGood;
+  private boolean autoRotate = false;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -58,7 +59,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               io.setVoltage(12.0);
-              Logger.recordOutput("Launcher/flywheelVoltageCmd", 12.0);
             })
         .finallyDo(() -> io.setVoltage(0));
   }
@@ -67,7 +67,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               io.setVoltage(5.0);
-              Logger.recordOutput("Launcher/flywheelVoltageCmd", 5.0);
             })
         .finallyDo(() -> io.setVoltage(0));
   }
@@ -76,7 +75,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
         () -> {
           io.setVoltage(0.0);
-          Logger.recordOutput("Launcher/flywheelVoltageCmd", 0.0);
         });
   }
 
@@ -84,7 +82,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               io.testTurn(3.0);
-              Logger.recordOutput("Launcher/testTurn", 3.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -93,7 +90,6 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               io.testTurn(-3.0);
-              Logger.recordOutput("Launcher/testTurn", -3.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -119,13 +115,49 @@ public class Launcher extends SubsystemBase {
                     })
                 .finallyDo(
                     () -> {
+                      io.setRadPerS(0);
                       io.setVoltage(0);
                     }));
+  }
+
+  public Command testTurretRotateClockwise() {
+    return Commands.run(
+            () -> {
+              if (autoRotate == false) {
+                io.turretVoltage(-1.0);
+              }
+            })
+        .finallyDo(() -> io.turretVoltage(0));
+  }
+
+  public Command testTurretRotateCounterclockwise() {
+    return Commands.run(
+            () -> {
+              if (autoRotate == false) {
+                io.turretVoltage(1.0);
+              }
+            })
+        .finallyDo(() -> io.turretVoltage(0));
+  }
+
+  public Command testTurretRotateDisableAuto() {
+    return Commands.runOnce(
+        () -> {
+          autoRotate = false;
+        });
+  }
+
+  public Command testTurretRotateEnableAuto() {
+    return Commands.runOnce(
+        () -> {
+          autoRotate = true;
+        });
   }
 
   public void updateOdometry(Pose2d robotPose, ChassisSpeeds robotVelocity) {
     this.robotPose = robotPose;
     this.robotVelocity = robotVelocity;
+    io.updateRobotInfo(robotPose, robotVelocity);
   }
 
   public void getAzimuth() {
@@ -137,12 +169,18 @@ public class Launcher extends SubsystemBase {
     double deltaY = y2 - y1;
     double deltaX = x2 - x1;
 
+    double targetGlobalAzimuth = Math.atan2(deltaY, deltaX);
+    Logger.recordOutput("Launcher/targetGlobalAzimuth", targetGlobalAzimuth);
     // i.e. Pose2D defines the rotation as a mathematical one... 0 degrees toward
     // positive x,
     // increases counter-clockwise
-    targetAzimuth =
-        Math.toDegrees(Math.atan2(deltaY, deltaX))
-            + ((90 - robotPose.getRotation().getDegrees()) + 360);
+    targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians();
+    if (targetAzimuth < -Math.PI) {
+      targetAzimuth += 2 * Math.PI;
+    }
+    if (targetAzimuth > Math.PI) {
+      targetAzimuth -= 2 * Math.PI;
+    }
   }
 
   public void aimDownSights() {
@@ -232,7 +270,9 @@ public class Launcher extends SubsystemBase {
     mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
 
     if (!DriverStation.isTest()) {
-      io.pointAt(mCurrentState.position);
+      if (autoRotate) {
+        io.pointAt(mCurrentState.position);
+      }
     }
   }
 
@@ -253,6 +293,7 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/TurretSpeedGood", TurretSpeedGood);
     Logger.recordOutput("Launcher/aimGood", aimGood);
 
+    Logger.recordOutput("Launcher/autoRotate", autoRotate);
     Logger.recordOutput("Launcher/aimPoint", aimPoint);
     Logger.recordOutput("Launcher/aimPointComp", aimPointComp);
     Logger.recordOutput("Launcher/targetAzimuth", targetAzimuth);
@@ -263,6 +304,7 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/finalWheelRotationVelocity", finalWheelRotationVelocity);
     Logger.recordOutput("Launcher/mDesiredState", mDesiredState);
     Logger.recordOutput("Launcher/mCurrentState", mCurrentState);
+    Logger.recordOutput("Launcher/testRPSCmd", testRadPerS);
   }
 
   @FunctionalInterface

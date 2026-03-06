@@ -1,26 +1,64 @@
 package frc.robot.subsystems.launcher;
 
+import static edu.wpi.first.units.Units.Amps;
+
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.util.CircularBuffer;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import java.util.Arrays;
+import org.littletonrobotics.junction.Logger;
 
 public class LauncherIOSim implements LauncherIO {
   private FlywheelSim flywheelSim;
+  private StructArrayPublisher<Translation3d> fuelPublisher;
+  private CircularBuffer<Translation3d[]> fuelTrajectory = new CircularBuffer<>(30);
+  private CircularBuffer<Integer> trajectoryAge = new CircularBuffer<>(30);
+  private Translation3d[] theTrajectories = new Translation3d[30 * 30];
+  private int ageValue = 0;
+  private final int maxTrajectoryAge = 2 * 50; // 2 seconds
+  private Pose2d robotPose = new Pose2d();
+  private ChassisSpeeds robotVelocity;
+
+  private final TalonFXConfiguration launcherMotorConfig;
+  private final TalonFX launcherMotor;
+  private final Slot0Configs launcherSlot0 = new Slot0Configs();
+  private TalonFXSimState launcherMotorSim;
 
   // MOI calculated from prototype launcher
   private static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
@@ -30,7 +68,7 @@ public class LauncherIOSim implements LauncherIO {
   private static final double kFlywheelGearing = 1.0;
 
   // Fuel launching state
-  private static boolean isFuel = false;
+  private boolean isFuel = false;
   private static final double fuelMass = 0.2268; // kg
   private static final double fuelRadius = 0.075; // meters
   private static final double kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
@@ -47,20 +85,44 @@ public class LauncherIOSim implements LauncherIO {
 
   // Turret azimuth state
   private SingleJointedArmSim turretSim;
-  private static double commandedAzimuth = 0.0;
-  private static final double kTurretMomentOfInertia = 0.005; // kg * m^2
-  private static final double kTurretGearing = 50; // Total guess at the gearing for motor to turret
-  private SparkMax m_turretSparkMax =
+  private static final double kTurretMomentOfInertia = 0.05; // kg * m^2
+  private static final double kTurretGearing = 20; // Total guess at the gearing for motor to turret
+  private SparkMax turretSparkMax =
       new SparkMax(Constants.launcherConstants.launchMotorCanId, MotorType.kBrushless);
-  private SparkMaxConfig m_turretConfig = new SparkMaxConfig();
-  private SparkMaxSim m_turretSparkMaxSim = new SparkMaxSim(m_turretSparkMax, DCMotor.getNEO(1));
   private final SparkClosedLoopController turretClosedLoopController;
+  private SparkMaxConfig m_turretConfig = new SparkMaxConfig();
+  private final SparkRelativeEncoder turretEncoder;
+  private final SparkRelativeEncoderSim turretEncoderSim;
+  private final SparkMaxSim turretSparkMaxSim;
 
   private final LinearSystem<N2, N1, N2> m_turretPlant =
       LinearSystemId.createSingleJointedArmSystem(
           DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
 
   public LauncherIOSim() {
+    launcherMotor = new TalonFX(Constants.launcherConstants.launchMotorCanId);
+    launcherMotorConfig =
+        new TalonFXConfiguration()
+            .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(Amps.of(120))
+                    .withStatorCurrentLimitEnable(true))
+            .withFeedback(
+                new FeedbackConfigs()
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
+            .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(true));
+
+    launcherMotor.getConfigurator().apply(launcherMotorConfig);
+
+    launcherSlot0.kP = 0.3;
+    launcherSlot0.kI = 0;
+    launcherSlot0.kD = 0.0;
+
+    launcherMotor.getConfigurator().apply(launcherSlot0);
+
+    launcherMotorSim = launcherMotor.getSimState();
+
     flywheelSim = new FlywheelSim(m_flywheelPlant, DCMotor.getKrakenX60(1));
 
     m_turretConfig.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit(50);
@@ -69,10 +131,18 @@ public class LauncherIOSim implements LauncherIO {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(0.1, 0, 0)
         .outputRange(-1, 1);
+    m_turretConfig
+        .encoder
+        .positionConversionFactor(1.0 / kTurretGearing * 2 * Math.PI) // Radians
+        .velocityConversionFactor(1.0 / kTurretGearing * 2 * Math.PI * 60.0); // Radians per second
 
-    m_turretSparkMax.configure(
+    turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    turretClosedLoopController = m_turretSparkMax.getClosedLoopController();
+    turretClosedLoopController = turretSparkMax.getClosedLoopController();
+
+    turretEncoder = (SparkRelativeEncoder) turretSparkMax.getEncoder();
+    turretSparkMaxSim = new SparkMaxSim(turretSparkMax, DCMotor.getNEO(1));
+    turretEncoderSim = turretSparkMaxSim.getRelativeEncoderSim();
 
     turretSim =
         new SingleJointedArmSim(
@@ -84,14 +154,34 @@ public class LauncherIOSim implements LauncherIO {
             3 * Math.PI / 4,
             false,
             0.0);
+
+    fuelPublisher =
+        NetworkTableInstance.getDefault()
+            .getStructArrayTopic("/AdvantageKit/Launcher/Fuels", Translation3d.struct)
+            .publish();
   }
 
   @Override
   public void updateInputs(LauncherIOInputs inputs) {
     // Update the sim model based on most recent commands. The standard loop time is 20ms.
+
+    launcherMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+    flywheelSim.setInputVoltage(launcherMotorSim.getMotorVoltage());
     flywheelSim.update(0.020);
 
+    launcherMotorSim.setRotorVelocity(flywheelSim.getAngularVelocityRadPerSec() / (2 * Math.PI));
+
+    turretSparkMaxSim.setBusVoltage(RobotController.getBatteryVoltage());
+
+    turretSim.setInput(turretSparkMaxSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
     turretSim.update(0.020);
+    Logger.recordOutput("Launcher/turret sim pos", turretSim.getAngleRads());
+
+    turretSparkMaxSim.iterate(
+        turretSim.getVelocityRadPerSec(), RobotController.getBatteryVoltage(), 0.020);
+
+    turretEncoderSim.setPosition(turretSim.getAngleRads());
 
     // Compensate for a piece of fuel if required
     if (isFuel) {
@@ -112,16 +202,103 @@ public class LauncherIOSim implements LauncherIO {
 
       isFuel = false;
 
-      // TODO: Generate a fuel simulated projectile with the right parameters
+      double projectileVelocity = wwf * kWheelRadius / 2.0;
+      double horizontalVelocity =
+          projectileVelocity * Math.cos(Constants.launcherConstants.launcherAngle);
+      double verticalVelocity =
+          projectileVelocity * Math.sin(Constants.launcherConstants.launcherAngle);
+      double launchAzimuthRad = turretSim.getAngleRads() + robotPose.getRotation().getRadians();
+      double xVelocityProjectile = horizontalVelocity * Math.cos(launchAzimuthRad);
+      double yVelocityProjectile = horizontalVelocity * Math.sin(launchAzimuthRad);
 
+      Translation3d[] shot = new Translation3d[30];
+      for (int i = 0; i < 30; i++) {
+        // Generate 3 seconds worth of trajectory info at 10Hz
+        double time = (double) i * 2.0 / 30.0;
+
+        double pointX =
+            robotPose.getX() + robotVelocity.vxMetersPerSecond + xVelocityProjectile * time;
+        double pointY =
+            robotPose.getY() + robotVelocity.vyMetersPerSecond + yVelocityProjectile * time;
+        double pointZ =
+            Constants.launcherConstants.launcherHeight
+                + verticalVelocity * time
+                - 9.81 * time * time;
+        shot[i] = (new Translation3d(pointX, pointY, pointZ));
+      }
+
+      if (fuelTrajectory.size() < 30) {
+        fuelTrajectory.addLast(shot);
+        trajectoryAge.addLast(ageValue);
+      }
     }
+
+    // Handle old trajectories
+    for (int i = 0; i < 30; i++) {
+      if (trajectoryAge.size() > 0) {
+        if (ageValue - trajectoryAge.getFirst().intValue() > maxTrajectoryAge) {
+          trajectoryAge.removeFirst();
+          fuelTrajectory.removeFirst();
+        } else {
+          // Stop iterating
+          break;
+        }
+      }
+    }
+    ageValue++;
+
+    // Iterate through the ring buffer, pulling from the front, placing at the end, until all
+    // trajectories are plotted
+    Translation3d[] traj = new Translation3d[0];
+    int age;
+    for (int i = 0; i < fuelTrajectory.size(); i++) {
+
+      traj = fuelTrajectory.removeFirst();
+      age = trajectoryAge.removeFirst();
+
+      System.arraycopy(traj, 0, theTrajectories, i * 30, 30);
+
+      fuelTrajectory.addLast(traj);
+      trajectoryAge.addLast(age);
+    }
+
+    Translation3d[] loggedTrajectories = Arrays.copyOf(theTrajectories, fuelTrajectory.size() * 30);
+    fuelPublisher.set(loggedTrajectories);
+
+    if (fuelTrajectory.size() == 0) {
+      traj = new Translation3d[0];
+      fuelPublisher.set(traj);
+    }
+
+    inputs.launcherMotorVoltage = launcherMotor.getMotorVoltage().getValueAsDouble();
+    inputs.launcherStatorCurrent = launcherMotor.getStatorCurrent().getValueAsDouble();
+    inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
+    inputs.launcherAcceleration = launcherMotor.getAcceleration().getValueAsDouble();
+    inputs.launcherClosedLoopError = launcherMotor.getClosedLoopError().getValueAsDouble();
+    inputs.launcherVelocity = launcherMotor.getVelocity().getValueAsDouble() / (2 * Math.PI);
+    inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
+
+    inputs.turnMotorAppliedOutput = turretSparkMax.getAppliedOutput();
+    inputs.turnMotorBusVoltage = turretSparkMax.getBusVoltage();
+    inputs.turnMotorOutputCurrent = turretSparkMax.getOutputCurrent();
+
+    inputs.turnEncoderVelocity = turretEncoder.getVelocity();
+    inputs.turnEncoderPosition = turretEncoder.getPosition();
   }
 
   @Override
   public void setVoltage(double voltage) {
     // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
-    flywheelSim.setInput(voltage);
+    launcherMotor.setVoltage(voltage);
+    Logger.recordOutput("Launcher/flywheelVoltageCmd", voltage);
+  }
+
+  @Override
+  public void setRadPerS(double RPS) {
+    Logger.recordOutput("Launcher/testRPS", RPS);
+    launcherMotor.setControl(new VelocityVoltage(RPS / (2 * Math.PI)).withSlot(0));
   }
 
   private void launchFuel() {
@@ -140,6 +317,27 @@ public class LauncherIOSim implements LauncherIO {
 
   @Override
   public void pointAt(double angle) {
-    turretClosedLoopController.setSetpoint(Math.toRadians(angle), ControlType.kPosition);
+    // Compute the offset of the turret controller based on angle input referenced from
+    //   0 = north (positive Y)
+    //   + = counter-clockwise
+    // Angle is given in degrees
+
+    // Robot pose is in radians, 0 == intake pointing west, + = counter clockwise
+    //  The robot pose is the angle of the intake
+
+    // Turret closed loop controller is in radians around zero being over the intake
+    turretClosedLoopController.setSetpoint(angle, ControlType.kPosition);
+  }
+
+  @Override
+  public void turretVoltage(double voltage) {
+    Logger.recordOutput("Launcher/testTurnVoltage", voltage);
+    turretSparkMax.setVoltage(voltage);
+  }
+
+  @Override
+  public void updateRobotInfo(Pose2d robotPose, ChassisSpeeds robotVelocity) {
+    this.robotPose = robotPose;
+    this.robotVelocity = robotVelocity;
   }
 }

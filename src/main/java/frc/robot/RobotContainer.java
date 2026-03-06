@@ -222,6 +222,10 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+  private boolean isSim() {
+    return Constants.currentMode == Constants.Mode.SIM;
+  }
+
   private boolean isNotTest() {
     return (!DriverStation.isTest());
   }
@@ -357,10 +361,10 @@ public class RobotContainer {
 
     /// Test mode commands
 
-    navController.a().and(this::isTest).whileTrue(launcher.testFullSpeed());
-    navController.b().and(this::isTest).whileTrue(launcher.testLowSpeed());
-    navController.x().and(this::isTest).whileTrue(launcher.testTurn());
-    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+    navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
+    navController.b().and(this::isTest).and(this::isSim).whileTrue(launcher.testLowSpeed());
+    navController.x().and(this::isTest).and(this::isSim).whileTrue(launcher.testTurn());
+    navController.y().and(this::isTest).and(this::isSim).whileTrue(launcher.invertTestTurn());
 
     navController
         .rightBumper()
@@ -370,6 +374,23 @@ public class RobotContainer {
                 () -> {
                   return navController.getLeftY();
                 }));
+
+    pilotController
+        .button(7)
+        .and(DriverStation::isTest)
+        .whileTrue(launcher.testTurretRotateClockwise());
+    pilotController
+        .button(9)
+        .and(DriverStation::isTest)
+        .whileTrue(launcher.testTurretRotateCounterclockwise());
+    pilotController
+        .button(6)
+        .and(DriverStation::isTest)
+        .onTrue(launcher.testTurretRotateDisableAuto());
+    pilotController
+        .button(8)
+        .and(DriverStation::isTest)
+        .onTrue(launcher.testTurretRotateEnableAuto());
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
