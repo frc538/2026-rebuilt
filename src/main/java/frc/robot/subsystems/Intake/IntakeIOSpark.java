@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
@@ -20,7 +21,7 @@ public class IntakeIOSpark implements IntakeIO {
   private final SparkFlex Rightrotato =
       new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
   private final SparkFlex Leftrotato =
-      new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
+      new SparkFlex(Constants.Intake.LeftRotatoCanId, MotorType.kBrushless);
 
   private final RelativeEncoder armEncoder = movementMotor.getEncoder();
   private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();
@@ -36,6 +37,8 @@ public class IntakeIOSpark implements IntakeIO {
         .encoder
         .positionConversionFactor(radiansPerRotation)
         .velocityConversionFactor(radiansPerRotation / 60.0);
+
+    config.idleMode(IdleMode.kBrake);
 
     RotatoConfig.encoder
         .positionConversionFactor(radiansPerRotation)
