@@ -78,7 +78,7 @@ public class IntakeIOSpark implements IntakeIO {
 
   @Override
   public void runRotato(double speed) {
-    Rightrotato.set(speed);
+    Rightrotato.set(speed * -1);
     Leftrotato.set(speed);
   }
 
