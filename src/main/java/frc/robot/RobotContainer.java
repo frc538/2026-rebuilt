@@ -403,6 +403,7 @@ public class RobotContainer {
     pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
     pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
     pilotController.start().and(this::isTest).whileTrue(intake.testIntake());
+    pilotController.a().and(this::isNotTest).onTrue(intake.togglePosition());
   }
 
   /**
