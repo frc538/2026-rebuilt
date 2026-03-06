@@ -20,7 +20,7 @@ public class IntakeIOSpark implements IntakeIO {
   private final SparkFlex Rightrotato =
       new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
   private final SparkFlex Leftrotato =
-      new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
+      new SparkFlex(Constants.Intake.LeftRotatoCanId, MotorType.kBrushless);
 
   private final RelativeEncoder armEncoder = movementMotor.getEncoder();
   private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();
