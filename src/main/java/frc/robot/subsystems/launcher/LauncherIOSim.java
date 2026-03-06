@@ -183,6 +183,11 @@ public class LauncherIOSim implements LauncherIO {
 
     turretEncoderSim.setPosition(turretSim.getAngleRads());
 
+    // Just bypass the turret sim stuff to make it point reasonably
+    turretEncoderSim.setPosition(turretClosedLoopController.getSetpoint());
+    turretEncoder.setPosition(turretClosedLoopController.getSetpoint());
+    turretSim.setState(turretClosedLoopController.getSetpoint(), 0);
+
     // Compensate for a piece of fuel if required
     if (isFuel) {
       double wwi = flywheelSim.getAngularVelocityRadPerSec();
