@@ -3,6 +3,7 @@ package frc.robot.subsystems.hopper;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.HubTracker;
 import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends SubsystemBase {
@@ -111,5 +112,14 @@ public class Hopper extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Hopper", inputs);
     Logger.recordOutput("Hopper/Activated", HopperActivated);
+  }
+
+  // do that Calulation in Launcher
+  public void FirePermit(boolean Aimgood, boolean SpeedGood) {
+    if (Aimgood && SpeedGood && HubTracker.isActive()) {
+      Logger.recordOutput("Hopper/FirePermit", true);
+    } else {
+      Logger.recordOutput("Hopper/FirePermit", false);
+    }
   }
 }
