@@ -40,11 +40,11 @@ public final class Constants {
 
   public static class Features {
     public static final boolean ClimberEnabled = true;
-    public static final boolean DriveEnabled = true;
+    public static final boolean DriveEnabled = false;
     public static final boolean HopperEnabled = true;
+    public static final boolean LauncherEnabled = false;
+    public static final boolean VisionEnabled = false;
     public static final boolean IntakeEnabled = true;
-    public static final boolean LauncherEnabled = true;
-    public static final boolean VisionEnabled = true;
   }
 
   public static class navigationConstants {
@@ -90,10 +90,10 @@ public final class Constants {
     public static final double SDConversionFactor = 1.0;
     public static final double FDConversionFactor = 1.0;
 
-    public static final double SpindexSpeed = 1.0;
-    public static final double FeedSpeed = 1.0;
+    public static final double SpindexSpeed = -.25;
+    public static final double FeedSpeed = -.5;
 
-    public static final double TestSpindexSpeed = 0.3;
+    public static final double TestSpindexSpeed = -0.3;
     public static final double TestFeedSpeed = -0.3;
   }
 
@@ -139,9 +139,10 @@ public final class Constants {
     public static final int LeftRotatoCanId = 6;
     public static final int MovMotorCanId = 2;
 
-    public static final double UprightPos = Math.PI / 2;
-    public static final double ReadyPos = 0;
-    public static final double IntakeKg = 0;
+    public static final double UprightPos =
+        Math.toRadians(-13.0); // Measured upright intake position at 13 degrees past 90
+    public static final double ReadyPos = Math.PI / 2;
+    public static final double IntakeKg = -1.6;
 
     public static final double IntakeSpeed = 1;
     public static final double MovementMotorVelocity = 1;
@@ -149,12 +150,12 @@ public final class Constants {
     public static final double RotatoPosConFac = 2 * Math.PI;
     public static final double RotatoVelConFac = Math.PI / 30;
 
-    public static final double ArmPosConFac = 2 * Math.PI;
-    public static final double ArmVelConFac = Math.PI / 30;
+    public static final double ArmPosConFac = 2 * Math.PI / 9;
+    public static final double ArmVelConFac = ArmPosConFac / 60;
 
-    public static final double IntakekP = 0.1;
-    public static final double IntakekI = 0.01;
-    public static final double IntakekD = 0.0;
+    public static final double ArmkP = 0.2;
+    public static final double ArmkI = 0;
+    public static final double ArmkD = 0.0;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
     public static final double RotatoRPM = .5;
