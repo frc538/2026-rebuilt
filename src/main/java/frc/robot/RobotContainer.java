@@ -388,8 +388,8 @@ public class RobotContainer {
 
     // navController.x().and(this::isTest).onTrue(intake.testIntakeDown());
     // navController.a().and(this::isTest).onTrue(intake.testIntakeUp());
-    //pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
-    //pilotController.a().and(this::isTest).onTrue(intake.togglePosition());
+    // pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
+    // pilotController.a().and(this::isTest).onTrue(intake.togglePosition());
   }
 
   /**
