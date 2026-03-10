@@ -40,10 +40,10 @@ public final class Constants {
 
   public static class Features {
     public static final boolean ClimberEnabled = true;
-    public static final boolean DriveEnabled = false;
+    public static final boolean DriveEnabled = true;
     public static final boolean HopperEnabled = true;
-    public static final boolean LauncherEnabled = false;
-    public static final boolean VisionEnabled = false;
+    public static final boolean LauncherEnabled = true;
+    public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = true;
   }
 
