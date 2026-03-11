@@ -44,6 +44,8 @@ public class IntakeIOSpark implements IntakeIO {
         .velocityConversionFactor(Constants.Intake.RotatoVelConFac);
     RotatoConfig.smartCurrentLimit(Constants.CurrentLimits.RotatoLimit);
 
+    config.smartCurrentLimit(Constants.CurrentLimits.IntakeLiftyCurrentLimit);
+
     config
         .closedLoop
         .p(Constants.Intake.ArmkP)

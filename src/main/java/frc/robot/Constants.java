@@ -49,7 +49,7 @@ public final class Constants {
 
   public static class CurrentLimits {
     // Turret
-    public static final int LaunchTurretLimit = 120;
+    public static final int LaunchTurretLimit = 60;
     public static final int TurnCurrentLimit = 50;
 
     // Intake
