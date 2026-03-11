@@ -48,13 +48,20 @@ public final class Constants {
   }
 
   public static class CurrentLimits {
-    public static final int RotatoLimit = 25;
-    public static final int SpindexCurrentLimit = 50;
-    public static final int FeedCurrentLimit = 50;
-    public static final int ClimberCurrentLimit = 50;
-    public static final int IntakeLiftyCurrentLimit = 50;
+    // Turret
     public static final int LaunchTurretLimit = 120;
     public static final int TurnCurrentLimit = 50;
+
+    // Intake
+    public static final int RotatoLimit = 25;
+    public static final int IntakeLiftyCurrentLimit = 50;
+    
+    // Hopper
+    public static final int SpindexCurrentLimit = 50;
+    public static final int FeedCurrentLimit = 50;
+
+    // Climber
+    public static final int ClimberCurrentLimit = 50;
   }
 
   public static class navigationConstants {
