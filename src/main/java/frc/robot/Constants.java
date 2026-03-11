@@ -47,6 +47,16 @@ public final class Constants {
     public static final boolean IntakeEnabled = true;
   }
 
+  public static class CurrentLimits {
+    public static final int RotatoLimit = 25;
+    public static final int SpindexCurrentLimit = 50;
+    public static final int FeedCurrentLimit = 50;
+    public static final int ClimberCurrentLimit = 50;
+    public static final int IntakeLiftyCurrentLimit = 50;
+    public static final int LaunchTurretLimit = 120;
+    public static final int TurnCurrentLimit = 50;
+  }
+
   public static class navigationConstants {
     // NAV MAP
     // Blue
@@ -100,7 +110,6 @@ public final class Constants {
   public final class launcherConstants {
     public static final int launchMotorCanId = 37;
     public static final int turnMotorCanId = 62;
-    public static final int CurrentLimit = 50;
 
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
     public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());

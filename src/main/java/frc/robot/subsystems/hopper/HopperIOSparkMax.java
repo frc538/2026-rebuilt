@@ -34,6 +34,11 @@ public class HopperIOSparkMax implements HopperIO {
         .idleMode(IdleMode.kBrake)
         // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
         .inverted(false);
+
+    fdConfig.smartCurrentLimit(Constants.CurrentLimits.FeedCurrentLimit);
+
+    sdConfig.smartCurrentLimit(Constants.CurrentLimits.SpindexCurrentLimit);
+
     fdConfig
         .encoder
         .positionConversionFactor(Constants.Hopper.FDConversionFactor)
