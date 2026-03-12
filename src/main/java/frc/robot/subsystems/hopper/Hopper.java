@@ -79,7 +79,7 @@ public class Hopper extends SubsystemBase {
 
   public Command testSpindex() {
     return run(() -> {
-          io.SpindexSpeedCommand(Constants.Hopper.TestFeedSpeed);
+          io.SpindexSpeedCommand(Constants.Hopper.TestSpindexSpeed);
         })
         .finallyDo(() -> io.SpindexSpeedCommand(0));
   }
