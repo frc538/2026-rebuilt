@@ -41,7 +41,7 @@ public class Intake extends SubsystemBase {
     mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
     io.setIntakePosition(mCurrentState.position, inputs.positionRad);
 
-    if (inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
+    if (inputs.positionRad < Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(0);
     } else {
       io.runRotato(Constants.Intake.RotatoRPM);

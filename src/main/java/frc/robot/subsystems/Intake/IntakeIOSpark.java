@@ -31,20 +31,24 @@ public class IntakeIOSpark implements IntakeIO {
   public IntakeIOSpark() {
     SparkMaxConfig config = new SparkMaxConfig();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
-    double radiansPerRotation = 2 * Math.PI;
 
     config
         .encoder
-        .positionConversionFactor(radiansPerRotation)
-        .velocityConversionFactor(radiansPerRotation / 60.0);
+        .positionConversionFactor(Constants.Intake.ArmPosConFac)
+        .velocityConversionFactor(Constants.Intake.ArmVelConFac);
 
     config.idleMode(IdleMode.kBrake);
 
     RotatoConfig.encoder
-        .positionConversionFactor(radiansPerRotation)
-        .velocityConversionFactor(radiansPerRotation / 60.0);
+        .positionConversionFactor(Constants.Intake.RotatoPosConFac)
+        .velocityConversionFactor(Constants.Intake.RotatoVelConFac);
 
-    config.closedLoop.p(0.1).i(0.0).d(0.01).outputRange(-1.0, 1.0);
+    config
+        .closedLoop
+        .p(Constants.Intake.ArmkP)
+        .i(Constants.Intake.ArmkI)
+        .d(Constants.Intake.ArmkD)
+        .outputRange(-1.0, 1.0);
 
     movementMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -52,6 +56,7 @@ public class IntakeIOSpark implements IntakeIO {
         RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     Leftrotato.configure(
         RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    armEncoder.setPosition(Constants.Intake.UprightPos);
   }
 
   @Override
@@ -78,7 +83,7 @@ public class IntakeIOSpark implements IntakeIO {
 
   @Override
   public void runRotato(double speed) {
-    Rightrotato.set(speed);
+    Rightrotato.set(speed * -1);
     Leftrotato.set(speed);
   }
 
@@ -88,7 +93,7 @@ public class IntakeIOSpark implements IntakeIO {
         radians,
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
-        Constants.Intake.IntakeKg * Math.cos(CurrentRads));
+        Constants.Intake.IntakeKg * Math.sin(CurrentRads));
   }
 
   @Override

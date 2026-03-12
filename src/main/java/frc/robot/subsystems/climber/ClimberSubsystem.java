@@ -39,7 +39,7 @@ public class ClimberSubsystem extends SubsystemBase {
         });
   }
 
-  public Command TestClimberExtend() {
+  public Command TestClimberRetract() {
     return runEnd(
         () -> {
           motorSpeed = 0.2;
@@ -51,7 +51,7 @@ public class ClimberSubsystem extends SubsystemBase {
         });
   }
 
-  public Command TestClimberRetract() {
+  public Command TestClimberExtend() {
     return runEnd(
         () -> {
           motorSpeed = -0.2;
