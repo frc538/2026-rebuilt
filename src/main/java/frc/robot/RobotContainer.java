@@ -363,6 +363,8 @@ public class RobotContainer {
 
     navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
 
+    navController.b().and(this::isTest).whileTrue(launcher.testTurn());
+    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
     navController
         .rightBumper()
         .and(DriverStation::isTest)
