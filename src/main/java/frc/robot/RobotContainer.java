@@ -366,6 +366,8 @@ public class RobotContainer {
     navController.x().and(this::isTest).and(this::isSim).whileTrue(launcher.testTurn());
     navController.y().and(this::isTest).and(this::isSim).whileTrue(launcher.invertTestTurn());
 
+    navController.b().and(this::isTest).whileTrue(launcher.testTurn());
+    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
     navController
         .rightBumper()
         .and(DriverStation::isTest)
@@ -379,17 +381,17 @@ public class RobotContainer {
     //////////////////////////////////////////////////////////////
 
     pilotController.b().and(this::isNotTest).onTrue(hopper.HopperToggle());
-    pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
-    pilotController.a().and(this::isTest).whileTrue(hopper.testSpindex());
+    pilotController.y().and(this::isTest).whileTrue(hopper.testFeed());
+    pilotController.b().and(this::isTest).whileTrue(hopper.HopperToggle());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    // navController.x().and(this::isTest).onTrue(intake.testIntakeDown());
-    // navController.a().and(this::isTest).onTrue(intake.testIntakeUp());
-    //pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
-    //pilotController.a().and(this::isTest).onTrue(intake.togglePosition());
+    navController.x().onTrue(intake.togglePosition());
+    navController.a().onTrue(intake.testIntakeUp());
+    pilotController.x().and(this::isTest).whileTrue(intake.testIntake());
+    pilotController.a().and(this::isTest).onTrue(intake.togglePosition());
   }
 
   /**
