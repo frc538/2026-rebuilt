@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "neutral shoot path red start"
+            "pathName": "right shoot path blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Outpost Fuel Collect Neutral red"
+            "pathName": "Collect from neutral Blue"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "neutral shoot path blue start"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "General Red",
+  "folder": null,
   "choreoAuto": false
 }

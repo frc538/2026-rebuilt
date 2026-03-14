@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "neutral shoot path blue start"
+            "pathName": "left shoot path blue start"
           }
         },
         {
@@ -15,11 +15,17 @@
           "data": {
             "pathName": "Collect from neutral Blue"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "neutral shoot path blue start"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "General Blue",
+  "folder": null,
   "choreoAuto": false
 }

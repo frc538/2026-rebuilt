@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "neutral shoot path blue start"
+            "pathName": "middle shoot path blue"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Go climb from neutral Blue"
+            "pathName": "Collect from neutral Blue"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "neutral shoot path blue start"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "General Blue",
+  "folder": null,
   "choreoAuto": false
 }
