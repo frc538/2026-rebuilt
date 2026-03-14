@@ -264,7 +264,7 @@ public class RobotContainer {
     navController.y().and(this::isNotTest).onTrue(navSys.pathFindUp(drive.getPose()));
 
     navController.povRight().and(this::isNotTest).onTrue(navSys.rightCenter(drive.getPose()));
-    navController.povLeft().and(this::isNotTest).onTrue(navSys.leftCenter(drive.getPose()));
+    navController.povLeft().and(this::isNotTest).onTrue(navSys.leftCenter(() -> {return drive.getPose();}));
 
     navController.rightBumper().and(this::isNotTest).whileTrue(hopper.HopperToggle());
 

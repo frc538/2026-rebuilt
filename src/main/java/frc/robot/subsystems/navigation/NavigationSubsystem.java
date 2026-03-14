@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -272,8 +273,10 @@ public class NavigationSubsystem extends SubsystemBase {
       return generatePath(navigationConstants.topCenter);
     }
   }
+
   
-  public Command leftCenter(Pose2d robotPose) {
+  
+  public Command leftCenter(Pose2dGetter poseGetter) {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       double x1 = robotPose.getX();
       double y1 = robotPose.getY();
@@ -306,16 +309,11 @@ public class NavigationSubsystem extends SubsystemBase {
 
       double targetGlobalAngle = Math.atan2(deltaY, deltaX);
 
-      targetAngle = targetGlobalAngle-robotPose.getRotation().getRadians();
-      if (targetAngle < -Math.PI) {
-        targetAngle += 2 * Math.PI;
-      }
-      if (targetAngle > Math.PI) {
-        targetAngle -= 2 * Math.PI;
-      }
-      
       //set robot angle to targetangle
-      return generatePath(navigationConstants.bottomCenter);
+      Pose2d endpoint = navigationConstants.bottomCenter;
+      endpoint.rotateBy(Rotation2d.fromRadians(targetGlobalAngle));
+      
+      return generatePath(endpoint);
     }
   }
   
