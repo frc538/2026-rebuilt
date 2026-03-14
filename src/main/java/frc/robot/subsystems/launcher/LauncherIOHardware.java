@@ -50,7 +50,7 @@ public class LauncherIOHardware implements LauncherIO {
             .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(Amps.of(120))
+                    .withStatorCurrentLimit(Amps.of(Constants.CurrentLimits.LaunchTurretLimit))
                     .withStatorCurrentLimitEnable(true))
             .withFeedback(
                 new FeedbackConfigs()
@@ -60,7 +60,7 @@ public class LauncherIOHardware implements LauncherIO {
     launcherMotor.getConfigurator().apply(launcherMotorConfig);
 
     turnConfig.idleMode(IdleMode.kBrake);
-    turnConfig.smartCurrentLimit(Constants.launcherConstants.CurrentLimit);
+    turnConfig.smartCurrentLimit(Constants.CurrentLimits.TurnCurrentLimit);
     turnConfig.closedLoop.pid(turnP, turnI, turnD).feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

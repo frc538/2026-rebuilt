@@ -23,6 +23,8 @@ public class ClimberIOSparkMax implements ClimberIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(Constants.ClimberConstants.CurrentLimit);
 
+    climberconfig.smartCurrentLimit(Constants.CurrentLimits.ClimberCurrentLimit);
+
     climberconfig
         .encoder
         .positionConversionFactor(Constants.ClimberConstants.ClimberPositionConversionFactor)
