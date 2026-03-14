@@ -5,9 +5,12 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.Optional;
 
 public class NavigationSubsystem extends SubsystemBase {
 
@@ -24,13 +27,31 @@ public class NavigationSubsystem extends SubsystemBase {
     Pose2d targetPose = endPoint;
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    Optional<Alliance> alliance = DriverStation.getAlliance();
 
-    return AutoBuilder.pathfindToPose(
-        targetPose, constraints, 0.0 // Goal end velocity in meters/sec
-        // Rotation delay distance in meters. This is how far the robot should travel
-        // before attempting to rotate.
-        );
+    Command x;
+    x = AutoBuilder.pathfindToPose(targetPose, constraints, 0.0); // filler + initialization
+
+    if (alliance.isPresent()) {
+      if (alliance.get() == Alliance.Red) {
+        x =
+            AutoBuilder.pathfindToPoseFlipped(
+                targetPose, constraints, 0.0 // Goal end velocity in meters/sec
+                // Rotation delay distance in meters. This is how far the robot should travel
+                // before attempting to rotate.
+                );
+      } else if (alliance.get() == Alliance.Blue) {
+        x =
+            AutoBuilder.pathfindToPose(
+                targetPose, constraints, 0.0 // Goal end velocity in meters/sec
+                // Rotation delay distance in meters. This is how far the robot should travel
+                // before attempting to rotate.
+                );
+      }
+    }
+    return x;
   }
+}
   /*
   public Command showPath() {
     return Commands.runOnce(
@@ -45,4 +66,3 @@ public class NavigationSubsystem extends SubsystemBase {
     // return m_field.setRobotPose(AutoBuilder.getCurrentPose());
   }
     */
-}
