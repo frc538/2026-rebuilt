@@ -13,14 +13,9 @@
     "Right Red"
   ],
   "autoFolders": [
-    "General Blue",
-    "General Red",
     "Left Blue",
-    "Left Red",
     "Middle Blue",
-    "Middle Red",
-    "Right Blue",
-    "Right Red"
+    "Right Blue"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
