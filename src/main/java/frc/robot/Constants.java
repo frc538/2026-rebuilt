@@ -51,19 +51,19 @@ public final class Constants {
     // NAV MAP
     // Blue
     public static final Pose2d centerPointBlue = new Pose2d(2.5, 4.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d leftCenterPointBlue =
+    public static final Pose2d topCenterPointBlue =
         new Pose2d(2.5, 6.5, Rotation2d.fromDegrees(90));
-    public static final Pose2d rightCenterPointBlue =
+    public static final Pose2d bottomCenterPointBlue =
         new Pose2d(2.5, 1.5, Rotation2d.fromDegrees(270));
-    // Center (RELATIVE TO BLUE SIDE)
+    // Center
     public static final Pose2d centerPoint = new Pose2d(8.25, 4.0, Rotation2d.fromDegrees(45));
-    public static final Pose2d leftCenterPoint = new Pose2d(8.25, 6.5, Rotation2d.fromDegrees(90));
-    public static final Pose2d rightCenterPoint =
+    public static final Pose2d topCenterPoint = new Pose2d(8.25, 6.5, Rotation2d.fromDegrees(90));
+    public static final Pose2d bottomCenterPoint =
         new Pose2d(8.25, 1.5, Rotation2d.fromDegrees(270));
     // Red
     public static final Pose2d centerPointRed = new Pose2d(14, 4.0, Rotation2d.fromDegrees(45));
-    public static final Pose2d rightCenterPointRed = new Pose2d(14, 6.5, Rotation2d.fromDegrees(90));
-    public static final Pose2d leftCenterPointRed =
+    public static final Pose2d topCenterPointRed = new Pose2d(14, 6.5, Rotation2d.fromDegrees(90));
+    public static final Pose2d bottomCenterPointRed =
         new Pose2d(14, 1.5, Rotation2d.fromDegrees(270));
   }
 

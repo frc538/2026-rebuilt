@@ -264,7 +264,7 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPointBlue));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointBlue));
     navController
         .b()
         .and(
@@ -278,7 +278,7 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPointBlue));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointBlue));
     // Red
     navController
         .povLeft()
@@ -293,14 +293,14 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPointRed));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPointRed));
     navController
         .povDown()
         .and(
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPointRed));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPointRed));
     // Center
     navController
         .rightBumper()
@@ -308,7 +308,7 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPoint));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.topCenterPoint));
     navController
         .start()
         .and(
@@ -322,12 +322,13 @@ public class RobotContainer {
             () -> {
               return !DriverStation.isTest();
             })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPoint));
+        .onTrue(navSys.generatePath(Constants.navigationConstants.bottomCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
 
     // Reset gyro to 0° when B button is pressed
+
     pilotController
-        .rightStick()
+        .leftStick()
         .and(this::isNotTest)
         .onTrue(
             Commands.runOnce(

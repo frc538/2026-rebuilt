@@ -174,6 +174,7 @@ public class DriveCommands {
 
           // Square rotation value for more precise control
           omegaCMD = Math.copySign(omegaCMD * omegaCMD, omegaCMD);
+          omegaCMD = omegaCMD * drive.getMaxAngularSpeedRadPerSec();
 
           // Calculate angular speed
           double omega = angleController.calculate(drive.yawRate(), omegaCMD) + omegaCMD;
