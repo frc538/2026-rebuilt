@@ -1,8 +1,5 @@
 package frc.robot.subsystems.navigation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -13,18 +10,25 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.navigationConstants;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NavigationSubsystem extends SubsystemBase {
 
   public Field2d m_field = new Field2d();
   public PathPlannerPath path;
-  public List <Pose2d> positions = new ArrayList<>();
+  public List<Pose2d> positions = new ArrayList<>();
   public Pose2d selectedPose;
   public double targetAngle = 0;
 
-  public NavigationSubsystem () {
+  public interface Pose2dSupplier {
+    Pose2d getPose2d();
+  }
+
+  public NavigationSubsystem() {
     super();
     positions.add(navigationConstants.leftBlue);
     positions.add(navigationConstants.rightBlue);
@@ -58,8 +62,8 @@ public class NavigationSubsystem extends SubsystemBase {
         selectedPose = navigationConstants.leftRed;
       } else if (closestPose == navigationConstants.rightRed) {
         System.out.println("Max Forward");
-      } else{
-        //leftred
+      } else {
+        // leftred
         System.out.println("Max Forward");
       }
     } else {
@@ -79,12 +83,12 @@ public class NavigationSubsystem extends SubsystemBase {
         selectedPose = navigationConstants.centerLeftBlue;
       } else if (closestPose == navigationConstants.rightRed) {
         selectedPose = navigationConstants.centerRightRed;
-      } else{
-        //leftred
+      } else {
+        // leftred
         selectedPose = navigationConstants.centerLeftRed;
       }
     }
-        return generatePath(selectedPose);
+    return generatePath(selectedPose);
   }
 
   public Command pathFindDown(Pose2d robotPose) {
@@ -105,8 +109,8 @@ public class NavigationSubsystem extends SubsystemBase {
         selectedPose = navigationConstants.centerRightBlue;
       } else if (closestPose == navigationConstants.rightRed) {
         selectedPose = navigationConstants.centerRightRed;
-      } else{
-        //leftred
+      } else {
+        // leftred
         selectedPose = navigationConstants.centerRightRed;
       }
     } else {
@@ -126,14 +130,14 @@ public class NavigationSubsystem extends SubsystemBase {
         selectedPose = navigationConstants.leftRed;
       } else if (closestPose == navigationConstants.rightRed) {
         System.out.println("Max Backward");
-      } else{
-        //leftred
+      } else {
+        // leftred
         System.out.println("Max Backward");
       }
     }
-        return generatePath(selectedPose);
+    return generatePath(selectedPose);
   }
-  
+
   public Command pathFindLeft(Pose2d robotPose) {
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       Pose2d closestPose;
@@ -152,8 +156,8 @@ public class NavigationSubsystem extends SubsystemBase {
         selectedPose = navigationConstants.centerRightRed;
       } else if (closestPose == navigationConstants.rightRed) {
         System.out.println("Max Left");
-      } else{
-        //leftred
+      } else {
+        // leftred
         selectedPose = navigationConstants.rightRed;
       }
     } else {
@@ -173,12 +177,12 @@ public class NavigationSubsystem extends SubsystemBase {
         System.out.println("Max Left");
       } else if (closestPose == navigationConstants.rightRed) {
         selectedPose = navigationConstants.leftRed;
-      } else{
-        //leftred
+      } else {
+        // leftred
         System.out.println("Max Left");
+      }
     }
-  }
-  return generatePath(selectedPose);
+    return generatePath(selectedPose);
   }
 
   public Command pathFindRight(Pose2d robotPose) {
@@ -199,8 +203,8 @@ public class NavigationSubsystem extends SubsystemBase {
         System.out.println("Max Right");
       } else if (closestPose == navigationConstants.rightRed) {
         selectedPose = navigationConstants.leftRed;
-      } else{
-        //leftred
+      } else {
+        // leftred
         System.out.println("Max Right");
       }
     } else {
@@ -220,12 +224,12 @@ public class NavigationSubsystem extends SubsystemBase {
         selectedPose = navigationConstants.centerRightRed;
       } else if (closestPose == navigationConstants.rightRed) {
         System.out.println("Max Right");
-      } else{
-        //leftred
+      } else {
+        // leftred
         selectedPose = navigationConstants.rightRed;
       }
     }
-        return generatePath(selectedPose);
+    return generatePath(selectedPose);
   }
 
   public Command rightCenter(Pose2d robotPose) {
@@ -235,20 +239,20 @@ public class NavigationSubsystem extends SubsystemBase {
       double x2 = navigationConstants.bottomCenter.getX();
       double y2 = navigationConstants.bottomCenter.getY();
 
-      double deltaX = x2-x1;
-      double deltaY = y2-y1;
+      double deltaX = x2 - x1;
+      double deltaY = y2 - y1;
 
       double targetGlobalAngle = Math.atan2(deltaY, deltaX);
 
-      targetAngle = targetGlobalAngle-robotPose.getRotation().getRadians();
+      targetAngle = targetGlobalAngle - robotPose.getRotation().getRadians();
       if (targetAngle < -Math.PI) {
         targetAngle += 2 * Math.PI;
       }
       if (targetAngle > Math.PI) {
         targetAngle -= 2 * Math.PI;
       }
-      
-      //set robot angle to targetangle
+
+      // set robot angle to targetangle
       return generatePath(navigationConstants.bottomCenter);
     } else {
       double x1 = robotPose.getX();
@@ -256,67 +260,65 @@ public class NavigationSubsystem extends SubsystemBase {
       double x2 = navigationConstants.topCenter.getX();
       double y2 = navigationConstants.topCenter.getY();
 
-      double deltaX = x2-x1;
-      double deltaY = y2-y1;
+      double deltaX = x2 - x1;
+      double deltaY = y2 - y1;
 
       double targetGlobalAngle = Math.atan2(deltaY, deltaX);
 
-      targetAngle = targetGlobalAngle-robotPose.getRotation().getRadians();
+      targetAngle = targetGlobalAngle - robotPose.getRotation().getRadians();
       if (targetAngle < -Math.PI) {
         targetAngle += 2 * Math.PI;
       }
       if (targetAngle > Math.PI) {
         targetAngle -= 2 * Math.PI;
       }
-      
-      //set robot angle to targetangle
+
+      // set robot angle to targetangle
       return generatePath(navigationConstants.topCenter);
     }
   }
 
-  
-  
-  public Command leftCenter(Pose2dGetter poseGetter) {
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      double x1 = robotPose.getX();
-      double y1 = robotPose.getY();
-      double x2 = navigationConstants.topCenter.getX();
-      double y2 = navigationConstants.topCenter.getY();
+  public Command leftCenter(Pose2dSupplier poseSupplier) {
+    return Commands.runOnce(
+        () -> {
+          Pose2d thePose = poseSupplier.getPose2d();
+          if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            double x1 = thePose.getX();
+            double y1 = thePose.getY();
+            double x2 = navigationConstants.topCenter.getX();
+            double y2 = navigationConstants.topCenter.getY();
 
-      double deltaX = x2-x1;
-      double deltaY = y2-y1;
+            double deltaX = x2 - x1;
+            double deltaY = y2 - y1;
 
-      double targetGlobalAngle = Math.atan2(deltaY, deltaX);
+            double targetGlobalAngle = Math.atan2(deltaY, deltaX);
 
-      targetAngle = targetGlobalAngle-robotPose.getRotation().getRadians();
-      if (targetAngle < -Math.PI) {
-        targetAngle += 2 * Math.PI;
-      }
-      if (targetAngle > Math.PI) {
-        targetAngle -= 2 * Math.PI;
-      }
-      
-      //set robot angle to targetangle
-      return generatePath(navigationConstants.topCenter);
-    } else {
-      double x1 = robotPose.getX();
-      double y1 = robotPose.getY();
-      double x2 = navigationConstants.bottomCenter.getX();
-      double y2 = navigationConstants.bottomCenter.getY();
+            // set robot angle to targetangle
+            Pose2d endpoint = navigationConstants.topCenter;
+            endpoint.rotateBy(Rotation2d.fromRadians(targetGlobalAngle));
 
-      double deltaX = x2-x1;
-      double deltaY = y2-y1;
+            // set robot angle to targetangle
+            generatePath(endpoint);
+          } else {
+            double x1 = thePose.getX();
+            double y1 = thePose.getY();
+            double x2 = navigationConstants.bottomCenter.getX();
+            double y2 = navigationConstants.bottomCenter.getY();
 
-      double targetGlobalAngle = Math.atan2(deltaY, deltaX);
+            double deltaX = x2 - x1;
+            double deltaY = y2 - y1;
 
-      //set robot angle to targetangle
-      Pose2d endpoint = navigationConstants.bottomCenter;
-      endpoint.rotateBy(Rotation2d.fromRadians(targetGlobalAngle));
-      
-      return generatePath(endpoint);
-    }
+            double targetGlobalAngle = Math.atan2(deltaY, deltaX);
+
+            // set robot angle to targetangle
+            Pose2d endpoint = navigationConstants.bottomCenter;
+            endpoint.rotateBy(Rotation2d.fromRadians(targetGlobalAngle));
+
+            generatePath(endpoint);
+          }
+        });
   }
-  
+
   public Command generatePath(Pose2d endPoint) {
 
     // represents the goal holonomic rotation
