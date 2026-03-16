@@ -4,10 +4,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.RotationTarget;
 import com.pathplanner.lib.path.Waypoint;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -130,7 +127,6 @@ public class Navigation2 extends SubsystemBase {
     int index = -1;
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       Translation2d centerPoint = new Translation2d(8.27, 4);
-
       robotPose = robotPose.rotateAround(centerPoint, new Rotation2d(Math.PI));
     }
     if (robotPose.getY() < 4) {
@@ -267,6 +263,7 @@ public class Navigation2 extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Logger.recordOutput("Guidance/guidanceRobotPoseIndex", findStartingNode(theDrive.getPose()).m_index);
     if (thePath != null) {
       if (thePath.isFinished()) {
         currentEdgeList.clear();
