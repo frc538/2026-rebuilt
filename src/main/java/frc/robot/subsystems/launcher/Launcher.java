@@ -56,7 +56,7 @@ public class Launcher extends SubsystemBase {
     mDesiredState = new TrapezoidProfile.State();
   }
 
-  public Command disableShoot() {
+  public Command toggleShoot() {
     return Commands.runOnce(() -> disableShoot = !disableShoot);
   }
 
@@ -250,6 +250,8 @@ public class Launcher extends SubsystemBase {
     if (!DriverStation.isTest() || autoRotate) {
       if (disableShoot == false) {
         io.setRadPerS(initialWheelRotVelocity);
+      } else {
+        io.setRadPerS(0);
       }
     }
   }

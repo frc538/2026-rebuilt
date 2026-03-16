@@ -325,6 +325,8 @@ public class RobotContainer {
         .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPoint));
     // controller.rightBumper().onTrue(navSys.showPath());
 
+    navController.leftStick().and(this::isNotTest).onTrue(launcher.toggleShoot());
+
     // Reset gyro to 0° when B button is pressed
     pilotController
         .rightStick()
