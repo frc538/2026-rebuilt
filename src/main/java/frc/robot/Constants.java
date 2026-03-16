@@ -64,6 +64,8 @@ public final class Constants {
 
     public static final Pose2d centerRightRed = new Pose2d(10.5, 5.5, Rotation2d.fromDegrees(180));
     public static final Pose2d centerLeftRed = new Pose2d(10.5, 2.5, Rotation2d.fromDegrees(180));
+
+    public static final double distanceThreshold = 0.5; // meters
   }
 
   public static class ClimberConstants {
