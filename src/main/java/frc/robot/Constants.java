@@ -7,9 +7,6 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -52,14 +49,13 @@ public final class Constants {
 
   public static class navigationConstants {
     // NAV MAP
-    public static final Pose2d leftBlue =
-        new Pose2d(3, 5.5, Rotation2d.fromDegrees(0));
-    public static final Pose2d rightBlue =
-        new Pose2d(3, 2.5, Rotation2d.fromDegrees(0));
+    public static final Pose2d leftBlue = new Pose2d(3, 5.5, Rotation2d.fromDegrees(0));
+    public static final Pose2d rightBlue = new Pose2d(3, 2.5, Rotation2d.fromDegrees(0));
     public static final Pose2d centerRightBlue = new Pose2d(6.3, 2.5, Rotation2d.fromDegrees(0));
     public static final Pose2d centerLeftBlue = new Pose2d(6.3, 5.5, Rotation2d.fromDegrees(0));
 
-    //degrees for these two are inverted because thats the way your going to wanna face when you reach the point
+    // degrees for these two are inverted because thats the way your going to wanna face when you
+    // reach the point
     public static final Pose2d topCenter = new Pose2d(8.7, 7, Rotation2d.fromDegrees(90));
     public static final Pose2d bottomCenter = new Pose2d(8.7, 1, Rotation2d.fromDegrees(270));
 
