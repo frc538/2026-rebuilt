@@ -27,6 +27,7 @@ public class Launcher extends SubsystemBase {
   private double targetAzimuth;
   private double launchSpeed;
   private boolean shootSide = false;
+  private boolean disableShoot = false;
   private double testRadPerS = 0.0;
   private Pose2d aimPointComp = new Pose2d(0, 0, new Rotation2d());
   private double finalWheelRotationVelocity;
@@ -53,6 +54,10 @@ public class Launcher extends SubsystemBase {
 
     mCurrentState = new TrapezoidProfile.State();
     mDesiredState = new TrapezoidProfile.State();
+  }
+
+  public Command toggleShoot() {
+    return Commands.runOnce(() -> disableShoot = !disableShoot);
   }
 
   public Command testFullSpeed() {
@@ -243,7 +248,11 @@ public class Launcher extends SubsystemBase {
 
   private void shoot() {
     if (!DriverStation.isTest() || autoRotate) {
-      io.setRadPerS(initialWheelRotVelocity);
+      if (disableShoot == false) {
+        io.setRadPerS(initialWheelRotVelocity);
+      } else {
+        io.setRadPerS(0);
+      }
     }
   }
 
