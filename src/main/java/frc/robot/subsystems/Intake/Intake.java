@@ -92,11 +92,11 @@ public class Intake extends SubsystemBase {
           }
         });
   }
-  
+
   public Command HumpAvoid() {
     return (runOnce(() -> SetReference(Constants.Intake.HalfPos)));
   }
-  
+
   public void SetReference(double position) {
     mDesiredState = new TrapezoidProfile.State(position, 0);
     Logger.recordOutput("Intake/Commanded Position", position);

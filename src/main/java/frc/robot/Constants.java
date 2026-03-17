@@ -62,7 +62,8 @@ public final class Constants {
         new Pose2d(8.25, 1.5, Rotation2d.fromDegrees(270));
     // Red
     public static final Pose2d centerPointRed = new Pose2d(14, 4.0, Rotation2d.fromDegrees(45));
-    public static final Pose2d rightCenterPointRed = new Pose2d(14, 6.5, Rotation2d.fromDegrees(90));
+    public static final Pose2d rightCenterPointRed =
+        new Pose2d(14, 6.5, Rotation2d.fromDegrees(90));
     public static final Pose2d leftCenterPointRed =
         new Pose2d(14, 1.5, Rotation2d.fromDegrees(270));
   }
@@ -168,7 +169,7 @@ public final class Constants {
     public static final double IntakeVelocityConversionFactor =
         Math.PI * 2 / 60; // radians per second
 
-    public static final double alpha = Math.toRadians(20);// angle of center of gravitas
+    public static final double alpha = Math.toRadians(20); // angle of center of gravitas
 
     public static final int ExtensionCurrentLimit = 1;
     // public static final int IntakeCurrentLimit = 1;
