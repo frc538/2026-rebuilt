@@ -140,7 +140,7 @@ public final class Constants {
     public static final int MovMotorCanId = 2;
 
     public static final double UprightPos =
-        Math.toRadians(0); // Measured upright intake position at 13 degrees past 90
+        Math.toRadians(-1); // Measured upright intake position at 1 degrees past 90
     public static final double ReadyPos = Math.toRadians(100.0);
     public static final double IntakeKg = -1.6;
 
