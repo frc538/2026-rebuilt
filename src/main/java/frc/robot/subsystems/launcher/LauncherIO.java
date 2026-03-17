@@ -38,8 +38,8 @@ public interface LauncherIO {
   // Set flywheel voltage
   public default void setVoltage(double voltage) {}
 
-  // Command to point the launcher at an angle in degrees
-  public default void pointAt(double angle) {}
+  // Command to point the launcher at an angle in radians
+  public default void pointAt(double rad) {}
 
   // Command to set the turret motor voltage
   public default void turretVoltage(double voltage) {}

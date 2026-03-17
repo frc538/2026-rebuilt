@@ -159,6 +159,13 @@ public class Launcher extends SubsystemBase {
         });
   }
 
+  public Command testTurretPosition(DoubleSupplier target) {
+    return Commands.runOnce(
+        () -> {
+          io.pointAt(target.getAsDouble());
+        });
+  }
+
   public void updateOdometry(Pose2d robotPose, ChassisSpeeds robotVelocity) {
     this.robotPose = robotPose;
     this.robotVelocity = robotVelocity;

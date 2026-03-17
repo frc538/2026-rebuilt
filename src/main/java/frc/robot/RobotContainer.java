@@ -269,7 +269,7 @@ public class RobotContainer {
     navController.rightStick().and(this::isNotTest).onTrue(nav2.cancelPath());
 
     navController
-        .povRight()
+        .rightBumper()
         .and(this::isNotTest)
         .onTrue(
             nav2.rightCenter(
@@ -277,15 +277,13 @@ public class RobotContainer {
                   return drive.getPose();
                 }));
     navController
-        .povLeft()
+        .leftBumper()
         .and(this::isNotTest)
         .onTrue(
             nav2.leftCenter(
                 () -> {
                   return drive.getPose();
                 }));
-
-    navController.rightBumper().and(this::isNotTest).whileTrue(hopper.HopperToggle());
 
     // controller.rightBumper().onTrue(navSys.showPath());
 
@@ -335,6 +333,23 @@ public class RobotContainer {
     navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
 
     navController
+        .a()
+        .and(this::isTest)
+        .onTrue(
+            launcher.testTurretPosition(
+                () -> {
+                  return 3.5;
+                }));
+    navController
+        .x()
+        .and(this::isTest)
+        .onTrue(
+            launcher.testTurretPosition(
+                () -> {
+                  return 3;
+                }));
+
+    navController
         .rightBumper()
         .and(DriverStation::isTest)
         .whileTrue(
@@ -347,8 +362,8 @@ public class RobotContainer {
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    navController.a().and(this::isTest).whileTrue(hopper.testFeed());
-    navController.x().and(this::isTest).whileTrue(hopper.testSpindex());
+    // navController.a().and(this::isTest).whileTrue(hopper.testFeed());
+    // navController.x().and(this::isTest).whileTrue(hopper.testSpindex());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands

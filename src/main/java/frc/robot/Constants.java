@@ -105,6 +105,9 @@ public final class Constants {
 
     public static final double turretCalibrationOffset = 0.0;
 
+    public static final double minWireLimit = 2.75; // TODO: base wire limits
+    public static final double maxWireLimit = 4;
+
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
     public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());
     public static final Pose2d leftRed = new Pose2d(14.000, 1.7, new Rotation2d());
@@ -126,8 +129,8 @@ public final class Constants {
 
     public static final double minrange = -(3 * Math.PI) / 4;
     public static final double maxrange = (3 * Math.PI) / 4;
-    public static final double maxV = 1;
-    public static final double maxA = 5;
+    public static final double maxV = 0.1;
+    public static final double maxA = 0.1;
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
