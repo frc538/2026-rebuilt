@@ -49,22 +49,23 @@ public final class Constants {
 
   public static class navigationConstants {
     // NAV MAP
-    // Blue
-    public static final Pose2d centerPointBlue = new Pose2d(2.5, 4.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d leftCenterPointBlue =
-        new Pose2d(2.5, 6.5, Rotation2d.fromDegrees(90));
-    public static final Pose2d rightCenterPointBlue =
-        new Pose2d(2.5, 1.5, Rotation2d.fromDegrees(270));
-    // Center (RELATIVE TO BLUE SIDE)
-    public static final Pose2d centerPoint = new Pose2d(8.25, 4.0, Rotation2d.fromDegrees(45));
-    public static final Pose2d leftCenterPoint = new Pose2d(8.25, 6.5, Rotation2d.fromDegrees(90));
-    public static final Pose2d rightCenterPoint =
-        new Pose2d(8.25, 1.5, Rotation2d.fromDegrees(270));
-    // Red
-    public static final Pose2d centerPointRed = new Pose2d(14, 4.0, Rotation2d.fromDegrees(45));
-    public static final Pose2d rightCenterPointRed = new Pose2d(14, 6.5, Rotation2d.fromDegrees(90));
-    public static final Pose2d leftCenterPointRed =
-        new Pose2d(14, 1.5, Rotation2d.fromDegrees(270));
+    public static final Pose2d leftBlue = new Pose2d(3, 5.5, Rotation2d.fromDegrees(0));
+    public static final Pose2d rightBlue = new Pose2d(3, 2.5, Rotation2d.fromDegrees(0));
+    public static final Pose2d centerRightBlue = new Pose2d(6.3, 2.5, Rotation2d.fromDegrees(0));
+    public static final Pose2d centerLeftBlue = new Pose2d(6.3, 5.5, Rotation2d.fromDegrees(0));
+
+    // degrees for these two are inverted because thats the way your going to wanna face when you
+    // reach the point
+    public static final Pose2d topCenter = new Pose2d(8.7, 7, Rotation2d.fromDegrees(90));
+    public static final Pose2d bottomCenter = new Pose2d(8.7, 1, Rotation2d.fromDegrees(270));
+
+    public static final Pose2d rightRed = new Pose2d(13.8, 5.5, Rotation2d.fromDegrees(180));
+    public static final Pose2d leftRed = new Pose2d(13.8, 2.5, Rotation2d.fromDegrees(180));
+
+    public static final Pose2d centerRightRed = new Pose2d(10.5, 5.5, Rotation2d.fromDegrees(180));
+    public static final Pose2d centerLeftRed = new Pose2d(10.5, 2.5, Rotation2d.fromDegrees(180));
+
+    public static final double distanceThreshold = 0.5; // meters
   }
 
   public static class ClimberConstants {
