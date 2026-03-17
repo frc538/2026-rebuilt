@@ -18,8 +18,6 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  // public static String camera2Name = "Mac";
-  // public static String camera3Name = "Cheese";
   public static String camera0Name = "limelight-bacon";
   public static String camera1Name = "limelight-eggs";
   public static String camera2Name = "limelight-peanut";
@@ -49,10 +47,10 @@ public class VisionConstants {
   // (Adjust to trust some cameras more than others)
   public static double[] cameraStdDevFactors =
       new double[] {
-        1.0, // Bacon
-        1.0, // Eggs
-        1.0, // Peanut
-        1.0 // Butter
+        0.5, // bacon
+        0.5, // eggs
+        0.5, // peanut
+        0.5 // butter
       };
 
   // Multipliers to apply for MegaTag 2 observations

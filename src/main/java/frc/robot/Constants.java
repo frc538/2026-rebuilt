@@ -112,7 +112,7 @@ public final class Constants {
 
     public static final double hubHeight = 1.8288; // meters
     public static final double launcherHeight = 0.508; // meters estimate
-    public static final double launcherAngle = 1.0472; // radians
+    public static final double launcherAngle = 0.6981317; // radians
 
     public static final double launchWheelRadius = 0.050165; // meters
     public static final double fuelMass = 0.2268; // kg

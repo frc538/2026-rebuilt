@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.RotationTarget;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,20 +34,39 @@ public class Navigation2 extends SubsystemBase {
 
   Translation2d centerPoint = new Translation2d(8.27, 4);
 
+  private enum directorator {
+    up,
+    down,
+    left,
+    right;
+  }
+
   class edge {
     final node m_start;
     final node m_end;
 
-    // Constraints
-    final Rotation2d
-        m_orientation; // How should we point when crossing this edge - relative to blue alliance
-    final double m_maxSpeed; // What is our max speed m/s
+    final directorator m_direction;
 
-    public edge(node start, node end, Rotation2d orientation, double maxSpeed) {
+    // Constraints
+    final RotationTarget[] m_Target;
+    final double m_maxSpeed; // What is our max speed m/s
+    final Rotation2d m_finalOrientation;
+
+    public edge(
+        node start,
+        node end,
+        directorator dir,
+        Rotation2d orientation,
+        Rotation2d finalOrientation,
+        double maxSpeed) {
       m_start = start;
       m_end = end;
-      m_orientation = orientation;
+      m_Target = new RotationTarget[2];
+      m_Target[0] = new RotationTarget(0.1, orientation);
+      m_Target[1] = new RotationTarget(0.9, orientation);
       m_maxSpeed = maxSpeed;
+      m_finalOrientation = finalOrientation;
+      m_direction = dir;
     }
 
     public String print() {
@@ -95,36 +115,177 @@ public class Navigation2 extends SubsystemBase {
   private double downAngle = Math.PI;
   private double rightAngle = 3 * Math.PI / 2;
   private double leftAngle = Math.PI / 2;
+  private double humpAngle = Math.PI / 8;
 
   public Navigation2(Drive drive) {
     theDrive = drive;
-    nodes[0].up = new edge(nodes[0], nodes[2], new Rotation2d(upAngle), 3);
-    nodes[0].left = new edge(nodes[0], nodes[1], new Rotation2d(leftAngle), 3);
+    nodes[0].up =
+        new edge(
+            nodes[0],
+            nodes[2],
+            directorator.up,
+            new Rotation2d(upAngle + humpAngle),
+            new Rotation2d(upAngle),
+            3);
+    nodes[0].left =
+        new edge(
+            nodes[0],
+            nodes[1],
+            directorator.left,
+            new Rotation2d(leftAngle),
+            new Rotation2d(leftAngle),
+            3);
 
-    nodes[1].up = new edge(nodes[1], nodes[3], new Rotation2d(upAngle), 3);
-    nodes[1].right = new edge(nodes[1], nodes[0], new Rotation2d(rightAngle), 3);
+    nodes[1].up =
+        new edge(
+            nodes[1],
+            nodes[3],
+            directorator.up,
+            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(upAngle),
+            3);
+    nodes[1].right =
+        new edge(
+            nodes[1],
+            nodes[0],
+            directorator.right,
+            new Rotation2d(rightAngle),
+            new Rotation2d(rightAngle),
+            3);
 
-    nodes[2].up = new edge(nodes[2], nodes[4], new Rotation2d(upAngle), 3);
-    nodes[2].left = new edge(nodes[2], nodes[3], new Rotation2d(leftAngle), 3);
-    nodes[2].down = new edge(nodes[2], nodes[0], new Rotation2d(downAngle), 3);
+    nodes[2].up =
+        new edge(
+            nodes[2],
+            nodes[4],
+            directorator.up,
+            new Rotation2d(upAngle),
+            new Rotation2d(upAngle),
+            3);
+    nodes[2].left =
+        new edge(
+            nodes[2],
+            nodes[3],
+            directorator.left,
+            new Rotation2d(leftAngle),
+            new Rotation2d(leftAngle),
+            3);
+    nodes[2].down =
+        new edge(
+            nodes[2],
+            nodes[0],
+            directorator.down,
+            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle),
+            3);
 
-    nodes[3].up = new edge(nodes[3], nodes[5], new Rotation2d(upAngle), 3);
-    nodes[3].right = new edge(nodes[3], nodes[2], new Rotation2d(rightAngle), 3);
-    nodes[3].down = new edge(nodes[3], nodes[1], new Rotation2d(downAngle), 3);
+    nodes[3].up =
+        new edge(
+            nodes[3],
+            nodes[5],
+            directorator.up,
+            new Rotation2d(upAngle),
+            new Rotation2d(upAngle),
+            3);
+    nodes[3].right =
+        new edge(
+            nodes[3],
+            nodes[2],
+            directorator.right,
+            new Rotation2d(rightAngle),
+            new Rotation2d(rightAngle),
+            3);
+    nodes[3].down =
+        new edge(
+            nodes[3],
+            nodes[1],
+            directorator.down,
+            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle),
+            3);
 
-    nodes[4].up = new edge(nodes[4], nodes[6], new Rotation2d(upAngle), 3);
-    nodes[4].left = new edge(nodes[4], nodes[5], new Rotation2d(leftAngle), 3);
-    nodes[4].down = new edge(nodes[4], nodes[2], new Rotation2d(downAngle), 3);
+    nodes[4].up =
+        new edge(
+            nodes[4],
+            nodes[6],
+            directorator.up,
+            new Rotation2d(upAngle + humpAngle),
+            new Rotation2d(upAngle),
+            3);
+    nodes[4].left =
+        new edge(
+            nodes[4],
+            nodes[5],
+            directorator.left,
+            new Rotation2d(leftAngle),
+            new Rotation2d(leftAngle),
+            3);
+    nodes[4].down =
+        new edge(
+            nodes[4],
+            nodes[2],
+            directorator.down,
+            new Rotation2d(downAngle),
+            new Rotation2d(downAngle),
+            3);
 
-    nodes[5].up = new edge(nodes[5], nodes[7], new Rotation2d(upAngle), 3);
-    nodes[5].right = new edge(nodes[5], nodes[4], new Rotation2d(rightAngle), 3);
-    nodes[5].down = new edge(nodes[5], nodes[3], new Rotation2d(downAngle), 3);
+    nodes[5].up =
+        new edge(
+            nodes[5],
+            nodes[7],
+            directorator.up,
+            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(upAngle),
+            3);
+    nodes[5].right =
+        new edge(
+            nodes[5],
+            nodes[4],
+            directorator.right,
+            new Rotation2d(rightAngle),
+            new Rotation2d(rightAngle),
+            3);
+    nodes[5].down =
+        new edge(
+            nodes[5],
+            nodes[3],
+            directorator.down,
+            new Rotation2d(downAngle),
+            new Rotation2d(downAngle),
+            3);
 
-    nodes[6].left = new edge(nodes[6], nodes[7], new Rotation2d(leftAngle), 3);
-    nodes[6].down = new edge(nodes[6], nodes[4], new Rotation2d(downAngle), 3);
+    nodes[6].left =
+        new edge(
+            nodes[6],
+            nodes[7],
+            directorator.left,
+            new Rotation2d(leftAngle),
+            new Rotation2d(leftAngle),
+            3);
+    nodes[6].down =
+        new edge(
+            nodes[6],
+            nodes[4],
+            directorator.down,
+            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle),
+            3);
 
-    nodes[7].right = new edge(nodes[7], nodes[6], new Rotation2d(rightAngle), 3);
-    nodes[7].down = new edge(nodes[7], nodes[5], new Rotation2d(downAngle), 3);
+    nodes[7].right =
+        new edge(
+            nodes[7],
+            nodes[6],
+            directorator.right,
+            new Rotation2d(rightAngle),
+            new Rotation2d(rightAngle),
+            3);
+    nodes[7].down =
+        new edge(
+            nodes[7],
+            nodes[5],
+            directorator.down,
+            new Rotation2d(upAngle + humpAngle),
+            new Rotation2d(downAngle),
+            3);
   }
 
   node findStartingNode(Pose2d robotPose) {
@@ -169,6 +330,67 @@ public class Navigation2 extends SubsystemBase {
     findEdgePath();
   }
 
+  private Pose2d calculateOffset(
+      Translation2d initialPose, directorator initialDirection, directorator targetDirection) {
+    double horizontalOffset = 0;
+    double verticalOffset = 0;
+    final double baseOffset = 0.01;
+
+    // Create a vector representing the direction of travel, then use atan2 to get the angle
+    double upDir = 1;
+    double downDir = -1;
+    double rightDir = -1;
+    double leftDir = 1;
+    double x1, x2;
+    double y1, y2;
+    double offsetAngle;
+
+    if (initialDirection == directorator.left) {
+      verticalOffset = baseOffset;
+      x1 = 0;
+      y1 = leftDir;
+    } else if (initialDirection == directorator.right) {
+      verticalOffset = -baseOffset;
+      x1 = 0;
+      y1 = rightDir;
+    } else if (initialDirection == directorator.up) {
+      horizontalOffset = -baseOffset;
+      x1 = upDir;
+      y1 = 0;
+    } else {
+      // down
+      horizontalOffset = baseOffset;
+      x1 = downDir;
+      y1 = 0;
+    }
+
+    if (targetDirection == directorator.left) {
+      verticalOffset = baseOffset;
+      x2 = 0;
+      y2 = leftDir;
+    } else if (targetDirection == directorator.right) {
+      verticalOffset = -baseOffset;
+      x2 = 0;
+      y2 = rightDir;
+    } else if (targetDirection == directorator.up) {
+      horizontalOffset = baseOffset;
+      x2 = upDir;
+      y2 = 0;
+    } else {
+      // down
+      horizontalOffset = -baseOffset;
+      x2 = downDir;
+      y2 = 0;
+    }
+
+    offsetAngle = Math.atan2(y2 - y1, x2 - x1);
+
+    return new Pose2d(
+        initialPose.getX() + horizontalOffset,
+        initialPose.getY() + verticalOffset,
+        new Rotation2d(offsetAngle));
+  }
+
   void findEdgePath() {
     List<Waypoint> waypoints;
 
@@ -178,27 +400,29 @@ public class Navigation2 extends SubsystemBase {
     ArrayList<Pose2d> poses = new ArrayList<>();
     edge[] edges = currentEdgeList.toArray(new edge[0]);
     if (DriverStation.getAlliance().get() == Alliance.Red) {
-      poses.add(
-          new Pose2d(
-              theDrive
-                  .getPose()
-                  .getTranslation()
-                  .rotateAround(centerPoint, Rotation2d.fromRadians(Math.PI)),
-              edges[0].m_orientation));
+      poses.add(theDrive.getPose().rotateAround(centerPoint, Rotation2d.fromRadians(Math.PI)));
     } else {
-      poses.add(new Pose2d(theDrive.getPose().getTranslation(), edges[0].m_orientation));
+      poses.add(theDrive.getPose());
     }
     for (int i = 0; i < edges.length; i++) {
       Pose2d pose;
       if (i < edges.length - 1) {
-        pose = new Pose2d(edges[i].m_end.m_pose.getTranslation(), edges[i + 1].m_orientation);
+        if (edges[i].m_direction != edges[i + 1].m_direction) {
+          pose =
+              calculateOffset(
+                  edges[i].m_end.m_pose.getTranslation(),
+                  edges[i].m_direction,
+                  edges[i + 1].m_direction);
+        } else {
+          pose = new Pose2d(edges[i].m_end.m_pose.getTranslation(), edges[i].m_finalOrientation);
+        }
       } else {
         pose = edges[i].m_end.m_pose;
       }
       poses.add(pose);
     }
     waypoints = PathPlannerPath.waypointsFromPoses(poses);
-    GoalEndState endState = new GoalEndState(0, currentEdgeList.getLast().m_orientation);
+    GoalEndState endState = new GoalEndState(0, currentEdgeList.getLast().m_finalOrientation);
     PathPlannerPath path = new PathPlannerPath(waypoints, constraints, null, endState);
     thePath = AutoBuilder.followPath(path);
     // }
