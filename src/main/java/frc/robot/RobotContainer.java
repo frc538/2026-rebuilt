@@ -15,7 +15,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -42,7 +41,7 @@ import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOHardware;
 import frc.robot.subsystems.launcher.LauncherIOSim;
-import frc.robot.subsystems.navigation.NavigationSubsystem;
+import frc.robot.subsystems.navigation.Navigation2;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -58,7 +57,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final NavigationSubsystem navSys;
+  // private final NavigationSubsystem navSys;
+  private final Navigation2 nav2;
   private final Vision vision;
   private final Hopper hopper;
   private final Intake intake;
@@ -92,7 +92,7 @@ public class RobotContainer {
         } else {
           launcher = new Launcher(new LauncherIO() {}, hopper::FirePermit);
         }
-        navSys = new NavigationSubsystem();
+        // navSys = new NavigationSubsystem();
 
         if (Constants.Features.DriveEnabled) {
           drive =
@@ -159,7 +159,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        navSys = new NavigationSubsystem();
+        // navSys = new NavigationSubsystem();
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -184,7 +184,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
 
-        navSys = new NavigationSubsystem();
+        // navSys = new NavigationSubsystem();
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -196,8 +196,9 @@ public class RobotContainer {
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
+    nav2 = new Navigation2(drive);
 
-    SmartDashboard.putData(navSys.m_field);
+    // SmartDashboard.putData(navSys.m_field);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -257,72 +258,33 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Blue
+    // navigation controller controls
+    navController.a().and(this::isNotTest).onTrue(nav2.navDown(() -> drive.getPose()));
+    navController.b().and(this::isNotTest).onTrue(nav2.navRight(() -> drive.getPose()));
+    navController.x().and(this::isNotTest).onTrue(nav2.navLeft(() -> drive.getPose()));
+    navController.y().and(this::isNotTest).onTrue(nav2.navUp(() -> drive.getPose()));
+
+    navController.rightStick().and(this::isNotTest).onTrue(nav2.cancelPath());
+
     navController
-        .y()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPointBlue));
-    navController
-        .b()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPointBlue));
-    navController
-        .a()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPointBlue));
-    // Red
+        .povRight()
+        .and(this::isNotTest)
+        .onTrue(
+            nav2.rightCenter(
+                () -> {
+                  return drive.getPose();
+                }));
     navController
         .povLeft()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPointRed));
-    navController
-        .povUp()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPointRed));
-    navController
-        .povDown()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPointRed));
-    // Center
-    navController
-        .rightBumper()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.leftCenterPoint));
-    navController
-        .start()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.centerPoint));
-    navController
-        .leftBumper()
-        .and(
-            () -> {
-              return !DriverStation.isTest();
-            })
-        .onTrue(navSys.generatePath(Constants.navigationConstants.rightCenterPoint));
+        .and(this::isNotTest)
+        .onTrue(
+            nav2.leftCenter(
+                () -> {
+                  return drive.getPose();
+                }));
+
+    navController.rightBumper().and(this::isNotTest).whileTrue(hopper.HopperToggle());
+
     // controller.rightBumper().onTrue(navSys.showPath());
 
     navController.leftStick().and(this::isNotTest).onTrue(launcher.toggleShoot());
@@ -363,6 +325,7 @@ public class RobotContainer {
 
     /// Test mode commands
 
+    /*
     navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
 
     navController.b().and(this::isTest).whileTrue(launcher.testTurn());
@@ -391,22 +354,21 @@ public class RobotContainer {
     pilotController
         .leftStick()
         .and(DriverStation::isTest)
-        .onTrue(launcher.testTurretRotateEnableAuto());
+        .onTrue(launcher.testTurretRotateEnableAuto());*/
 
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    pilotController.b().and(this::isNotTest).onTrue(hopper.HopperToggle());
-    pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
+    // pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
-    pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
-    pilotController.start().and(this::isTest).whileTrue(intake.testIntake());
+    // pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
+    // pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
+    // pilotController.start().and(this::isTest).whileTrue(intake.testIntake());
     pilotController.a().and(this::isNotTest).onTrue(intake.togglePosition());
   }
 
