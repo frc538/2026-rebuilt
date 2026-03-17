@@ -11,7 +11,7 @@ public class Intake extends SubsystemBase {
 
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  public boolean FlipFlop = false;
+  public boolean FlipFlop = true;
 
   public TrapezoidProfile.State mCurrentState =
       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
@@ -40,6 +40,7 @@ public class Intake extends SubsystemBase {
     // if (!DriverStation.isTest()) {
     mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
     io.setIntakePosition(mCurrentState.position, inputs.positionRad);
+    Logger.recordOutput("Intake/PosProfile", mCurrentState.position);
 
     if (inputs.positionRad < Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(0);
@@ -91,6 +92,10 @@ public class Intake extends SubsystemBase {
             FlipFlop = true;
           }
         });
+  }
+
+  public Command HumpAvoid() {
+    return (runOnce(() -> SetReference(Constants.Intake.HalfPos)));
   }
 
   public void SetReference(double position) {
