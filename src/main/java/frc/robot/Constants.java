@@ -166,6 +166,8 @@ public final class Constants {
     public static final double IntakeVelocityConversionFactor =
         Math.PI * 2 / 60; // radians per second
 
+    public static final double alpha = Math.toRadians(20);// angle of center of gravitas
+
     public static final int ExtensionCurrentLimit = 1;
     // public static final int IntakeCurrentLimit = 1;
     // public static final int IntakePositionConversionFactor = 1;

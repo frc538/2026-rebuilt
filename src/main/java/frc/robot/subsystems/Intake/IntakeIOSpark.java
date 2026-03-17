@@ -93,7 +93,7 @@ public class IntakeIOSpark implements IntakeIO {
         radians,
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
-        Constants.Intake.IntakeKg * Math.sin(CurrentRads));
+        Constants.Intake.IntakeKg * Math.sin(CurrentRads - Constants.Intake.alpha));
   }
 
   @Override
