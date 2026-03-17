@@ -334,34 +334,56 @@ public class Navigation2 extends SubsystemBase {
       Translation2d initialPose, directorator initialDirection, directorator targetDirection) {
     double horizontalOffset = 0;
     double verticalOffset = 0;
-    final double baseOffset = .1;
-    double offsetAngle = 0;
+    final double baseOffset = 0.01;
+
+    // Create a vector representing the direction of travel, then use atan2 to get the angle
+    double upDir = 1;
+    double downDir = -1;
+    double rightDir = -1;
+    double leftDir = 1;
+    double x1, x2;
+    double y1, y2;
+    double offsetAngle;
 
     if (initialDirection == directorator.left) {
       verticalOffset = baseOffset;
-      offsetAngle = leftAngle;
+      x1 = 0;
+      y1 = leftDir;
     } else if (initialDirection == directorator.right) {
       verticalOffset = -baseOffset;
-      offsetAngle = rightAngle;
+      x1 = 0;
+      y1 = rightDir;
     } else if (initialDirection == directorator.up) {
       horizontalOffset = -baseOffset;
-      offsetAngle = upAngle;
+      x1 = upDir;
+      y1 = 0;
     } else {
       // down
       horizontalOffset = baseOffset;
-      offsetAngle = upAngle;
+      x1 = downDir;
+      y1 = 0;
     }
 
     if (targetDirection == directorator.left) {
       verticalOffset = baseOffset;
+      x2 = 0;
+      y2 = leftDir;
     } else if (targetDirection == directorator.right) {
       verticalOffset = -baseOffset;
+      x2 = 0;
+      y2 = rightDir;
     } else if (targetDirection == directorator.up) {
       horizontalOffset = baseOffset;
+      x2 = upDir;
+      y2 = 0;
     } else {
       // down
       horizontalOffset = -baseOffset;
+      x2 = downDir;
+      y2 = 0;
     }
+
+    offsetAngle = Math.atan2(y2 - y1, x2 - x1);
 
     return new Pose2d(
         initialPose.getX() + horizontalOffset,
@@ -392,8 +414,7 @@ public class Navigation2 extends SubsystemBase {
                   edges[i].m_direction,
                   edges[i + 1].m_direction);
         } else {
-          pose =
-              new Pose2d(edges[i].m_end.m_pose.getTranslation(), edges[i + 1].m_finalOrientation);
+          pose = new Pose2d(edges[i].m_end.m_pose.getTranslation(), edges[i].m_finalOrientation);
         }
       } else {
         pose = edges[i].m_end.m_pose;
