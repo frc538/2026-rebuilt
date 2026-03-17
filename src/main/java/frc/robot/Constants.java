@@ -40,9 +40,9 @@ public final class Constants {
 
   public static class Features {
     public static final boolean ClimberEnabled = true;
-    public static final boolean DriveEnabled = false;
+    public static final boolean DriveEnabled = true;
     public static final boolean HopperEnabled = true;
-    public static final boolean LauncherEnabled = false;
+    public static final boolean LauncherEnabled = true;
     public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = true;
   }
@@ -147,7 +147,7 @@ public final class Constants {
 
     public static final double IntakeKg = -3.5;
 
-    public static final double IntakeSpeed = 0.25;
+    public static final double IntakeSpeed = 0.1;
     public static final double MovementMotorVelocity = 1;
 
     public static final double RotatoPosConFac = 2 * Math.PI;
