@@ -31,6 +31,8 @@ public class Navigation2 extends SubsystemBase {
 
   private Drive theDrive;
 
+  Translation2d centerPoint = new Translation2d(8.27, 4);
+
   class edge {
     final node m_start;
     final node m_end;
@@ -81,6 +83,8 @@ public class Navigation2 extends SubsystemBase {
     new node(navigationConstants.rightRed, 7)
   };
 
+  node invalidNode = new node(new Pose2d(), -1);
+
   ArrayDeque<edge> currentEdgeList = new ArrayDeque<>();
 
   // Create the constraints to use while pathfinding
@@ -125,8 +129,11 @@ public class Navigation2 extends SubsystemBase {
 
   node findStartingNode(Pose2d robotPose) {
     int index = -1;
+    if (DriverStation.getAlliance().isEmpty()) {
+      return invalidNode;
+    }
+
     if (DriverStation.getAlliance().get() == Alliance.Red) {
-      Translation2d centerPoint = new Translation2d(8.27, 4);
       robotPose = robotPose.rotateAround(centerPoint, new Rotation2d(Math.PI));
     }
     if (robotPose.getY() < 4) {
@@ -170,7 +177,17 @@ public class Navigation2 extends SubsystemBase {
     // } else {
     ArrayList<Pose2d> poses = new ArrayList<>();
     edge[] edges = currentEdgeList.toArray(new edge[0]);
-    poses.add(new Pose2d(theDrive.getPose().getTranslation(), edges[0].m_orientation));
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
+      poses.add(
+          new Pose2d(
+              theDrive
+                  .getPose()
+                  .getTranslation()
+                  .rotateAround(centerPoint, Rotation2d.fromRadians(Math.PI)),
+              edges[0].m_orientation));
+    } else {
+      poses.add(new Pose2d(theDrive.getPose().getTranslation(), edges[0].m_orientation));
+    }
     for (int i = 0; i < edges.length; i++) {
       Pose2d pose;
       if (i < edges.length - 1) {
@@ -263,7 +280,10 @@ public class Navigation2 extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Logger.recordOutput("Guidance/guidanceRobotPoseIndex", findStartingNode(theDrive.getPose()).m_index);
+    Logger.recordOutput(
+        "Guidance/guidanceRobotPoseIndex", findStartingNode(theDrive.getPose()).m_index);
+    Logger.recordOutput("Guidance/edgeList", currentEdgeList.size());
+
     if (thePath != null) {
       if (thePath.isFinished()) {
         currentEdgeList.clear();
@@ -271,6 +291,10 @@ public class Navigation2 extends SubsystemBase {
         if (currentEdgeList.size() > 0) {
           if (theDrive
                   .getPose()
+                  .rotateAround(
+                      centerPoint,
+                      Rotation2d.fromRadians(
+                          DriverStation.getAlliance().get() == Alliance.Red ? Math.PI : 0))
                   .getTranslation()
                   .getDistance(currentEdgeList.getFirst().m_end.m_pose.getTranslation())
               < navigationConstants.distanceThreshold) {
@@ -290,6 +314,7 @@ public class Navigation2 extends SubsystemBase {
   public Command rightCenter(Pose2dSupplier poseSupplier) {
     return Commands.runOnce(
         () -> {
+          currentEdgeList.clear();
           Pose2d thePose = poseSupplier.getPose2d();
           if (DriverStation.getAlliance().get() == Alliance.Blue) {
             double x1 = thePose.getX();
@@ -309,6 +334,7 @@ public class Navigation2 extends SubsystemBase {
             // set robot angle to targetangle
             CommandScheduler.getInstance().schedule(generatePath(endpoint));
           } else {
+            currentEdgeList.clear();
             double x1 = thePose.getX();
             double y1 = thePose.getY();
             double x2 = navigationConstants.topCenter.getX();
@@ -331,6 +357,7 @@ public class Navigation2 extends SubsystemBase {
   public Command leftCenter(Pose2dSupplier poseSupplier) {
     return Commands.runOnce(
         () -> {
+          currentEdgeList.clear();
           Pose2d thePose = poseSupplier.getPose2d();
           if (DriverStation.getAlliance().get() == Alliance.Blue) {
             double x1 = thePose.getX();
@@ -350,6 +377,7 @@ public class Navigation2 extends SubsystemBase {
             // set robot angle to targetangle
             CommandScheduler.getInstance().schedule(generatePath(endpoint));
           } else {
+            currentEdgeList.clear();
             double x1 = thePose.getX();
             double y1 = thePose.getY();
             double x2 = navigationConstants.bottomCenter.getX();
