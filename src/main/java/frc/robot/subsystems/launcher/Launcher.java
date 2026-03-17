@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.launcherConstants;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -145,24 +146,17 @@ public class Launcher extends SubsystemBase {
         .finallyDo(() -> io.turretVoltage(0));
   }
 
-  public Command testTurretRotateDisableAuto() {
+  public Command testTurretRotateToggleAuto() {
     return Commands.runOnce(
         () -> {
-          autoRotate = false;
-        });
-  }
-
-  public Command testTurretRotateEnableAuto() {
-    return Commands.runOnce(
-        () -> {
-          autoRotate = true;
+          autoRotate = !autoRotate;
         });
   }
 
   public Command testTurretPosition(DoubleSupplier target) {
     return Commands.runOnce(
         () -> {
-          io.pointAt(target.getAsDouble());
+          targetAzimuth = target.getAsDouble();
         });
   }
 
@@ -186,12 +180,14 @@ public class Launcher extends SubsystemBase {
     // i.e. Pose2D defines the rotation as a mathematical one... 0 degrees toward
     // positive x,
     // increases counter-clockwise
-    targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians();
-    if (targetAzimuth < -Math.PI) {
-      targetAzimuth += 2 * Math.PI;
-    }
-    if (targetAzimuth > Math.PI) {
-      targetAzimuth -= 2 * Math.PI;
+    if (!DriverStation.isTest()) {
+      targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians();
+      if (targetAzimuth < -Math.PI) {
+        targetAzimuth += 2 * Math.PI;
+      }
+      if (targetAzimuth > Math.PI) {
+        targetAzimuth -= 2 * Math.PI;
+      }
     }
   }
 
@@ -281,7 +277,9 @@ public class Launcher extends SubsystemBase {
   }
 
   private void setAz() {
-    mDesiredState.position = targetAzimuth;
+    mDesiredState.position =
+        MathUtil.clamp(
+            targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
 
     mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
 

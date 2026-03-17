@@ -287,7 +287,7 @@ public class RobotContainer {
 
     // controller.rightBumper().onTrue(navSys.showPath());
 
-    navController.leftStick().and(this::isNotTest).onTrue(launcher.toggleShoot());
+    navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
 
     // Reset gyro to 0° when B button is pressed
     pilotController
