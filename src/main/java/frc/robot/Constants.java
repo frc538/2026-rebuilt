@@ -40,9 +40,9 @@ public final class Constants {
 
   public static class Features {
     public static final boolean ClimberEnabled = true;
-    public static final boolean DriveEnabled = true;
+    public static final boolean DriveEnabled = false;
     public static final boolean HopperEnabled = true;
-    public static final boolean LauncherEnabled = true;
+    public static final boolean LauncherEnabled = false;
     public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = true;
   }
@@ -142,12 +142,12 @@ public final class Constants {
 
     public static final double UprightPos =
         Math.toRadians(-1); // Measured upright intake position at 1 degrees past 90
-    public static final double ReadyPos = Math.toRadians(100.0);
+    public static final double ReadyPos = 1.594898;
     public static final double HalfPos = Math.toRadians(50);
 
-    public static final double IntakeKg = -1.6;
+    public static final double IntakeKg = -3.5;
 
-    public static final double IntakeSpeed = 0.5;
+    public static final double IntakeSpeed = 0.25;
     public static final double MovementMotorVelocity = 1;
 
     public static final double RotatoPosConFac = 2 * Math.PI;
@@ -156,9 +156,9 @@ public final class Constants {
     public static final double ArmPosConFac = 2 * Math.PI / 9;
     public static final double ArmVelConFac = ArmPosConFac / 60;
 
-    public static final double ArmkP = 0.2;
-    public static final double ArmkI = 0;
-    public static final double ArmkD = 0.0;
+    public static final double ArmkP = 1.5;
+    public static final double ArmkI = 0.00;
+    public static final double ArmkD = 0.1;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
     public static final double RotatoRPM = .35;
@@ -169,7 +169,7 @@ public final class Constants {
     public static final double IntakeVelocityConversionFactor =
         Math.PI * 2 / 60; // radians per second
 
-    public static final double alpha = Math.toRadians(20); // angle of center of gravitas
+    public static final double alpha = Math.toRadians(15); // angle of center of gravitas
 
     public static final int ExtensionCurrentLimit = 1;
     // public static final int IntakeCurrentLimit = 1;
@@ -177,7 +177,7 @@ public final class Constants {
     // public static final int IntakeVelocityConversionFactor = 1;
 
     public static final double MaxV =
-        4 * Math.PI / 2; // 4 * Math.PI / 2 up and down in a quarter second
-    public static final double MaxA = 10;
+        3 * Math.PI / 2; // 4 * Math.PI / 2 up and down in a quarter second
+    public static final double MaxA = 7;
   }
 }
