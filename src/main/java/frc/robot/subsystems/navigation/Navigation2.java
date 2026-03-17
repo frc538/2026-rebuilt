@@ -334,7 +334,6 @@ public class Navigation2 extends SubsystemBase {
             // set robot angle to targetangle
             CommandScheduler.getInstance().schedule(generatePath(endpoint));
           } else {
-            currentEdgeList.clear();
             double x1 = thePose.getX();
             double y1 = thePose.getY();
             double x2 = navigationConstants.topCenter.getX();
@@ -377,7 +376,6 @@ public class Navigation2 extends SubsystemBase {
             // set robot angle to targetangle
             CommandScheduler.getInstance().schedule(generatePath(endpoint));
           } else {
-            currentEdgeList.clear();
             double x1 = thePose.getX();
             double y1 = thePose.getY();
             double x2 = navigationConstants.bottomCenter.getX();
