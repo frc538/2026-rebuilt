@@ -18,8 +18,6 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  // public static String camera2Name = "Mac";
-  // public static String camera3Name = "Cheese";
   public static String camera0Name = "limelight-bacon";
   public static String camera1Name = "limelight-eggs";
   public static String camera2Name = "limelight-peanut";
