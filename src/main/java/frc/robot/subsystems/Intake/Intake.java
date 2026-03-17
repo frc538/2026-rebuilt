@@ -37,7 +37,6 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    // if (!DriverStation.isTest()) {
     mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
     io.setIntakePosition(mCurrentState.position, inputs.positionRad);
     Logger.recordOutput("Intake/PosProfile", mCurrentState.position);
@@ -47,7 +46,6 @@ public class Intake extends SubsystemBase {
     } else {
       io.runRotato(Constants.Intake.RotatoRPM);
     }
-    // }
   }
 
   public Command runIntake(double speed) {

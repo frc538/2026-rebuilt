@@ -25,9 +25,12 @@ public interface LauncherIO {
     // turn encoder
     public double turnEncoderVelocity = 0.0;
     public double turnEncoderPosition = 0.0;
+    public double turnPotentiometer = 0.0;
   }
 
   public default void updateInputs(LauncherIOInputs inputs) {}
+
+  public default void calibrateTurret(double radians) {}
 
   // Need to update this IO interface to add an RPM or rad/s function that sets the flywheel speed
   public default void setRadPerS(double rps) {}

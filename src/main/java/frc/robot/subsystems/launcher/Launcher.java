@@ -8,8 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,8 +40,6 @@ public class Launcher extends SubsystemBase {
   private boolean TurretSpeedGood;
   private boolean autoRotate = false;
 
-  AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(0, 5); //TODO: set scale
-
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
   LauncherConsumer thingy;
@@ -58,10 +54,6 @@ public class Launcher extends SubsystemBase {
 
     mCurrentState = new TrapezoidProfile.State();
     mDesiredState = new TrapezoidProfile.State();
-  }
-
-  public void getTurretMeasure() {
-    m_potentiometer.get();
   }
 
   public Command toggleShoot() {
@@ -94,7 +86,7 @@ public class Launcher extends SubsystemBase {
   public Command testTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(3.0);
+              io.testTurn(2.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -102,7 +94,7 @@ public class Launcher extends SubsystemBase {
   public Command invertTestTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(-3.0);
+              io.testTurn(-2.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -291,11 +283,19 @@ public class Launcher extends SubsystemBase {
     }
   }
 
+  private void calibrateTurret() {
+    if (DriverStation.isDisabled() == true) {
+      io.calibrateTurret(inputs.turnPotentiometer);
+    }
+  }
+
   @Override
   public void periodic() {
 
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
+
+    calibrateTurret();
 
     aimDownSights(); // sets the target
     getAzimuth(); // sets the target rotation

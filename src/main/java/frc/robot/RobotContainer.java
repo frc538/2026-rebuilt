@@ -328,10 +328,12 @@ public class RobotContainer {
     /// Test mode commands
 
     /*
-    navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
+        navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
+    */
 
     navController.b().and(this::isTest).whileTrue(launcher.testTurn());
     navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+
     navController
         .rightBumper()
         .and(DriverStation::isTest)
@@ -341,37 +343,19 @@ public class RobotContainer {
                   return navController.getLeftY();
                 }));
 
-    pilotController
-        .povRight()
-        .and(DriverStation::isTest)
-        .whileTrue(launcher.testTurretRotateClockwise());
-    pilotController
-        .povLeft()
-        .and(DriverStation::isTest)
-        .whileTrue(launcher.testTurretRotateCounterclockwise());
-    pilotController
-        .rightStick()
-        .and(DriverStation::isTest)
-        .onTrue(launcher.testTurretRotateDisableAuto());
-    pilotController
-        .leftStick()
-        .and(DriverStation::isTest)
-        .onTrue(launcher.testTurretRotateEnableAuto());*/
-
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    // pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
+    navController.a().and(this::isTest).whileTrue(hopper.testFeed());
+    navController.x().and(this::isTest).whileTrue(hopper.testSpindex());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    // pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
-    // pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
-    // pilotController.start().and(this::isTest).whileTrue(intake.testIntake());
-    pilotController.a().and(this::isNotTest).onTrue(intake.togglePosition());
+    // Test and teleop
+    pilotController.a().onTrue(intake.togglePosition());
   }
 
   /**

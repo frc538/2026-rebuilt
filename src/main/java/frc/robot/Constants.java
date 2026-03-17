@@ -103,6 +103,8 @@ public final class Constants {
     public static final int turnMotorCanId = 62;
     public static final int CurrentLimit = 50;
 
+    public static final double turretCalibrationOffset = 0.0;
+
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
     public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());
     public static final Pose2d leftRed = new Pose2d(14.000, 1.7, new Rotation2d());
