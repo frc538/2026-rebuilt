@@ -142,9 +142,11 @@ public final class Constants {
     public static final double UprightPos =
         Math.toRadians(-1); // Measured upright intake position at 1 degrees past 90
     public static final double ReadyPos = Math.toRadians(100.0);
+    public static final double HalfPos = Math.toRadians(50);
+
     public static final double IntakeKg = -1.6;
 
-    public static final double IntakeSpeed = 1;
+    public static final double IntakeSpeed = 0.5;
     public static final double MovementMotorVelocity = 1;
 
     public static final double RotatoPosConFac = 2 * Math.PI;
