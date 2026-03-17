@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -39,6 +40,9 @@ public class Launcher extends SubsystemBase {
   private boolean aimGood;
   private boolean TurretSpeedGood;
   private boolean autoRotate = false;
+
+  private double currentAimTrim = 0;
+  private double currentSpeedTrim = 0;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -179,7 +183,7 @@ public class Launcher extends SubsystemBase {
     // i.e. Pose2D defines the rotation as a mathematical one... 0 degrees toward
     // positive x,
     // increases counter-clockwise
-    targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians();
+    targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians() + currentAimTrim;
     if (targetAzimuth < -Math.PI) {
       targetAzimuth += 2 * Math.PI;
     }
@@ -238,7 +242,7 @@ public class Launcher extends SubsystemBase {
     distanceY = aimPointComp.getY() - robotPose.getY();
     distanceY = Math.pow(distanceY, 2);
 
-    endDistance = Math.sqrt(distanceX + distanceY);
+    endDistance = Math.sqrt(distanceX + distanceY) + currentSpeedTrim;
 
     timeFlight =
         Math.sqrt((hubHeight - launcherHeight - endDistance * Math.tan(launcherAngle) / -9.81));
@@ -317,5 +321,57 @@ public class Launcher extends SubsystemBase {
   @FunctionalInterface
   public interface LauncherConsumer {
     public void accept(boolean AimCorrect, boolean SpeedGood);
+  }
+
+  public void TrimSpeed(double speedtrim) {
+    currentSpeedTrim =
+        currentSpeedTrim
+            + Constants.launcherConstants.SpeedStep
+                * speedtrim; // the double is just so it works for both back and forward
+  }
+
+  public void TrimAim(double aimtrim) {
+    currentAimTrim = currentAimTrim - Math.toRadians(aimtrim);
+  }
+
+  public void TrimReset() {
+    currentAimTrim = 0;
+    currentSpeedTrim = 0;
+  }
+
+  public Command ResetTrim() {
+    return (runOnce(
+        () -> {
+          TrimReset();
+        }));
+  } // resets all trims to 0
+
+  public Command trimLeft() {
+    // trim aim in degrees, i do convert to radians later assume left is negative?
+    return (run(
+        () -> {
+          TrimAim(-1 * Constants.launcherConstants.AimTrim);
+        }));
+  }
+
+  public Command trimRight() {
+    return (run(
+        () -> {
+          TrimAim(Constants.launcherConstants.AimTrim);
+        }));
+  }
+
+  public Command trimBack() {
+    return (run(
+        () -> {
+          TrimSpeed(-1);
+        }));
+  } // steps of amount of meters?
+
+  public Command trimForward() {
+    return (run(
+        () -> {
+          TrimSpeed(1);
+        }));
   }
 }
