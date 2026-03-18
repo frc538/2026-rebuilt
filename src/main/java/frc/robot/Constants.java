@@ -133,7 +133,7 @@ public final class Constants {
     public static double turnI = 0;
     public static double turnD = 0;
 
-    public static final double SpeedStep /*for the trim */ = 0.05;
+    public static final double SpeedStep /*for the trim */ = 0.005;
     public static final double AimTrim = 1; // in degrees
   }
 

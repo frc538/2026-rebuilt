@@ -269,7 +269,7 @@ public class RobotContainer {
     navController.rightStick().and(this::isNotTest).onTrue(nav2.cancelPath());
 
     navController
-        .povRight()
+        .rightTrigger()
         .and(this::isNotTest)
         .onTrue(
             nav2.rightCenter(
@@ -277,7 +277,7 @@ public class RobotContainer {
                   return drive.getPose();
                 }));
     navController
-        .povLeft()
+        .leftTrigger()
         .and(this::isNotTest)
         .onTrue(
             nav2.leftCenter(
@@ -325,6 +325,11 @@ public class RobotContainer {
 
     /// Teleop Commands
 
+    navController.povLeft().and(this::isNotTest).whileTrue(launcher.trimLeft());
+    navController.povRight().and(this::isNotTest).whileTrue(launcher.trimRight());
+    navController.povUp().and(this::isNotTest).whileTrue(launcher.trimForward());
+    navController.povDown().and(this::isNotTest).whileTrue(launcher.trimBack());
+    navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
     /// Test mode commands
 
     /*
