@@ -310,7 +310,7 @@ public class RobotContainer {
                   return 2.75;
                 }));
 
-    // Reset gyro to 0° when B button is pressed
+    // Reset gyro to 0° when right stick is pressed
     pilotController
         .rightStick()
         .and(this::isNotTest)
@@ -328,15 +328,10 @@ public class RobotContainer {
 
     pilotController
         .leftBumper()
-        .and(this::isNotTest)
         .whileTrue((climberSubsystem.climberRetract()));
     pilotController
         .rightBumper()
-        .and(this::isNotTest)
         .whileTrue((climberSubsystem.climberExtend()));
-
-    pilotController.leftBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberRetract());
-    pilotController.rightBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberExtend());
 
     //////////////////////////////////////////////////////////////
     /// Launcher Commands
@@ -344,11 +339,11 @@ public class RobotContainer {
 
     /// Teleop Commands
 
-    /// Test mode commands
-
-    /*
-        navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
-    */
+    navController.povLeft().and(this::isNotTest).whileTrue(launcher.trimLeft());
+    navController.povRight().and(this::isNotTest).whileTrue(launcher.trimRight());
+    navController.povUp().and(this::isNotTest).whileTrue(launcher.trimForward());
+    navController.povDown().and(this::isNotTest).whileTrue(launcher.trimBack());
+    navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
 
     navController
         .rightBumper()
