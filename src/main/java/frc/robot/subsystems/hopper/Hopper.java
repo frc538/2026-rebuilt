@@ -25,7 +25,7 @@ public class Hopper extends SubsystemBase {
         });
   }
 
-  public void HopperToggler(double SpinSpeed, double FeedSpeed) {
+  private void HopperToggler(double SpinSpeed, double FeedSpeed) {
     if (HopperActivated) {
       // HopperOFF();
       io.SpindexSpeedCommand(0);
@@ -39,7 +39,7 @@ public class Hopper extends SubsystemBase {
     }
   }
 
-  public void SpindexToggler(double SpinSpeed) {
+  private void SpindexToggler(double SpinSpeed) {
     if (HopperActivated) {
       // HopperOFF();
       io.SpindexSpeedCommand(0);
@@ -51,7 +51,7 @@ public class Hopper extends SubsystemBase {
     }
   }
 
-  public void FeedToggler(double FeedSpeed) {
+  private void FeedToggler(double FeedSpeed) {
     if (HopperActivated) {
       // HopperOFF();
       io.FeedSpeedCommand(0);

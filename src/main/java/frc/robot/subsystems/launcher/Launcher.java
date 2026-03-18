@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.launcherConstants;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -24,10 +25,10 @@ public class Launcher extends SubsystemBase {
   private double distanceY;
   private double endDistance;
   private double timeFlight;
-  private double targetAzimuth;
+  private double targetAzimuth = Math.PI;
   private double launchSpeed;
   private boolean shootSide = false;
-  private boolean disableShoot = false;
+  private boolean disableShoot = true;
   private double testRadPerS = 0.0;
   private Pose2d aimPointComp = new Pose2d(0, 0, new Rotation2d());
   private double finalWheelRotationVelocity;
@@ -52,12 +53,12 @@ public class Launcher extends SubsystemBase {
 
     thingy = consumer;
 
-    mCurrentState = new TrapezoidProfile.State();
-    mDesiredState = new TrapezoidProfile.State();
+    mCurrentState = new TrapezoidProfile.State(Math.PI, 0);
+    mDesiredState = new TrapezoidProfile.State(Math.PI, 0);
   }
 
   public Command toggleShoot() {
-    return Commands.runOnce(() -> disableShoot = !disableShoot);
+    return Commands.runOnce(() -> disableShoot = !disableShoot).andThen(() -> io.setVoltage(0));
   }
 
   public Command testFullSpeed() {
@@ -86,7 +87,7 @@ public class Launcher extends SubsystemBase {
   public Command testTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(3.0);
+              io.testTurn(2.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -94,7 +95,7 @@ public class Launcher extends SubsystemBase {
   public Command invertTestTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(-3.0);
+              io.testTurn(-2.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -145,17 +146,17 @@ public class Launcher extends SubsystemBase {
         .finallyDo(() -> io.turretVoltage(0));
   }
 
-  public Command testTurretRotateDisableAuto() {
+  public Command testTurretRotateToggleAuto() {
     return Commands.runOnce(
         () -> {
-          autoRotate = false;
+          autoRotate = !autoRotate;
         });
   }
 
-  public Command testTurretRotateEnableAuto() {
+  public Command testTurretPosition(DoubleSupplier target) {
     return Commands.runOnce(
         () -> {
-          autoRotate = true;
+          targetAzimuth = target.getAsDouble();
         });
   }
 
@@ -179,12 +180,14 @@ public class Launcher extends SubsystemBase {
     // i.e. Pose2D defines the rotation as a mathematical one... 0 degrees toward
     // positive x,
     // increases counter-clockwise
-    targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians();
-    if (targetAzimuth < -Math.PI) {
-      targetAzimuth += 2 * Math.PI;
-    }
-    if (targetAzimuth > Math.PI) {
-      targetAzimuth -= 2 * Math.PI;
+    if (!DriverStation.isTest()) {
+      targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians();
+      if (targetAzimuth < -Math.PI) {
+        targetAzimuth += 2 * Math.PI;
+      }
+      if (targetAzimuth > Math.PI) {
+        targetAzimuth -= 2 * Math.PI;
+      }
     }
   }
 
@@ -274,12 +277,20 @@ public class Launcher extends SubsystemBase {
   }
 
   private void setAz() {
-    mDesiredState.position = targetAzimuth;
+    mDesiredState.position =
+        MathUtil.clamp(
+            targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
 
     mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
 
     if (!DriverStation.isTest() || autoRotate) {
-      io.pointAt(mCurrentState.position);
+      io.pointAt(mCurrentState.position, mCurrentState.velocity);
+    }
+  }
+
+  private void calibrateTurret() {
+    if (DriverStation.isDisabled() == true) {
+      io.calibrateTurret(inputs.turnPotentiometer);
     }
   }
 
@@ -288,6 +299,8 @@ public class Launcher extends SubsystemBase {
 
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
+
+    calibrateTurret();
 
     aimDownSights(); // sets the target
     getAzimuth(); // sets the target rotation
