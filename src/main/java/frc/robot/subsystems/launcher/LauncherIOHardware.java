@@ -1,9 +1,12 @@
 package frc.robot.subsystems.launcher;
 
 import static edu.wpi.first.units.Units.Amps;
+import static frc.robot.Constants.launcherConstants.TurnPositionConversionFactor;
+import static frc.robot.Constants.launcherConstants.TurnVelocityConversionFactor;
 import static frc.robot.Constants.launcherConstants.turnD;
 import static frc.robot.Constants.launcherConstants.turnI;
 import static frc.robot.Constants.launcherConstants.turnP;
+import static frc.robot.Constants.launcherConstants.turretCalibrationOffset;
 
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -26,6 +29,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
@@ -42,6 +46,7 @@ public class LauncherIOHardware implements LauncherIO {
   private final Slot0Configs launcherSlot0 = new Slot0Configs();
   private final SparkClosedLoopController turnController;
   private final SparkRelativeEncoder turnEncoder;
+  AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(3, 2 * Math.PI, 0);
 
   public LauncherIOHardware() {
     launcherMotor = new TalonFX(Constants.launcherConstants.launchMotorCanId);
@@ -59,9 +64,18 @@ public class LauncherIOHardware implements LauncherIO {
 
     launcherMotor.getConfigurator().apply(launcherMotorConfig);
 
+    turnConfig
+        .encoder
+        .positionConversionFactor(TurnPositionConversionFactor)
+        .velocityConversionFactor(TurnVelocityConversionFactor);
+
     turnConfig.idleMode(IdleMode.kBrake);
     turnConfig.smartCurrentLimit(Constants.launcherConstants.CurrentLimit);
-    turnConfig.closedLoop.pid(turnP, turnI, turnD).feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    turnConfig
+        .closedLoop
+        .pid(turnP, turnI, turnD)
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .outputRange(-1, 1);
 
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -93,6 +107,13 @@ public class LauncherIOHardware implements LauncherIO {
 
     inputs.turnEncoderVelocity = turnEncoder.getVelocity();
     inputs.turnEncoderPosition = turnEncoder.getPosition();
+
+    inputs.turnPotentiometer = m_potentiometer.get();
+  }
+
+  @Override
+  public void calibrateTurret(double rads) {
+    turnEncoder.setPosition(rads + turretCalibrationOffset);
   }
 
   @Override
@@ -102,8 +123,10 @@ public class LauncherIOHardware implements LauncherIO {
   }
 
   @Override
-  public void pointAt(double radians) {
-    turnController.setSetpoint(radians, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+  public void pointAt(double radians, double radiansPerSec) {
+    double FFTurret = radiansPerSec * Constants.launcherConstants.turnVelocityFFGain;
+    Logger.recordOutput("Launcher/FFTurret", FFTurret);
+    turnController.setSetpoint(radians, ControlType.kPosition, ClosedLoopSlot.kSlot0, FFTurret);
   }
 
   @Override

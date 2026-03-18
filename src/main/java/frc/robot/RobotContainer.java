@@ -269,7 +269,7 @@ public class RobotContainer {
     navController.rightStick().and(this::isNotTest).onTrue(nav2.cancelPath());
 
     navController
-        .rightTrigger()
+        .rightBumper()
         .and(this::isNotTest)
         .onTrue(
             nav2.rightCenter(
@@ -277,7 +277,7 @@ public class RobotContainer {
                   return drive.getPose();
                 }));
     navController
-        .leftTrigger()
+        .leftBumper()
         .and(this::isNotTest)
         .onTrue(
             nav2.leftCenter(
@@ -285,13 +285,32 @@ public class RobotContainer {
                   return drive.getPose();
                 }));
 
-    navController.rightBumper().and(this::isNotTest).whileTrue(hopper.HopperToggle());
-
     // controller.rightBumper().onTrue(navSys.showPath());
 
-    navController.leftStick().and(this::isNotTest).onTrue(launcher.toggleShoot());
+    navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
+    navController.rightStick().and(this::isTest).onTrue(launcher.testTurretRotateToggleAuto());
 
-    // Reset gyro to 0° when B button is pressed
+    navController.b().and(this::isTest).whileTrue(launcher.testTurn());
+    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+
+    navController
+        .a()
+        .and(this::isTest)
+        .onTrue(
+            launcher.testTurretPosition(
+                () -> {
+                  return 4;
+                }));
+    navController
+        .x()
+        .and(this::isTest)
+        .onTrue(
+            launcher.testTurretPosition(
+                () -> {
+                  return 2.75;
+                }));
+
+    // Reset gyro to 0° when right stick is pressed
     pilotController
         .rightStick()
         .and(this::isNotTest)
@@ -309,15 +328,10 @@ public class RobotContainer {
 
     pilotController
         .leftBumper()
-        .and(this::isNotTest)
         .whileTrue((climberSubsystem.climberRetract()));
     pilotController
         .rightBumper()
-        .and(this::isNotTest)
         .whileTrue((climberSubsystem.climberExtend()));
-
-    pilotController.leftBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberRetract());
-    pilotController.rightBumper().and(this::isTest).whileTrue(climberSubsystem.TestClimberExtend());
 
     //////////////////////////////////////////////////////////////
     /// Launcher Commands
@@ -330,13 +344,7 @@ public class RobotContainer {
     navController.povUp().and(this::isNotTest).whileTrue(launcher.trimForward());
     navController.povDown().and(this::isNotTest).whileTrue(launcher.trimBack());
     navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
-    /// Test mode commands
 
-    /*
-    navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
-
-    navController.b().and(this::isTest).whileTrue(launcher.testTurn());
-    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
     navController
         .rightBumper()
         .and(DriverStation::isTest)
@@ -346,37 +354,19 @@ public class RobotContainer {
                   return navController.getLeftY();
                 }));
 
-    pilotController
-        .povRight()
-        .and(DriverStation::isTest)
-        .whileTrue(launcher.testTurretRotateClockwise());
-    pilotController
-        .povLeft()
-        .and(DriverStation::isTest)
-        .whileTrue(launcher.testTurretRotateCounterclockwise());
-    pilotController
-        .rightStick()
-        .and(DriverStation::isTest)
-        .onTrue(launcher.testTurretRotateDisableAuto());
-    pilotController
-        .leftStick()
-        .and(DriverStation::isTest)
-        .onTrue(launcher.testTurretRotateEnableAuto());*/
-
     //////////////////////////////////////////////////////////////
     /// Hopper Commands (Drives spindexer and feeds the launcher)
     //////////////////////////////////////////////////////////////
 
-    // pilotController.b().and(this::isTest).whileTrue(hopper.testFeed());
+    // navController.a().and(this::isTest).whileTrue(hopper.testFeed());
+    // navController.x().and(this::isTest).whileTrue(hopper.testSpindex());
 
     //////////////////////////////////////////////////////////////
     /// Intake Commands
     //////////////////////////////////////////////////////////////
 
-    // pilotController.leftTrigger().and(this::isTest).onTrue(intake.testIntakeDown());
-    // pilotController.rightTrigger().and(this::isTest).onTrue(intake.testIntakeUp());
-    // pilotController.start().and(this::isTest).whileTrue(intake.testIntake());
-    pilotController.a().and(this::isNotTest).onTrue(intake.togglePosition());
+    // Test and teleop
+    pilotController.a().onTrue(intake.togglePosition());
   }
 
   /**
