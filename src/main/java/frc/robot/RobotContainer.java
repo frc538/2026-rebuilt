@@ -288,6 +288,27 @@ public class RobotContainer {
     // controller.rightBumper().onTrue(navSys.showPath());
 
     navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
+    navController.rightStick().and(this::isTest).onTrue(launcher.testTurretRotateToggleAuto());
+
+    navController.b().and(this::isTest).whileTrue(launcher.testTurn());
+    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+
+    navController
+        .a()
+        .and(this::isTest)
+        .onTrue(
+            launcher.testTurretPosition(
+                () -> {
+                  return 4;
+                }));
+    navController
+        .x()
+        .and(this::isTest)
+        .onTrue(
+            launcher.testTurretPosition(
+                () -> {
+                  return 2.75;
+                }));
 
     // Reset gyro to 0° when B button is pressed
     pilotController
@@ -328,26 +349,6 @@ public class RobotContainer {
     /*
         navController.a().and(this::isTest).and(this::isSim).whileTrue(launcher.testFullSpeed());
     */
-
-    navController.b().and(this::isTest).whileTrue(launcher.testTurn());
-    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
-
-    navController
-        .a()
-        .and(this::isTest)
-        .onTrue(
-            launcher.testTurretPosition(
-                () -> {
-                  return 3.5;
-                }));
-    navController
-        .x()
-        .and(this::isTest)
-        .onTrue(
-            launcher.testTurretPosition(
-                () -> {
-                  return 3;
-                }));
 
     navController
         .rightBumper()

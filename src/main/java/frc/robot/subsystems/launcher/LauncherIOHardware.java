@@ -1,6 +1,8 @@
 package frc.robot.subsystems.launcher;
 
 import static edu.wpi.first.units.Units.Amps;
+import static frc.robot.Constants.launcherConstants.TurnPositionConversionFactor;
+import static frc.robot.Constants.launcherConstants.TurnVelocityConversionFactor;
 import static frc.robot.Constants.launcherConstants.turnD;
 import static frc.robot.Constants.launcherConstants.turnI;
 import static frc.robot.Constants.launcherConstants.turnP;
@@ -62,9 +64,17 @@ public class LauncherIOHardware implements LauncherIO {
 
     launcherMotor.getConfigurator().apply(launcherMotorConfig);
 
+    turnConfig
+            .encoder
+            .positionConversionFactor(TurnPositionConversionFactor)
+            .velocityConversionFactor(TurnVelocityConversionFactor);
+
     turnConfig.idleMode(IdleMode.kBrake);
     turnConfig.smartCurrentLimit(Constants.launcherConstants.CurrentLimit);
-    turnConfig.closedLoop.pid(turnP, turnI, turnD).feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    turnConfig.closedLoop
+      .pid(turnP, turnI, turnD)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .outputRange(-1, 1);
 
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -112,8 +122,11 @@ public class LauncherIOHardware implements LauncherIO {
   }
 
   @Override
-  public void pointAt(double radians) {
-    turnController.setSetpoint(radians, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+  public void pointAt(double radians, double radiansPerSec) {
+    double FFTurret = radiansPerSec * Constants.launcherConstants.turnVelocityFFGain;
+    Logger.recordOutput("Launcher/FFTurret", FFTurret);
+    turnController.setSetpoint(
+        radians, ControlType.kPosition, ClosedLoopSlot.kSlot0, FFTurret);
   }
 
   @Override

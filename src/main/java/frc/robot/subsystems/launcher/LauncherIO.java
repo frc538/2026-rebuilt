@@ -39,7 +39,7 @@ public interface LauncherIO {
   public default void setVoltage(double voltage) {}
 
   // Command to point the launcher at an angle in radians
-  public default void pointAt(double rad) {}
+  public default void pointAt(double rad, double radPerSec) {}
 
   // Command to set the turret motor voltage
   public default void turretVoltage(double voltage) {}

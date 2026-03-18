@@ -321,7 +321,7 @@ public class LauncherIOSim implements LauncherIO {
   }
 
   @Override
-  public void pointAt(double angle) {
+  public void pointAt(double angle, double radPerSec) {
     // Compute the offset of the turret controller based on angle input referenced from
     //   0 = north (positive Y)
     //   + = counter-clockwise
