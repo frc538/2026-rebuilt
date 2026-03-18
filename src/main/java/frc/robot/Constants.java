@@ -62,7 +62,8 @@ public final class Constants {
         new Pose2d(8.25, 1.5, Rotation2d.fromDegrees(270));
     // Red
     public static final Pose2d centerPointRed = new Pose2d(14, 4.0, Rotation2d.fromDegrees(45));
-    public static final Pose2d rightCenterPointRed = new Pose2d(14, 6.5, Rotation2d.fromDegrees(90));
+    public static final Pose2d rightCenterPointRed =
+        new Pose2d(14, 6.5, Rotation2d.fromDegrees(90));
     public static final Pose2d leftCenterPointRed =
         new Pose2d(14, 1.5, Rotation2d.fromDegrees(270));
   }
