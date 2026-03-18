@@ -65,16 +65,17 @@ public class LauncherIOHardware implements LauncherIO {
     launcherMotor.getConfigurator().apply(launcherMotorConfig);
 
     turnConfig
-            .encoder
-            .positionConversionFactor(TurnPositionConversionFactor)
-            .velocityConversionFactor(TurnVelocityConversionFactor);
+        .encoder
+        .positionConversionFactor(TurnPositionConversionFactor)
+        .velocityConversionFactor(TurnVelocityConversionFactor);
 
     turnConfig.idleMode(IdleMode.kBrake);
     turnConfig.smartCurrentLimit(Constants.launcherConstants.CurrentLimit);
-    turnConfig.closedLoop
-      .pid(turnP, turnI, turnD)
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .outputRange(-1, 1);
+    turnConfig
+        .closedLoop
+        .pid(turnP, turnI, turnD)
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .outputRange(-1, 1);
 
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -125,8 +126,7 @@ public class LauncherIOHardware implements LauncherIO {
   public void pointAt(double radians, double radiansPerSec) {
     double FFTurret = radiansPerSec * Constants.launcherConstants.turnVelocityFFGain;
     Logger.recordOutput("Launcher/FFTurret", FFTurret);
-    turnController.setSetpoint(
-        radians, ControlType.kPosition, ClosedLoopSlot.kSlot0, FFTurret);
+    turnController.setSetpoint(radians, ControlType.kPosition, ClosedLoopSlot.kSlot0, FFTurret);
   }
 
   @Override
