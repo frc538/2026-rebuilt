@@ -65,7 +65,7 @@ public final class Constants {
     public static final Pose2d centerRightRed = new Pose2d(10.5, 5.5, Rotation2d.fromDegrees(180));
     public static final Pose2d centerLeftRed = new Pose2d(10.5, 2.5, Rotation2d.fromDegrees(180));
 
-    public static final double distanceThreshold = 0.5; // meters
+    public static final double distanceThreshold = 1.5; // meters
   }
 
   public static class ClimberConstants {
@@ -139,11 +139,11 @@ public final class Constants {
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 1;
+    public static double turnP = 0.1;
     public static double turnI = 0;
     public static double turnD = 0;
-    
-    public static double turnVelocityFFGain = maxV * 1;
+
+    public static double turnVelocityFFGain = maxV * 0.5;
 
     public static final double SpeedStep /*for the trim */ = 0.005;
     public static final double AimTrim = 1; // in degrees

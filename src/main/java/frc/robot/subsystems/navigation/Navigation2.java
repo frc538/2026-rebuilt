@@ -1,9 +1,12 @@
 package frc.robot.subsystems.navigation;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.ConstraintsZone;
+import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PointTowardsZone;
 import com.pathplanner.lib.path.RotationTarget;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -117,6 +120,8 @@ public class Navigation2 extends SubsystemBase {
   private double leftAngle = Math.PI / 2;
   private double humpAngle = Math.PI / 8;
 
+  double endVelocity = 0;
+
   public Navigation2(Drive drive) {
     theDrive = drive;
     nodes[0].up =
@@ -174,7 +179,7 @@ public class Navigation2 extends SubsystemBase {
             nodes[2],
             nodes[0],
             directorator.down,
-            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
             3);
 
@@ -199,7 +204,7 @@ public class Navigation2 extends SubsystemBase {
             nodes[3],
             nodes[1],
             directorator.down,
-            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
             3);
 
@@ -266,7 +271,7 @@ public class Navigation2 extends SubsystemBase {
             nodes[6],
             nodes[4],
             directorator.down,
-            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
             3);
 
@@ -283,7 +288,7 @@ public class Navigation2 extends SubsystemBase {
             nodes[7],
             nodes[5],
             directorator.down,
-            new Rotation2d(upAngle + humpAngle),
+            new Rotation2d(downAngle + humpAngle),
             new Rotation2d(downAngle),
             3);
   }
@@ -334,7 +339,7 @@ public class Navigation2 extends SubsystemBase {
       Translation2d initialPose, directorator initialDirection, directorator targetDirection) {
     double horizontalOffset = 0;
     double verticalOffset = 0;
-    final double baseOffset = 0.01;
+    final double baseOffset = .57;
 
     // Create a vector representing the direction of travel, then use atan2 to get the angle
     double upDir = 1;
@@ -385,24 +390,83 @@ public class Navigation2 extends SubsystemBase {
 
     offsetAngle = Math.atan2(y2 - y1, x2 - x1);
 
+    if (((initialDirection == directorator.up) && (targetDirection == directorator.left))
+        || ((initialDirection == directorator.left) && (targetDirection == directorator.down))
+        || ((initialDirection == directorator.down) && (targetDirection == directorator.right))
+        || ((initialDirection == directorator.right) && (targetDirection == directorator.up))) {
+      offsetAngle = offsetAngle - Math.PI / 2;
+    } else if (((initialDirection == directorator.up) && (targetDirection == directorator.right))
+        || ((initialDirection == directorator.right) && (targetDirection == directorator.down))
+        || ((initialDirection == directorator.down) && (targetDirection == directorator.left))
+        || ((initialDirection == directorator.left) && (targetDirection == directorator.up))) {
+      offsetAngle = offsetAngle + Math.PI / 2;
+    }
+
     return new Pose2d(
         initialPose.getX() + horizontalOffset,
         initialPose.getY() + verticalOffset,
         new Rotation2d(offsetAngle));
   }
 
+  // if true, then use pathfind to the start node, then edge.
+  // if false, just pathfind from current point to the end point of the edge
+  boolean shouldPathfind(Translation2d currentPosition, edge e) {
+    if ((e.m_start == nodes[0] && e.m_direction == directorator.up)
+        || (e.m_start == nodes[1] && e.m_direction == directorator.up)
+        || (e.m_start == nodes[4] && e.m_direction == directorator.up)
+        || (e.m_start == nodes[5] && e.m_direction == directorator.up)
+        || (e.m_start == nodes[2] && e.m_direction == directorator.down)
+        || (e.m_start == nodes[3] && e.m_direction == directorator.down)
+        || (e.m_start == nodes[6] && e.m_direction == directorator.down)
+        || (e.m_start == nodes[7] && e.m_direction == directorator.down)) {
+      // Traversing a bump!
+      // Pathfind if we aren't already between the start and end node within the bump
+
+      // get the bump constraints
+      double minX = Math.min(e.m_start.m_pose.getX(), e.m_end.m_pose.getX());
+      double maxX = Math.max(e.m_start.m_pose.getX(), e.m_end.m_pose.getX());
+      double y = e.m_start.m_pose.getY();
+      if ((currentPosition.getX() > minX && currentPosition.getX() < maxX)
+          && (currentPosition.getY() > y - .8)
+          && currentPosition.getY() < y + 0.8) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      // Not traversing a bump
+      if ((e.m_direction == directorator.up && currentPosition.getX() < e.m_start.m_pose.getX())
+          || (e.m_direction == directorator.down
+              && currentPosition.getX() > e.m_start.m_pose.getX())
+          || (e.m_direction == directorator.left
+              && currentPosition.getY() < e.m_start.m_pose.getY())
+          || (e.m_direction == directorator.right
+              && currentPosition.getY() > e.m_start.m_pose.getY())) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
   void findEdgePath() {
     List<Waypoint> waypoints;
 
-    // if (currentEdgeList.size() < 2) {
-    //   thePath = AutoBuilder.pathfindToPose(currentEdgeList.getLast().m_end.m_pose, constraints);
-    // } else {
     ArrayList<Pose2d> poses = new ArrayList<>();
+    ArrayList<RotationTarget> rotationTargets = new ArrayList<>();
     edge[] edges = currentEdgeList.toArray(new edge[0]);
+    Pose2d robotPose;
     if (DriverStation.getAlliance().get() == Alliance.Red) {
-      poses.add(theDrive.getPose().rotateAround(centerPoint, Rotation2d.fromRadians(Math.PI)));
+      robotPose = theDrive.getPose().rotateAround(centerPoint, Rotation2d.fromRadians(Math.PI));
     } else {
-      poses.add(theDrive.getPose());
+      robotPose = theDrive.getPose();
+    }
+    boolean pathfindFirst = shouldPathfind(robotPose.getTranslation(), edges[0]);
+
+    if (pathfindFirst) {
+      poses.add(edges[0].m_start.m_pose);
+    } else {
+      poses.add(new Pose2d(robotPose.getTranslation(), edges[0].m_finalOrientation));
     }
     for (int i = 0; i < edges.length; i++) {
       Pose2d pose;
@@ -420,13 +484,36 @@ public class Navigation2 extends SubsystemBase {
         pose = edges[i].m_end.m_pose;
       }
       poses.add(pose);
+      rotationTargets.add(
+          new RotationTarget(i + edges[i].m_Target[0].position(), edges[i].m_Target[0].rotation()));
+      rotationTargets.add(
+          new RotationTarget(i + edges[i].m_Target[1].position(), edges[i].m_Target[1].rotation()));
     }
     waypoints = PathPlannerPath.waypointsFromPoses(poses);
     GoalEndState endState = new GoalEndState(0, currentEdgeList.getLast().m_finalOrientation);
-    PathPlannerPath path = new PathPlannerPath(waypoints, constraints, null, endState);
+    ArrayList<EventMarker> emal = new ArrayList<>();
+    ArrayList<ConstraintsZone> czal = new ArrayList<>();
+    ArrayList<PointTowardsZone> ptzal = new ArrayList<>();
+    PathPlannerPath path =
+        new PathPlannerPath(
+            waypoints, rotationTargets, ptzal, czal, emal, constraints, null, endState, false);
     thePath = AutoBuilder.followPath(path);
-    // }
 
+    if (pathfindFirst) {
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
+        thePath =
+            AutoBuilder.pathfindToPose(
+                    edges[0].m_start.m_pose.rotateAround(
+                        centerPoint, Rotation2d.fromRadians(Math.PI)),
+                    constraints,
+                    edges[0].m_maxSpeed)
+                .andThen(thePath);
+      } else {
+        thePath =
+            AutoBuilder.pathfindToPose(edges[0].m_start.m_pose, constraints, edges[0].m_maxSpeed)
+                .andThen(thePath);
+      }
+    }
     CommandScheduler.getInstance().schedule(thePath);
   }
 
@@ -507,6 +594,11 @@ public class Navigation2 extends SubsystemBase {
     Logger.recordOutput(
         "Guidance/guidanceRobotPoseIndex", findStartingNode(theDrive.getPose()).m_index);
     Logger.recordOutput("Guidance/edgeList", currentEdgeList.size());
+
+    Pose2d translatedRobotPose =
+        theDrive.getPose().rotateAround(centerPoint, Rotation2d.fromRadians(Math.PI));
+    Logger.recordOutput(
+        "Guidance/robotEstimatedRobotTranslation", translatedRobotPose.getTranslation());
 
     if (thePath != null) {
       if (thePath.isFinished()) {
@@ -627,7 +719,7 @@ public class Navigation2 extends SubsystemBase {
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
 
     return AutoBuilder.pathfindToPose(
-        targetPose, constraints, 0.0 // Goal end velocity in meters/sec
+        targetPose, constraints, 0 // Goal end velocity in meters/sec
         // Rotation delay distance in meters. This is how far the robot should travel
         // before attempting to rotate.
         );
