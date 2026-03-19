@@ -112,7 +112,7 @@ public class Navigation2 extends SubsystemBase {
 
   // Create the constraints to use while pathfinding
   private final PathConstraints constraints =
-      new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+      new PathConstraints(3.0, 5.0, Units.degreesToRadians(360), Units.degreesToRadians(540));
 
   private double upAngle = 0;
   private double downAngle = Math.PI;
@@ -339,7 +339,7 @@ public class Navigation2 extends SubsystemBase {
       Translation2d initialPose, directorator initialDirection, directorator targetDirection) {
     double horizontalOffset = 0;
     double verticalOffset = 0;
-    final double baseOffset = .57;
+    final double baseOffset = .25;
 
     // Create a vector representing the direction of travel, then use atan2 to get the angle
     double upDir = 1;
