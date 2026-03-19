@@ -113,6 +113,7 @@ public class LauncherIOHardware implements LauncherIO {
 
   @Override
   public void calibrateTurret(double rads) {
+    turnController.setIAccum(0);
     turnEncoder.setPosition(rads + turretCalibrationOffset);
   }
 

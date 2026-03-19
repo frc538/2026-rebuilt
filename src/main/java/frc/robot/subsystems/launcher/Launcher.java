@@ -294,6 +294,9 @@ public class Launcher extends SubsystemBase {
 
   private void calibrateTurret() {
     if (DriverStation.isDisabled() == true) {
+      mDesiredState.position = inputs.turnPotentiometer;
+      targetAzimuth = inputs.turnPotentiometer;
+      mCurrentState.position = inputs.turnPotentiometer;
       io.calibrateTurret(inputs.turnPotentiometer);
     }
   }
