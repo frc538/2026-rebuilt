@@ -1,9 +1,12 @@
 package frc.robot.subsystems.navigation;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.ConstraintsZone;
+import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PointTowardsZone;
 import com.pathplanner.lib.path.RotationTarget;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -176,7 +179,7 @@ public class Navigation2 extends SubsystemBase {
             nodes[2],
             nodes[0],
             directorator.down,
-            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
             3);
 
@@ -201,7 +204,7 @@ public class Navigation2 extends SubsystemBase {
             nodes[3],
             nodes[1],
             directorator.down,
-            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
             3);
 
@@ -268,7 +271,7 @@ public class Navigation2 extends SubsystemBase {
             nodes[6],
             nodes[4],
             directorator.down,
-            new Rotation2d(upAngle - humpAngle),
+            new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
             3);
 
@@ -285,7 +288,7 @@ public class Navigation2 extends SubsystemBase {
             nodes[7],
             nodes[5],
             directorator.down,
-            new Rotation2d(upAngle + humpAngle),
+            new Rotation2d(downAngle + humpAngle),
             new Rotation2d(downAngle),
             3);
   }
@@ -336,7 +339,7 @@ public class Navigation2 extends SubsystemBase {
       Translation2d initialPose, directorator initialDirection, directorator targetDirection) {
     double horizontalOffset = 0;
     double verticalOffset = 0;
-    final double baseOffset = .65;
+    final double baseOffset = .57;
 
     // Create a vector representing the direction of travel, then use atan2 to get the angle
     double upDir = 1;
@@ -449,10 +452,8 @@ public class Navigation2 extends SubsystemBase {
   void findEdgePath() {
     List<Waypoint> waypoints;
 
-    // if (currentEdgeList.size() < 2) {
-    //   thePath = AutoBuilder.pathfindToPose(currentEdgeList.getLast().m_end.m_pose, constraints);
-    // } else {
     ArrayList<Pose2d> poses = new ArrayList<>();
+    ArrayList<RotationTarget> rotationTargets = new ArrayList<>();
     edge[] edges = currentEdgeList.toArray(new edge[0]);
     Pose2d robotPose;
     if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -461,6 +462,7 @@ public class Navigation2 extends SubsystemBase {
       robotPose = theDrive.getPose();
     }
     boolean pathfindFirst = shouldPathfind(robotPose.getTranslation(), edges[0]);
+
     if (pathfindFirst) {
       poses.add(edges[0].m_start.m_pose);
     } else {
@@ -482,21 +484,37 @@ public class Navigation2 extends SubsystemBase {
         pose = edges[i].m_end.m_pose;
       }
       poses.add(pose);
+      rotationTargets.add(
+          new RotationTarget(i + edges[i].m_Target[0].position(), edges[i].m_Target[0].rotation()));
+      rotationTargets.add(
+          new RotationTarget(i + edges[i].m_Target[1].position(), edges[i].m_Target[1].rotation()));
     }
     waypoints = PathPlannerPath.waypointsFromPoses(poses);
     GoalEndState endState = new GoalEndState(0, currentEdgeList.getLast().m_finalOrientation);
-    PathPlannerPath path = new PathPlannerPath(waypoints, constraints, null, endState);
-
-    thePath = AutoBuilder.pathfindThenFollowPath(path, constraints);
+    ArrayList<EventMarker> emal = new ArrayList<>();
+    ArrayList<ConstraintsZone> czal = new ArrayList<>();
+    ArrayList<PointTowardsZone> ptzal = new ArrayList<>();
+    PathPlannerPath path =
+        new PathPlannerPath(
+            waypoints, rotationTargets, ptzal, czal, emal, constraints, null, endState, false);
+    thePath = AutoBuilder.followPath(path);
 
     if (pathfindFirst) {
-      CommandScheduler.getInstance()
-          .schedule(
-              AutoBuilder.pathfindToPose(edges[0].m_start.m_pose, constraints, edges[0].m_maxSpeed)
-                  .andThen(thePath));
-    } else {
-      CommandScheduler.getInstance().schedule(thePath);
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
+        thePath =
+            AutoBuilder.pathfindToPose(
+                    edges[0].m_start.m_pose.rotateAround(
+                        centerPoint, Rotation2d.fromRadians(Math.PI)),
+                    constraints,
+                    edges[0].m_maxSpeed)
+                .andThen(thePath);
+      } else {
+        thePath =
+            AutoBuilder.pathfindToPose(edges[0].m_start.m_pose, constraints, edges[0].m_maxSpeed)
+                .andThen(thePath);
+      }
     }
+    CommandScheduler.getInstance().schedule(thePath);
   }
 
   public Command navUp(Pose2dSupplier robotPose) {
@@ -576,6 +594,11 @@ public class Navigation2 extends SubsystemBase {
     Logger.recordOutput(
         "Guidance/guidanceRobotPoseIndex", findStartingNode(theDrive.getPose()).m_index);
     Logger.recordOutput("Guidance/edgeList", currentEdgeList.size());
+
+    Pose2d translatedRobotPose =
+        theDrive.getPose().rotateAround(centerPoint, Rotation2d.fromRadians(Math.PI));
+    Logger.recordOutput(
+        "Guidance/robotEstimatedRobotTranslation", translatedRobotPose.getTranslation());
 
     if (thePath != null) {
       if (thePath.isFinished()) {
