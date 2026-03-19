@@ -336,7 +336,7 @@ public class Navigation2 extends SubsystemBase {
       Translation2d initialPose, directorator initialDirection, directorator targetDirection) {
     double horizontalOffset = 0;
     double verticalOffset = 0;
-    final double baseOffset = 0.5;
+    final double baseOffset = .65;
 
     // Create a vector representing the direction of travel, then use atan2 to get the angle
     double upDir = 1;
