@@ -186,10 +186,11 @@ public class Launcher extends SubsystemBase {
     // increases counter-clockwise
     if (!DriverStation.isTest()) {
       targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians() + currentAimTrim;
-      if (targetAzimuth < -Math.PI) {
+      targetAzimuth = 2 * Math.PI - targetAzimuth;
+      if (targetAzimuth < 0) {
         targetAzimuth += 2 * Math.PI;
       }
-      if (targetAzimuth > Math.PI) {
+      if (targetAzimuth > 2 * Math.PI) {
         targetAzimuth -= 2 * Math.PI;
       }
     }

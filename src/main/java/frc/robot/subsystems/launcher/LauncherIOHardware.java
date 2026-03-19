@@ -122,7 +122,7 @@ public class LauncherIOHardware implements LauncherIO {
   public void setRadPerS(double RPS) {
     Logger.recordOutput("Launcher/testRPS", RPS);
     launcherMotor.setControl(
-        new VelocityVoltage(RPS / (2 * Math.PI) * 56.0 / 4 * Math.PI)
+        new VelocityVoltage(RPS / (2 * Math.PI) * 56.0 / (4 * Math.PI))
             .withSlot(0)); // 56 is a fudge factor
   }
 
