@@ -97,7 +97,8 @@ public class LauncherIOHardware implements LauncherIO {
     inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
     inputs.launcherAcceleration = launcherMotor.getAcceleration().getValueAsDouble();
     inputs.launcherClosedLoopError = launcherMotor.getClosedLoopError().getValueAsDouble();
-    inputs.launcherVelocity = launcherMotor.getVelocity().getValueAsDouble() / (2 * Math.PI);
+    inputs.launcherVelocity =
+        launcherMotor.getVelocity().getValueAsDouble() * (2 * Math.PI); // radians per second
     inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
     inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
 
@@ -120,7 +121,9 @@ public class LauncherIOHardware implements LauncherIO {
   @Override
   public void setRadPerS(double RPS) {
     Logger.recordOutput("Launcher/testRPS", RPS);
-    launcherMotor.setControl(new VelocityVoltage(RPS / (2 * Math.PI)).withSlot(0));
+    launcherMotor.setControl(
+        new VelocityVoltage(RPS / (2 * Math.PI) * 56.0 / 4 * Math.PI)
+            .withSlot(0)); // 56 is a fudge factor
   }
 
   @Override

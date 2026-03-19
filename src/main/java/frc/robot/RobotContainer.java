@@ -341,7 +341,7 @@ public class RobotContainer {
     navController.povRight().and(this::isNotTest).whileTrue(launcher.trimRight());
     navController.povUp().and(this::isNotTest).whileTrue(launcher.trimForward());
     navController.povDown().and(this::isNotTest).whileTrue(launcher.trimBack());
-    navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
+    // navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
 
     navController
         .rightBumper()
@@ -365,6 +365,7 @@ public class RobotContainer {
 
     // Test and teleop
     pilotController.a().onTrue(intake.togglePosition());
+    pilotController.y().onTrue(intake.HumpAvoid());
   }
 
   /**
