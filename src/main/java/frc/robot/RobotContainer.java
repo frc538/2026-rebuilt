@@ -267,6 +267,8 @@ public class RobotContainer {
     navController.y().and(this::isNotTest).onTrue(nav2.navUp(() -> drive.getPose()));
 
     navController.rightStick().and(this::isNotTest).onTrue(nav2.cancelPath());
+    navController.rightTrigger(75).onTrue(hopper.HopperToggle());
+    navController.rightTrigger(75).onFalse(hopper.HopperToggle());
 
     navController
         .rightBumper()
