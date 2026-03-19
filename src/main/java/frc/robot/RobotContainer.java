@@ -326,12 +326,8 @@ public class RobotContainer {
     /// Climber Commands
     //////////////////////////////////////////////////////////////
 
-    pilotController
-        .leftBumper()
-        .whileTrue((climberSubsystem.climberRetract()));
-    pilotController
-        .rightBumper()
-        .whileTrue((climberSubsystem.climberExtend()));
+    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
 
     //////////////////////////////////////////////////////////////
     /// Launcher Commands
