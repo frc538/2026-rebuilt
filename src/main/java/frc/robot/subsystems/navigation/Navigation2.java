@@ -334,7 +334,7 @@ public class Navigation2 extends SubsystemBase {
       Translation2d initialPose, directorator initialDirection, directorator targetDirection) {
     double horizontalOffset = 0;
     double verticalOffset = 0;
-    final double baseOffset = 0.01;
+    final double baseOffset = 0.1;
 
     // Create a vector representing the direction of travel, then use atan2 to get the angle
     double upDir = 1;
@@ -384,6 +384,18 @@ public class Navigation2 extends SubsystemBase {
     }
 
     offsetAngle = Math.atan2(y2 - y1, x2 - x1);
+
+    if (((initialDirection == directorator.up) && (targetDirection == directorator.left))
+        || ((initialDirection == directorator.left) && (targetDirection == directorator.down))
+        || ((initialDirection == directorator.down) && (targetDirection == directorator.right))
+        || ((initialDirection == directorator.right) && (targetDirection == directorator.up))) {
+      offsetAngle = offsetAngle - Math.PI / 2;
+    } else if (((initialDirection == directorator.up) && (targetDirection == directorator.right))
+        || ((initialDirection == directorator.right) && (targetDirection == directorator.down))
+        || ((initialDirection == directorator.down) && (targetDirection == directorator.left))
+        || ((initialDirection == directorator.left) && (targetDirection == directorator.up))) {
+      offsetAngle = offsetAngle + Math.PI / 2;
+    }
 
     return new Pose2d(
         initialPose.getX() + horizontalOffset,
