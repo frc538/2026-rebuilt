@@ -149,7 +149,7 @@ public final class Constants {
     public static double turnVelocityFFGain = maxV * 0.5;
 
     public static final double SpeedStep /*for the trim */ = 0.005;
-    public static final double AimTrim = 2; // in degrees
+    public static final double AimTrim = 1; // in degrees
   }
 
   public final class Intake {
@@ -171,7 +171,7 @@ public final class Constants {
     public static final double RotatoPosConFac = 2 * Math.PI;
     public static final double RotatoVelConFac = Math.PI / 30;
 
-    public static final double ArmPosConFac = 2 * Math.PI / 9;
+    public static final double ArmPosConFac = 2 * Math.PI / 27;
     public static final double ArmVelConFac = ArmPosConFac / 60;
 
     public static final double ArmkP = 1.5;
