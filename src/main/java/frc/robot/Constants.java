@@ -130,7 +130,7 @@ public final class Constants {
     public static final double kFlywheelMomentOfInertia = 0.0004926; // kg * m^2
     public static final double kWheelRadius = 0.050165; // m
 
-    public static final double TurnPositionConversio
+    public static final double TurnPositionConversionFactor =
         2 * Math.PI / 20 / 2.5088 * 0.96; // 200 : 20 gear ratio, measure in radians
     public static final double TurnVelocityConversionFactor =
         TurnPositionConversionFactor * 60; // Radians per second
