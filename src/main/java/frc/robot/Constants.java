@@ -46,6 +46,7 @@ public final class Constants {
     public static final boolean LauncherEnabled = true;
     public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = true;
+    public static final boolean isPotentiometerBroken = true;
   }
 
   public static class navigationConstants {

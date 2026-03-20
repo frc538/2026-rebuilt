@@ -61,6 +61,8 @@ public class Launcher extends SubsystemBase {
 
     mCurrentState = new TrapezoidProfile.State(Math.PI, 0);
     mDesiredState = new TrapezoidProfile.State(Math.PI, 0);
+
+    io.calibrateTurret(Math.PI);
   }
 
   public Command toggleShoot() {
@@ -301,10 +303,12 @@ public class Launcher extends SubsystemBase {
 
   private void calibrateTurret() {
     if (DriverStation.isDisabled() == true) {
+      if (Constants.Features.isPotentiometerBroken == false) {
       mDesiredState.position = inputs.turnPotentiometer;
       targetAzimuth = inputs.turnPotentiometer;
       mCurrentState.position = inputs.turnPotentiometer;
       io.calibrateTurret(inputs.turnPotentiometer);
+      }
     }
   }
 
