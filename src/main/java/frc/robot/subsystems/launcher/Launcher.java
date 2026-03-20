@@ -250,7 +250,14 @@ public class Launcher extends SubsystemBase {
     distanceY = aimPointComp.getY() - robotPose.getY();
     distanceY = Math.pow(distanceY, 2);
 
-    endDistance = Math.sqrt(distanceX + distanceY) + currentSpeedTrim;
+    double calculatedDistance = Math.sqrt(distanceX + distanceY);
+
+    double distanceModified = Math.max(1, (0.45 * calculatedDistance) + 5.5);
+
+    Logger.recordOutput("Launcher/calculatedDistance", calculatedDistance);
+    Logger.recordOutput("Launcher/distanceModified", distanceModified);
+    // Add Trim + currentSpeedTrim;
+    endDistance = distanceModified + currentSpeedTrim;
 
     timeFlight =
         Math.sqrt((hubHeight - launcherHeight - endDistance * Math.tan(launcherAngle) / -9.81));
@@ -304,10 +311,10 @@ public class Launcher extends SubsystemBase {
   private void calibrateTurret() {
     if (DriverStation.isDisabled() == true) {
       if (Constants.Features.isPotentiometerBroken == false) {
-      mDesiredState.position = inputs.turnPotentiometer;
-      targetAzimuth = inputs.turnPotentiometer;
-      mCurrentState.position = inputs.turnPotentiometer;
-      io.calibrateTurret(inputs.turnPotentiometer);
+        mDesiredState.position = inputs.turnPotentiometer;
+        targetAzimuth = inputs.turnPotentiometer;
+        mCurrentState.position = inputs.turnPotentiometer;
+        io.calibrateTurret(inputs.turnPotentiometer);
       }
     }
   }
