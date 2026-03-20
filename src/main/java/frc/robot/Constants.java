@@ -105,8 +105,8 @@ public final class Constants {
 
     public static final double turretCalibrationOffset = 0.0;
 
-    public static final double minWireLimit = 2.75; // TODO: base wire limits
-    public static final double maxWireLimit = 4;
+    public static final double minWireLimit = 1.45;
+    public static final double maxWireLimit = 6;
 
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
     public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());
@@ -128,19 +128,19 @@ public final class Constants {
     public static final double kWheelRadius = 0.050165; // m
 
     public static final double TurnPositionConversionFactor =
-        2 * Math.PI / 10.0; // 200 : 20 gear ratio, measure in radians
+        2 * Math.PI / 20 / 2.5088 * 0.96; // 200 : 20 gear ratio, measure in radians
     public static final double TurnVelocityConversionFactor =
         TurnPositionConversionFactor * 60; // Radians per second
 
     public static final double minrange = -(3 * Math.PI) / 4;
     public static final double maxrange = (3 * Math.PI) / 4;
-    public static final double maxV = 1;
-    public static final double maxA = 1;
+    public static final double maxV = 3;
+    public static final double maxA = 6;
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 0.1;
-    public static double turnI = 0;
+    public static double turnP = 3;
+    public static double turnI = 0.05;
     public static double turnD = 0;
 
     public static double turnVelocityFFGain = maxV * 0.5;

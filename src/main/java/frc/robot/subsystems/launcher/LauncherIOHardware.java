@@ -29,6 +29,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -95,9 +96,18 @@ public class LauncherIOHardware implements LauncherIO {
     inputs.launcherMotorVoltage = launcherMotor.getMotorVoltage().getValueAsDouble();
     inputs.launcherStatorCurrent = launcherMotor.getStatorCurrent().getValueAsDouble();
     inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
-    inputs.launcherAcceleration = launcherMotor.getAcceleration().getValueAsDouble();
-    inputs.launcherClosedLoopError = launcherMotor.getClosedLoopError().getValueAsDouble();
-    inputs.launcherVelocity = launcherMotor.getVelocity().getValueAsDouble() / (2 * Math.PI);
+
+    // Give accel in rad / sec / sec
+    inputs.launcherAcceleration = Units.rotationsToRadians(launcherMotor.getAcceleration().getValueAsDouble());
+
+    // Give error in radians per second
+    inputs.launcherClosedLoopError = Units.rotationsToRadians(launcherMotor.getClosedLoopError().getValueAsDouble());
+
+    // getVelocity returns rotations per second
+    // Convert rotations per second to radians per second
+    inputs.launcherVelocity =
+        Units.rotationsToRadians(launcherMotor.getVelocity().getValueAsDouble());
+
     inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
     inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
 
@@ -113,13 +123,16 @@ public class LauncherIOHardware implements LauncherIO {
 
   @Override
   public void calibrateTurret(double rads) {
+    turnController.setIAccum(0);
     turnEncoder.setPosition(rads + turretCalibrationOffset);
   }
 
   @Override
   public void setRadPerS(double RPS) {
-    Logger.recordOutput("Launcher/testRPS", RPS);
-    launcherMotor.setControl(new VelocityVoltage(RPS / (2 * Math.PI)).withSlot(0));
+    Logger.recordOutput("Launcher/CommandedRadPerSec", RPS);
+    // Radians per second to rotations per second
+    RPS = Units.radiansToRotations(RPS);
+    launcherMotor.setControl(new VelocityVoltage(RPS).withSlot(0));
   }
 
   @Override

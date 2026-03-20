@@ -186,10 +186,11 @@ public class Launcher extends SubsystemBase {
     // increases counter-clockwise
     if (!DriverStation.isTest()) {
       targetAzimuth = targetGlobalAzimuth - robotPose.getRotation().getRadians() + currentAimTrim;
-      if (targetAzimuth < -Math.PI) {
+      targetAzimuth = 2 * Math.PI - targetAzimuth;
+      if (targetAzimuth < 0) {
         targetAzimuth += 2 * Math.PI;
       }
-      if (targetAzimuth > Math.PI) {
+      if (targetAzimuth > 2 * Math.PI) {
         targetAzimuth -= 2 * Math.PI;
       }
     }
@@ -294,6 +295,9 @@ public class Launcher extends SubsystemBase {
 
   private void calibrateTurret() {
     if (DriverStation.isDisabled() == true) {
+      mDesiredState.position = inputs.turnPotentiometer;
+      targetAzimuth = inputs.turnPotentiometer;
+      mCurrentState.position = inputs.turnPotentiometer;
       io.calibrateTurret(inputs.turnPotentiometer);
     }
   }
@@ -329,6 +333,8 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/mDesiredState", mDesiredState);
     Logger.recordOutput("Launcher/mCurrentState", mCurrentState);
     Logger.recordOutput("Launcher/testRPSCmd", testRadPerS);
+    Logger.recordOutput("Launcher/currentSpeedTrim", currentSpeedTrim);
+    Logger.recordOutput("Launcher/currentAimTrim", currentAimTrim);
   }
 
   @FunctionalInterface

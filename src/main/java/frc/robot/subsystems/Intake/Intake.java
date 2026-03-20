@@ -3,6 +3,7 @@ package frc.robot.subsystems.Intake;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -12,6 +13,7 @@ public class Intake extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public boolean FlipFlop = true;
+  private boolean intakerToggle = false;
 
   public TrapezoidProfile.State mCurrentState =
       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
@@ -41,11 +43,19 @@ public class Intake extends SubsystemBase {
     io.setIntakePosition(mCurrentState.position, inputs.positionRad);
     Logger.recordOutput("Intake/PosProfile", mCurrentState.position);
 
-    if (inputs.positionRad < Constants.Intake.RotatoThresholdRAD) {
-      io.runRotato(0);
-    } else {
+    if (intakerToggle == true || inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(Constants.Intake.RotatoRPM);
+    } else {
+      io.runRotato(0);
     }
+  }
+
+  public Command forceIntake() {
+    return Commands.runOnce(
+        () -> {
+          intakerToggle = !intakerToggle;
+        },
+        this);
   }
 
   public Command runIntake(double speed) {

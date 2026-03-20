@@ -267,8 +267,8 @@ public class RobotContainer {
     navController.y().and(this::isNotTest).onTrue(nav2.navUp(() -> drive.getPose()));
 
     navController.rightStick().and(this::isNotTest).onTrue(nav2.cancelPath());
-    navController.rightTrigger(75).onTrue(hopper.HopperToggle());
-    navController.rightTrigger(75).onFalse(hopper.HopperToggle());
+    navController.rightTrigger(0.75).onTrue(hopper.HopperToggle());
+    navController.rightTrigger(0.75).onFalse(hopper.HopperToggle());
 
     navController
         .rightBumper()
@@ -301,7 +301,7 @@ public class RobotContainer {
         .onTrue(
             launcher.testTurretPosition(
                 () -> {
-                  return 4;
+                  return 5;
                 }));
     navController
         .x()
@@ -309,7 +309,7 @@ public class RobotContainer {
         .onTrue(
             launcher.testTurretPosition(
                 () -> {
-                  return 2.75;
+                  return 2;
                 }));
 
     // Reset gyro to 0° when right stick is pressed
@@ -341,7 +341,7 @@ public class RobotContainer {
     navController.povRight().and(this::isNotTest).whileTrue(launcher.trimRight());
     navController.povUp().and(this::isNotTest).whileTrue(launcher.trimForward());
     navController.povDown().and(this::isNotTest).whileTrue(launcher.trimBack());
-    navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
+    // navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
 
     navController
         .rightBumper()
@@ -365,6 +365,8 @@ public class RobotContainer {
 
     // Test and teleop
     pilotController.a().onTrue(intake.togglePosition());
+    pilotController.b().onTrue(intake.forceIntake());
+    pilotController.y().onTrue(intake.HumpAvoid());
   }
 
   /**
