@@ -22,6 +22,9 @@ public class IntakeIOSpark implements IntakeIO {
       new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
   private final SparkFlex Leftrotato =
       new SparkFlex(Constants.Intake.LeftRotatoCanId, MotorType.kBrushless);
+  private double kPTrim = 0;
+  private double kgTrim = 0;
+  SparkMaxConfig config = new SparkMaxConfig();
 
   private final RelativeEncoder armEncoder = movementMotor.getEncoder();
   private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();
@@ -29,7 +32,7 @@ public class IntakeIOSpark implements IntakeIO {
   private final SparkClosedLoopController pid = movementMotor.getClosedLoopController();
 
   public IntakeIOSpark() {
-    SparkMaxConfig config = new SparkMaxConfig();
+
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
 
     config
@@ -93,11 +96,22 @@ public class IntakeIOSpark implements IntakeIO {
         radians,
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
-        Constants.Intake.IntakeKg * Math.sin(CurrentRads - Constants.Intake.alpha));
+        (Constants.Intake.IntakeKg + kgTrim) * Math.sin(CurrentRads - Constants.Intake.alpha));
   }
 
   @Override
   public void testArmRun(double speed) {
     movementMotor.setVoltage(speed);
+  }
+
+  @Override
+  public void TrimkP(double neg) {
+    kPTrim = kPTrim + 0.1 * neg;
+    config.closedLoop.p(Constants.Intake.ArmkP + kPTrim);
+  }
+
+  @Override
+  public void TrimkG(double neg) {
+    kgTrim = kgTrim + 0.1 * neg;
   }
 }

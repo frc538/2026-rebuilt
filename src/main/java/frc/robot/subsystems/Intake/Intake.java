@@ -110,4 +110,33 @@ public class Intake extends SubsystemBase {
     mDesiredState = new TrapezoidProfile.State(position, 0);
     Logger.recordOutput("Intake/Commanded Position", position);
   }
+
+  public Command TrimUpKg() {
+
+    return (run(
+        () -> {
+          io.TrimkG(1);
+        }));
+  }
+
+  public Command TrimdownKg() {
+    return (run(
+        () -> {
+          io.TrimkG(-1);
+        }));
+  }
+
+  public Command TrimUpKp() {
+    return (run(
+        () -> {
+          io.TrimkP(1);
+        }));
+  }
+
+  public Command TrimdownKp() {
+    return (run(
+        () -> {
+          io.TrimkP(-1);
+        }));
+  }
 }

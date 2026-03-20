@@ -44,4 +44,9 @@ public interface IntakeIO {
 
   /** Test Command for the ARM */
   public default void testArmRun(double speed) {}
+
+  /*Trim kp */
+  public default void TrimkP(double neg) {}
+  /*Trim kG */
+  public default void TrimkG(double neg) {}
 }

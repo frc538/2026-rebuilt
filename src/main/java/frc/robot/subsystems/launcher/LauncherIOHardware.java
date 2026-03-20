@@ -98,10 +98,12 @@ public class LauncherIOHardware implements LauncherIO {
     inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
 
     // Give accel in rad / sec / sec
-    inputs.launcherAcceleration = Units.rotationsToRadians(launcherMotor.getAcceleration().getValueAsDouble());
+    inputs.launcherAcceleration =
+        Units.rotationsToRadians(launcherMotor.getAcceleration().getValueAsDouble());
 
     // Give error in radians per second
-    inputs.launcherClosedLoopError = Units.rotationsToRadians(launcherMotor.getClosedLoopError().getValueAsDouble());
+    inputs.launcherClosedLoopError =
+        Units.rotationsToRadians(launcherMotor.getClosedLoopError().getValueAsDouble());
 
     // getVelocity returns rotations per second
     // Convert rotations per second to radians per second
