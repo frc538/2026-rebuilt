@@ -333,6 +333,8 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/mDesiredState", mDesiredState);
     Logger.recordOutput("Launcher/mCurrentState", mCurrentState);
     Logger.recordOutput("Launcher/testRPSCmd", testRadPerS);
+    Logger.recordOutput("Launcher/currentSpeedTrim", currentSpeedTrim);
+    Logger.recordOutput("Launcher/currentAimTrim", currentAimTrim);
   }
 
   @FunctionalInterface

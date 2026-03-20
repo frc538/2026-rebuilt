@@ -29,6 +29,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -59,8 +60,7 @@ public class LauncherIOHardware implements LauncherIO {
                     .withStatorCurrentLimitEnable(true))
             .withFeedback(
                 new FeedbackConfigs()
-                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
-                    .withSensorToMechanismRatio(2 * Math.PI))
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
             .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(true));
 
     launcherMotor.getConfigurator().apply(launcherMotorConfig);
@@ -96,10 +96,18 @@ public class LauncherIOHardware implements LauncherIO {
     inputs.launcherMotorVoltage = launcherMotor.getMotorVoltage().getValueAsDouble();
     inputs.launcherStatorCurrent = launcherMotor.getStatorCurrent().getValueAsDouble();
     inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
-    inputs.launcherAcceleration = launcherMotor.getAcceleration().getValueAsDouble();
-    inputs.launcherClosedLoopError = launcherMotor.getClosedLoopError().getValueAsDouble();
+
+    // Give accel in rad / sec / sec
+    inputs.launcherAcceleration = Units.rotationsToRadians(launcherMotor.getAcceleration().getValueAsDouble());
+
+    // Give error in radians per second
+    inputs.launcherClosedLoopError = Units.rotationsToRadians(launcherMotor.getClosedLoopError().getValueAsDouble());
+
+    // getVelocity returns rotations per second
+    // Convert rotations per second to radians per second
     inputs.launcherVelocity =
-        launcherMotor.getVelocity().getValueAsDouble() / Math.PI; // radians per second
+        Units.rotationsToRadians(launcherMotor.getVelocity().getValueAsDouble());
+
     inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
     inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
 
@@ -121,10 +129,10 @@ public class LauncherIOHardware implements LauncherIO {
 
   @Override
   public void setRadPerS(double RPS) {
-    Logger.recordOutput("Launcher/testRPS", RPS);
+    Logger.recordOutput("Launcher/CommandedRadPerSec", RPS);
     // Radians per second to rotations per second
-    RPS = RPS / (2 * Math.PI);
-    launcherMotor.setControl(new VelocityVoltage(RPS).withSlot(0)); // 56 is a fudge factor
+    RPS = Units.radiansToRotations(RPS);
+    launcherMotor.setControl(new VelocityVoltage(RPS).withSlot(0));
   }
 
   @Override

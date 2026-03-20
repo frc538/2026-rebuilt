@@ -17,6 +17,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -33,6 +34,7 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.CircularBuffer;
@@ -280,7 +282,8 @@ public class LauncherIOSim implements LauncherIO {
     inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
     inputs.launcherAcceleration = launcherMotor.getAcceleration().getValueAsDouble();
     inputs.launcherClosedLoopError = launcherMotor.getClosedLoopError().getValueAsDouble();
-    inputs.launcherVelocity = launcherMotor.getVelocity().getValueAsDouble() / (2 * Math.PI);
+    inputs.launcherVelocity =
+        Units.rotationsToRadians(launcherMotor.getVelocity().getValueAsDouble());
     inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
     inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
 
@@ -303,7 +306,8 @@ public class LauncherIOSim implements LauncherIO {
   @Override
   public void setRadPerS(double RPS) {
     Logger.recordOutput("Launcher/testRPS", RPS);
-    launcherMotor.setControl(new VelocityVoltage(RPS / (2 * Math.PI)).withSlot(0));
+    RPS = Units.radiansToRotations(RPS);
+    launcherMotor.setControl(new VelocityVoltage(RPS).withSlot(0));
   }
 
   private void launchFuel() {
@@ -322,16 +326,10 @@ public class LauncherIOSim implements LauncherIO {
 
   @Override
   public void pointAt(double angle, double radPerSec) {
-    // Compute the offset of the turret controller based on angle input referenced from
-    //   0 = north (positive Y)
-    //   + = counter-clockwise
-    // Angle is given in degrees
-
-    // Robot pose is in radians, 0 == intake pointing west, + = counter clockwise
-    //  The robot pose is the angle of the intake
-
-    // Turret closed loop controller is in radians around zero being over the intake
-    turretClosedLoopController.setSetpoint(angle, ControlType.kPosition);
+    double FFTurret = radPerSec * Constants.launcherConstants.turnVelocityFFGain;
+    Logger.recordOutput("Launcher/FFTurret", FFTurret);
+    turretClosedLoopController.setSetpoint(
+        angle, ControlType.kPosition, ClosedLoopSlot.kSlot0, FFTurret);
   }
 
   @Override

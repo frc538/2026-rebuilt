@@ -51,10 +51,13 @@ public class Intake extends SubsystemBase {
   }
 
   public Command forceIntake() {
-    return Commands.runOnce(() -> {
-      intakerToggle = !intakerToggle;},this);
+    return Commands.runOnce(
+        () -> {
+          intakerToggle = !intakerToggle;
+        },
+        this);
   }
- 
+
   public Command runIntake(double speed) {
     return run(() -> {
           io.runRotato(speed);
