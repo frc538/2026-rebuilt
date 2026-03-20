@@ -126,17 +126,17 @@ public class Intake extends SubsystemBase {
         }));
   }
 
-  public Command TrimUpKp() {
+  public Command TrimUpalpha() {
     return (run(
         () -> {
-          io.TrimkP(1);
+          io.Trimalpha(1);
         }));
   }
 
-  public Command TrimdownKp() {
+  public Command Trimdownalpha() {
     return (run(
         () -> {
-          io.TrimkP(-1);
+          io.Trimalpha(-1);
         }));
   }
 }

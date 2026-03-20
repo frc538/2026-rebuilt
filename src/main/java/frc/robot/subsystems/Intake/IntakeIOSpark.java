@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOSpark implements IntakeIO {
 
@@ -22,7 +23,7 @@ public class IntakeIOSpark implements IntakeIO {
       new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
   private final SparkFlex Leftrotato =
       new SparkFlex(Constants.Intake.LeftRotatoCanId, MotorType.kBrushless);
-  private double kPTrim = 0;
+  private double alphaTrim = 0;
   private double kgTrim = 0;
   SparkMaxConfig config = new SparkMaxConfig();
 
@@ -92,11 +93,21 @@ public class IntakeIOSpark implements IntakeIO {
 
   @Override
   public void setIntakePosition(double radians, double CurrentRads) {
+    double appliedAlpha = alphaTrim + Constants.Intake.alpha;
+    double appliedKg = Constants.Intake.IntakeKg + kgTrim;
+    double sinthingy = Math.sin(CurrentRads - appliedAlpha);
+    double nosinthingy = CurrentRads - appliedAlpha;
+    double allthingy = appliedKg * Math.sin(nosinthingy);
     pid.setSetpoint(
         radians,
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
-        (Constants.Intake.IntakeKg + kgTrim) * Math.sin(CurrentRads - Constants.Intake.alpha));
+        (appliedKg) * Math.sin(CurrentRads - appliedAlpha));
+    Logger.recordOutput("Intake/AppliedKg", appliedKg);
+    Logger.recordOutput("Intake/AppliedAlpha", appliedAlpha);
+    Logger.recordOutput("Intake/nosine", nosinthingy);
+    Logger.recordOutput("Intake/withsine", sinthingy);
+    Logger.recordOutput("Intake/alltheStuff", allthingy);
   }
 
   @Override
@@ -105,13 +116,12 @@ public class IntakeIOSpark implements IntakeIO {
   }
 
   @Override
-  public void TrimkP(double neg) {
-    kPTrim = kPTrim + 0.1 * neg;
-    config.closedLoop.p(Constants.Intake.ArmkP + kPTrim);
+  public void Trimalpha(double neg) {
+    alphaTrim = alphaTrim + 0.01 * neg;
   }
 
   @Override
   public void TrimkG(double neg) {
-    kgTrim = kgTrim + 0.1 * neg;
+    kgTrim = kgTrim + 0.05 * neg;
   }
 }

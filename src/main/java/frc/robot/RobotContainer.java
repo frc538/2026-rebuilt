@@ -368,10 +368,10 @@ public class RobotContainer {
     pilotController.b().onTrue(intake.forceIntake());
     pilotController.y().onTrue(intake.HumpAvoid());
 
-    pilotController.povUp().and(this::isTest).onTrue(intake.TrimUpKg());
-    pilotController.povDown().and(this::isTest).onTrue(intake.TrimdownKg());
-    pilotController.povRight().and(this::isTest).onTrue(intake.TrimUpKp());
-    pilotController.povLeft().and(this::isTest).onTrue(intake.TrimdownKp());
+    pilotController.povUp().and(this::isTest).whileTrue(intake.TrimUpKg());
+    pilotController.povDown().and(this::isTest).whileTrue(intake.TrimdownKg());
+    pilotController.povRight().and(this::isTest).whileTrue(intake.TrimUpalpha());
+    pilotController.povLeft().and(this::isTest).whileTrue(intake.Trimdownalpha());
   }
 
   /**

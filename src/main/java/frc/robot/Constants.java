@@ -160,7 +160,7 @@ public final class Constants {
     public static final double ReadyPos = 1.594898;
     public static final double HalfPos = Math.toRadians(50);
 
-    public static final double IntakeKg = -3.5;
+    public static final double IntakeKg = 3.5;
 
     public static final double IntakeSpeed = 0.1;
     public static final double MovementMotorVelocity = 1;
@@ -171,9 +171,9 @@ public final class Constants {
     public static final double ArmPosConFac = 2 * Math.PI / 9;
     public static final double ArmVelConFac = ArmPosConFac / 60;
 
-    public static final double ArmkP = 1.5;
+    public static final double ArmkP = 0; // 1.5;
     public static final double ArmkI = 0.00;
-    public static final double ArmkD = 0.1;
+    public static final double ArmkD = 0; // 0.1;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
     public static final double RotatoRPM = .35;

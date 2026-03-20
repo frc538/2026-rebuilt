@@ -46,7 +46,7 @@ public interface IntakeIO {
   public default void testArmRun(double speed) {}
 
   /*Trim kp */
-  public default void TrimkP(double neg) {}
+  public default void Trimalpha(double neg) {}
   /*Trim kG */
   public default void TrimkG(double neg) {}
 }
