@@ -41,6 +41,8 @@ public class Launcher extends SubsystemBase {
   private boolean aimGood;
   private boolean TurretSpeedGood;
   private boolean autoRotate = false;
+  private boolean stopTurret = false;
+  private boolean autoTurnRobot = false;
 
   private double currentAimTrim = 0;
   private double currentSpeedTrim = 0;
@@ -62,7 +64,7 @@ public class Launcher extends SubsystemBase {
   }
 
   public Command toggleShoot() {
-    return Commands.runOnce(() -> disableShoot = !disableShoot).andThen(() -> io.setVoltage(0));
+    return Commands.runOnce(() -> disableShoot = !disableShoot);
   }
 
   public Command testFullSpeed() {
@@ -282,14 +284,18 @@ public class Launcher extends SubsystemBase {
   }
 
   private void setAz() {
-    mDesiredState.position =
-        MathUtil.clamp(
-            targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
+    if (stopTurret == false) {
+      mDesiredState.position =
+          MathUtil.clamp(
+              targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
 
-    mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
+      mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
 
-    if (!DriverStation.isTest() || autoRotate) {
-      io.pointAt(mCurrentState.position, mCurrentState.velocity);
+      if (!DriverStation.isTest() || autoRotate) {
+        io.pointAt(mCurrentState.position, mCurrentState.velocity);
+      }
+    } else {
+      mDesiredState.position = Math.PI;
     }
   }
 
@@ -301,6 +307,21 @@ public class Launcher extends SubsystemBase {
       io.calibrateTurret(inputs.turnPotentiometer);
     }
   }
+
+  private void stopTurretTurn() {
+    stopTurret = true;
+    mDesiredState.position = Math.PI;
+  }
+
+  private void autoRobotTurn() {
+    if (stopTurret == true) {
+      autoTurnRobot = !autoTurnRobot;
+    }
+  }
+
+  private void getRobotTurn() {}
+
+  private void setRobotTurn() {}
 
   @Override
   public void periodic() {
