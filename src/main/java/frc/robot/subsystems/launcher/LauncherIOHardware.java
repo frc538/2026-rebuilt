@@ -59,7 +59,8 @@ public class LauncherIOHardware implements LauncherIO {
                     .withStatorCurrentLimitEnable(true))
             .withFeedback(
                 new FeedbackConfigs()
-                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor))
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
+                    .withSensorToMechanismRatio(2 * Math.PI))
             .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(true));
 
     launcherMotor.getConfigurator().apply(launcherMotorConfig);
@@ -98,7 +99,7 @@ public class LauncherIOHardware implements LauncherIO {
     inputs.launcherAcceleration = launcherMotor.getAcceleration().getValueAsDouble();
     inputs.launcherClosedLoopError = launcherMotor.getClosedLoopError().getValueAsDouble();
     inputs.launcherVelocity =
-        launcherMotor.getVelocity().getValueAsDouble() * (2 * Math.PI); // radians per second
+        launcherMotor.getVelocity().getValueAsDouble() / Math.PI; // radians per second
     inputs.launcherSupplyCurrent = launcherMotor.getSupplyCurrent().getValueAsDouble();
     inputs.launcherSupplyVoltage = launcherMotor.getSupplyVoltage().getValueAsDouble();
 
@@ -121,9 +122,9 @@ public class LauncherIOHardware implements LauncherIO {
   @Override
   public void setRadPerS(double RPS) {
     Logger.recordOutput("Launcher/testRPS", RPS);
-    launcherMotor.setControl(
-        new VelocityVoltage(RPS / (2 * Math.PI) * 56.0 / (4 * Math.PI))
-            .withSlot(0)); // 56 is a fudge factor
+    // Radians per second to rotations per second
+    RPS = RPS / (2 * Math.PI);
+    launcherMotor.setControl(new VelocityVoltage(RPS).withSlot(0)); // 56 is a fudge factor
   }
 
   @Override
