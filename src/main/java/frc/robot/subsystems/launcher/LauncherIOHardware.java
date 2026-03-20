@@ -84,7 +84,7 @@ public class LauncherIOHardware implements LauncherIO {
 
     turnEncoder = (SparkRelativeEncoder) turnMotor.getEncoder();
 
-    launcherSlot0.kP = 0.6;
+    launcherSlot0.kP = 0.3;
     launcherSlot0.kI = 0.01;
     launcherSlot0.kD = 0.0;
 
@@ -129,12 +129,18 @@ public class LauncherIOHardware implements LauncherIO {
     turnEncoder.setPosition(rads + turretCalibrationOffset);
   }
 
+  VelocityVoltage launchCommand = new VelocityVoltage(0);
+  double launcherKV = .019;
+
   @Override
   public void setRadPerS(double RPS) {
     Logger.recordOutput("Launcher/CommandedRadPerSec", RPS);
     // Radians per second to rotations per second
+    launchCommand.FeedForward = launcherKV * RPS;
     RPS = Units.radiansToRotations(RPS);
-    launcherMotor.setControl(new VelocityVoltage(RPS).withSlot(0));
+    launchCommand.Velocity = RPS;
+
+    launcherMotor.setControl(launchCommand);
   }
 
   @Override
