@@ -85,7 +85,7 @@ public class LauncherIOHardware implements LauncherIO {
     turnEncoder = (SparkRelativeEncoder) turnMotor.getEncoder();
 
     launcherSlot0.kP = 0.3;
-    launcherSlot0.kI = 0;
+    launcherSlot0.kI = 0.01;
     launcherSlot0.kD = 0.0;
 
     launcherMotor.getConfigurator().apply(launcherSlot0);
@@ -98,10 +98,12 @@ public class LauncherIOHardware implements LauncherIO {
     inputs.launcherTorqueCurrent = launcherMotor.getTorqueCurrent().getValueAsDouble();
 
     // Give accel in rad / sec / sec
-    inputs.launcherAcceleration = Units.rotationsToRadians(launcherMotor.getAcceleration().getValueAsDouble());
+    inputs.launcherAcceleration =
+        Units.rotationsToRadians(launcherMotor.getAcceleration().getValueAsDouble());
 
     // Give error in radians per second
-    inputs.launcherClosedLoopError = Units.rotationsToRadians(launcherMotor.getClosedLoopError().getValueAsDouble());
+    inputs.launcherClosedLoopError =
+        Units.rotationsToRadians(launcherMotor.getClosedLoopError().getValueAsDouble());
 
     // getVelocity returns rotations per second
     // Convert rotations per second to radians per second
@@ -127,12 +129,18 @@ public class LauncherIOHardware implements LauncherIO {
     turnEncoder.setPosition(rads + turretCalibrationOffset);
   }
 
+  VelocityVoltage launchCommand = new VelocityVoltage(0);
+  double launcherKV = .019;
+
   @Override
   public void setRadPerS(double RPS) {
     Logger.recordOutput("Launcher/CommandedRadPerSec", RPS);
     // Radians per second to rotations per second
+    launchCommand.FeedForward = launcherKV * RPS;
     RPS = Units.radiansToRotations(RPS);
-    launcherMotor.setControl(new VelocityVoltage(RPS).withSlot(0));
+    launchCommand.Velocity = RPS;
+
+    launcherMotor.setControl(launchCommand);
   }
 
   @Override

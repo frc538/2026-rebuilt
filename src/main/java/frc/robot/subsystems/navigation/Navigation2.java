@@ -585,8 +585,7 @@ public class Navigation2 extends SubsystemBase {
             currentEdgeList.clear();
             thePath = null;
           }
-        },
-        this);
+        });
   }
 
   @Override

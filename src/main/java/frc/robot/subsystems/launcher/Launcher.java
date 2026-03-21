@@ -41,6 +41,8 @@ public class Launcher extends SubsystemBase {
   private boolean aimGood;
   private boolean TurretSpeedGood;
   private boolean autoRotate = false;
+  private boolean stopTurret = false;
+  private boolean autoTurnRobot = false;
 
   private double currentAimTrim = 0;
   private double currentSpeedTrim = 0;
@@ -59,10 +61,12 @@ public class Launcher extends SubsystemBase {
 
     mCurrentState = new TrapezoidProfile.State(Math.PI, 0);
     mDesiredState = new TrapezoidProfile.State(Math.PI, 0);
+
+    io.calibrateTurret(Math.PI);
   }
 
   public Command toggleShoot() {
-    return Commands.runOnce(() -> disableShoot = !disableShoot).andThen(() -> io.setVoltage(0));
+    return Commands.runOnce(() -> disableShoot = !disableShoot);
   }
 
   public Command testFullSpeed() {
@@ -246,7 +250,14 @@ public class Launcher extends SubsystemBase {
     distanceY = aimPointComp.getY() - robotPose.getY();
     distanceY = Math.pow(distanceY, 2);
 
-    endDistance = Math.sqrt(distanceX + distanceY) + currentSpeedTrim;
+    double calculatedDistance = Math.sqrt(distanceX + distanceY);
+
+    double distanceModified = Math.max(1, (0.45 * calculatedDistance) + 5.5);
+
+    Logger.recordOutput("Launcher/calculatedDistance", calculatedDistance);
+    Logger.recordOutput("Launcher/distanceModified", distanceModified);
+    // Add Trim + currentSpeedTrim;
+    endDistance = distanceModified + currentSpeedTrim;
 
     timeFlight =
         Math.sqrt((hubHeight - launcherHeight - endDistance * Math.tan(launcherAngle) / -9.81));
@@ -282,25 +293,46 @@ public class Launcher extends SubsystemBase {
   }
 
   private void setAz() {
-    mDesiredState.position =
-        MathUtil.clamp(
-            targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
+    if (stopTurret == false) {
+      mDesiredState.position =
+          MathUtil.clamp(
+              targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
 
-    mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
+      mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
 
-    if (!DriverStation.isTest() || autoRotate) {
-      io.pointAt(mCurrentState.position, mCurrentState.velocity);
+      if (!DriverStation.isTest() || autoRotate) {
+        io.pointAt(mCurrentState.position, mCurrentState.velocity);
+      }
+    } else {
+      mDesiredState.position = Math.PI;
     }
   }
 
   private void calibrateTurret() {
     if (DriverStation.isDisabled() == true) {
-      mDesiredState.position = inputs.turnPotentiometer;
-      targetAzimuth = inputs.turnPotentiometer;
-      mCurrentState.position = inputs.turnPotentiometer;
-      io.calibrateTurret(inputs.turnPotentiometer);
+      if (Constants.Features.isPotentiometerBroken == false) {
+        mDesiredState.position = inputs.turnPotentiometer;
+        targetAzimuth = inputs.turnPotentiometer;
+        mCurrentState.position = inputs.turnPotentiometer;
+        io.calibrateTurret(inputs.turnPotentiometer);
+      }
     }
   }
+
+  private void stopTurretTurn() {
+    stopTurret = true;
+    mDesiredState.position = Math.PI;
+  }
+
+  private void autoRobotTurn() {
+    if (stopTurret == true) {
+      autoTurnRobot = !autoTurnRobot;
+    }
+  }
+
+  private void getRobotTurn() {}
+
+  private void setRobotTurn() {}
 
   @Override
   public void periodic() {

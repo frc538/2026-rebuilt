@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -45,6 +46,7 @@ public final class Constants {
     public static final boolean LauncherEnabled = true;
     public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = true;
+    public static final boolean isPotentiometerBroken = true;
   }
 
   public static class navigationConstants {
@@ -105,8 +107,9 @@ public final class Constants {
 
     public static final double turretCalibrationOffset = 0.0;
 
-    public static final double minWireLimit = 1.45;
-    public static final double maxWireLimit = 6;
+    public static final double minWireLimit = 1.45 + Units.degreesToRadians(15);
+    public static final double maxWireLimit = 6 - Units.degreesToRadians(15);
+    ;
 
     public static final Pose2d hubBlue = new Pose2d(4.625, 4.030, new Rotation2d());
     public static final Pose2d hubRed = new Pose2d(11.915, 4.030, new Rotation2d());
@@ -146,7 +149,7 @@ public final class Constants {
     public static double turnVelocityFFGain = maxV * 0.5;
 
     public static final double SpeedStep /*for the trim */ = 0.005;
-    public static final double AimTrim = 1; // in degrees
+    public static final double AimTrim = 2; // in degrees
   }
 
   public final class Intake {

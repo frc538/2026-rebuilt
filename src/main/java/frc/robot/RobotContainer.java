@@ -257,6 +257,10 @@ public class RobotContainer {
             () -> -pilotController.getLeftX(),
             () -> -pilotController.getRightX()));
 
+    pilotController.axisGreaterThan(0, 0.3).onTrue(nav2.cancelPath());
+    pilotController.axisGreaterThan(1, 0.3).onTrue(nav2.cancelPath());
+    pilotController.axisGreaterThan(4, 0.3).onTrue(nav2.cancelPath());
+
     // Switch to X pattern when X button is pressed
     pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
