@@ -108,7 +108,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "shoot",
+      "name": "shoot toggle",
       "waypointRelativePos": 0.7,
       "endWaypointRelativePos": null,
       "command": {
@@ -119,43 +119,7 @@
       }
     },
     {
-      "name": "shoot",
-      "waypointRelativePos": 0.9,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 1.15,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 1.45,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 1.8,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 2.0953237410071868,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 2.285251798561149,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "shoot",
+      "name": "shoot toggle",
       "waypointRelativePos": 2.4579136690647463,
       "endWaypointRelativePos": null,
       "command": null
