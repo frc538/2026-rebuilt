@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Intake;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -27,6 +29,7 @@ public class IntakeIOSpark implements IntakeIO {
   private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();
   private final RelativeEncoder LeftrotatoEncoder = Leftrotato.getEncoder();
   private final SparkClosedLoopController pid = movementMotor.getClosedLoopController();
+  double thing = 0;
 
   public IntakeIOSpark() {
     SparkMaxConfig config = new SparkMaxConfig();
@@ -98,6 +101,11 @@ public class IntakeIOSpark implements IntakeIO {
 
   @Override
   public void testArmRun(double speed) {
-    movementMotor.setVoltage(speed);
+    movementMotor.set(thing);
+  }
+
+  public void Trim(double Neg) {
+    thing = thing + 0.001 *Neg;
+    Logger.recordOutput("Intake/thing", thing);
   }
 }

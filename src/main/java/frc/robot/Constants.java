@@ -163,7 +163,7 @@ public final class Constants {
     public static final double ReadyPos = 1.594898;
     public static final double HalfPos = Math.toRadians(50);
 
-    public static final double IntakeKg = -3.5;
+    public static final double IntakeKg = 0;
 
     public static final double IntakeSpeed = 0.1;
     public static final double MovementMotorVelocity = 1;

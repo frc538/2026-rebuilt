@@ -38,9 +38,10 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.positionRad);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
+    Logger.recordOutput("Intake/Thing", inputs.thing);
 
     mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
-    io.setIntakePosition(mCurrentState.position, inputs.positionRad);
+    // io.setIntakePosition(mCurrentState.position, inputs.positionRad);
     Logger.recordOutput("Intake/PosProfile", mCurrentState.position);
 
     if (intakerToggle == true || inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
@@ -89,6 +90,13 @@ public class Intake extends SubsystemBase {
         .finallyDo(() -> io.testArmRun(0));
   }
 
+  public Command testARM() {
+    return (run(
+        () -> {
+          io.testArmRun(1);
+        }));
+  }
+
   public Command togglePosition() {
     return runOnce(
         () -> {
@@ -109,5 +117,19 @@ public class Intake extends SubsystemBase {
   public void SetReference(double position) {
     mDesiredState = new TrapezoidProfile.State(position, 0);
     Logger.recordOutput("Intake/Commanded Position", position);
+  }
+
+  public Command Trimup() {
+    return (runOnce(
+        () -> {
+          io.Trim(1);
+        }));
+  }
+
+  public Command TrimDown() {
+    return (runOnce(
+        () -> {
+          io.Trim(-1);
+        }));
   }
 }

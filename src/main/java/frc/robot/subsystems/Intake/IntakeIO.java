@@ -31,6 +31,8 @@ public interface IntakeIO {
 
     /** Gives position in rotations of the up/down motor */
     public double MovementMotorRotation = 0.0;
+
+    public double thing = 0;
   }
 
   /** Updates all sensor inputs */
@@ -44,4 +46,6 @@ public interface IntakeIO {
 
   /** Test Command for the ARM */
   public default void testArmRun(double speed) {}
+
+  public default void Trim(double Neg) {}
 }
