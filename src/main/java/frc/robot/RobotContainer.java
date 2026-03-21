@@ -11,6 +11,8 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -201,6 +203,11 @@ public class RobotContainer {
     }
     nav2 = new Navigation2(drive);
 
+    new EventTrigger("shoot toggle").onTrue(launcher.toggleShoot());
+    new EventTrigger("intake open").onTrue(intake.togglePosition());
+    new EventTrigger("intake close").onTrue(intake.togglePosition());
+    new EventTrigger("climb").onTrue(climberSubsystem.climberExtend());
+
     // SmartDashboard.putData(navSys.m_field);
 
     // Set up auto routines
@@ -224,18 +231,6 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-  }
-
-  public Command leftStartAuto() {
-    return new PathPlannerAuto("Left Start");
-  }
-
-  public Command middleStartAuto() {
-    return new PathPlannerAuto("Middle Start");
-  }
-
-  public Command rightStartAuto() {
-    return new PathPlannerAuto("Right Start");
   }
 
   private boolean isSim() {
