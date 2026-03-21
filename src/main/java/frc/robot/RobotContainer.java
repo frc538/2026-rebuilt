@@ -10,6 +10,7 @@ package frc.robot;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -223,6 +224,18 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  public Command leftStartAuto() {
+    return new PathPlannerAuto("Left Start");
+  }
+
+  public Command middleStartAuto() {
+    return new PathPlannerAuto("Middle Start");
+  }
+
+  public Command rightStartAuto() {
+    return new PathPlannerAuto("Right Start");
   }
 
   private boolean isSim() {
