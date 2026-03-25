@@ -2,6 +2,7 @@ package frc.robot.subsystems.Intake;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,6 +15,13 @@ public class Intake extends SubsystemBase {
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public boolean FlipFlop = true;
   private boolean intakerToggle = false;
+
+  private boolean doboble = false;
+  private double targetPosition = Math.PI / 4;
+  private double timestamp;
+  private double armPos;
+  private double posErr;
+  private double errorDelta;
 
   public TrapezoidProfile.State mCurrentState =
       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
@@ -29,6 +37,18 @@ public class Intake extends SubsystemBase {
     mTrapezoidProfile = new TrapezoidProfile(mConstraints);
   }
 
+  public Command bobble() {
+    return Commands.runOnce(
+        () -> {
+          timestamp = Timer.getTimestamp();
+          doboble = !doboble;
+          armPos = inputs.positionRad;
+          targetPosition = Math.PI / 4;
+          posErr = targetPosition - armPos;
+          errorDelta = posErr / 50;
+        });
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
@@ -40,8 +60,22 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
     mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
-    io.setIntakePosition(mCurrentState.position, inputs.positionRad);
+    if (doboble == false) {
+      io.setIntakePosition(mCurrentState.position, inputs.positionRad);
+    }
     Logger.recordOutput("Intake/PosProfile", mCurrentState.position);
+
+    if (doboble == true) {
+      double timeDelta = Timer.getTimestamp() - timestamp;
+      double mag = Math.PI / 10;
+      double period = 2;
+      io.setIntakePosition(
+          Math.PI + mag * Math.sin(timeDelta / period) - posErr, inputs.positionRad);
+      posErr = posErr - errorDelta;
+      if (Math.abs(posErr) < 2 * Math.abs(errorDelta)) {
+        posErr = 0;
+      }
+    }
 
     if (intakerToggle == true || inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(Constants.Intake.RotatoRPM);

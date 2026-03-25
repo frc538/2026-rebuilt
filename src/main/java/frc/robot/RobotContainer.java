@@ -264,6 +264,8 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
+    pilotController.leftStick().onTrue(intake.bobble());
+
     // navigation controller controls
     navController.a().and(this::isNotTest).onTrue(nav2.navDown(() -> drive.getPose()));
     navController.b().and(this::isNotTest).onTrue(nav2.navRight(() -> drive.getPose()));
