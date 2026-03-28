@@ -9,6 +9,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PointTowardsZone;
 import com.pathplanner.lib.path.RotationTarget;
 import com.pathplanner.lib.path.Waypoint;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -37,7 +38,7 @@ public class Navigation2 extends SubsystemBase {
 
   Translation2d centerPoint = new Translation2d(8.27, 4);
 
-  private enum directorator {
+  public enum directorator {
     up,
     down,
     left,
@@ -54,6 +55,7 @@ public class Navigation2 extends SubsystemBase {
     final RotationTarget[] m_Target;
     final double m_maxSpeed; // What is our max speed m/s
     final Rotation2d m_finalOrientation;
+    final double m_turnAnglePercent;
 
     public edge(
         node start,
@@ -61,6 +63,7 @@ public class Navigation2 extends SubsystemBase {
         directorator dir,
         Rotation2d orientation,
         Rotation2d finalOrientation,
+        double turnAnglePercent,
         double maxSpeed) {
       m_start = start;
       m_end = end;
@@ -70,6 +73,7 @@ public class Navigation2 extends SubsystemBase {
       m_maxSpeed = maxSpeed;
       m_finalOrientation = finalOrientation;
       m_direction = dir;
+      m_turnAnglePercent = turnAnglePercent;
     }
 
     public String print() {
@@ -131,6 +135,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.up,
             new Rotation2d(upAngle + humpAngle),
             new Rotation2d(upAngle),
+            0.8,
             3);
     nodes[0].left =
         new edge(
@@ -139,6 +144,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.left,
             new Rotation2d(leftAngle),
             new Rotation2d(leftAngle),
+            0.5,
             3);
 
     nodes[1].up =
@@ -148,6 +154,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.up,
             new Rotation2d(upAngle - humpAngle),
             new Rotation2d(upAngle),
+            0.8,
             3);
     nodes[1].right =
         new edge(
@@ -156,6 +163,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.right,
             new Rotation2d(rightAngle),
             new Rotation2d(rightAngle),
+            0.5,
             3);
 
     nodes[2].up =
@@ -165,6 +173,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.up,
             new Rotation2d(upAngle),
             new Rotation2d(upAngle),
+            0.5,
             3);
     nodes[2].left =
         new edge(
@@ -173,6 +182,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.left,
             new Rotation2d(leftAngle),
             new Rotation2d(leftAngle),
+            0.5,
             3);
     nodes[2].down =
         new edge(
@@ -181,6 +191,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.down,
             new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
+            0.8,
             3);
 
     nodes[3].up =
@@ -190,6 +201,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.up,
             new Rotation2d(upAngle),
             new Rotation2d(upAngle),
+            0.5,
             3);
     nodes[3].right =
         new edge(
@@ -198,6 +210,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.right,
             new Rotation2d(rightAngle),
             new Rotation2d(rightAngle),
+            0.5,
             3);
     nodes[3].down =
         new edge(
@@ -206,6 +219,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.down,
             new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
+            0.8,
             3);
 
     nodes[4].up =
@@ -215,6 +229,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.up,
             new Rotation2d(upAngle + humpAngle),
             new Rotation2d(upAngle),
+            0.8,
             3);
     nodes[4].left =
         new edge(
@@ -223,6 +238,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.left,
             new Rotation2d(leftAngle),
             new Rotation2d(leftAngle),
+            0.5,
             3);
     nodes[4].down =
         new edge(
@@ -231,6 +247,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.down,
             new Rotation2d(downAngle),
             new Rotation2d(downAngle),
+            0.5,
             3);
 
     nodes[5].up =
@@ -240,6 +257,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.up,
             new Rotation2d(upAngle - humpAngle),
             new Rotation2d(upAngle),
+            0.8,
             3);
     nodes[5].right =
         new edge(
@@ -248,6 +266,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.right,
             new Rotation2d(rightAngle),
             new Rotation2d(rightAngle),
+            0.5,
             3);
     nodes[5].down =
         new edge(
@@ -256,6 +275,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.down,
             new Rotation2d(downAngle),
             new Rotation2d(downAngle),
+            0.5,
             3);
 
     nodes[6].left =
@@ -265,6 +285,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.left,
             new Rotation2d(leftAngle),
             new Rotation2d(leftAngle),
+            0.5,
             3);
     nodes[6].down =
         new edge(
@@ -273,6 +294,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.down,
             new Rotation2d(downAngle - humpAngle),
             new Rotation2d(downAngle),
+            0.8,
             3);
 
     nodes[7].right =
@@ -282,6 +304,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.right,
             new Rotation2d(rightAngle),
             new Rotation2d(rightAngle),
+            0.5,
             3);
     nodes[7].down =
         new edge(
@@ -290,6 +313,7 @@ public class Navigation2 extends SubsystemBase {
             directorator.down,
             new Rotation2d(downAngle + humpAngle),
             new Rotation2d(downAngle),
+            0.8,
             3);
   }
 
@@ -335,77 +359,56 @@ public class Navigation2 extends SubsystemBase {
     findEdgePath();
   }
 
-  private Pose2d calculateOffset(
-      Translation2d initialPose, directorator initialDirection, directorator targetDirection) {
+  public Pose2d calculateOffset(
+      Translation2d initialPose,
+      directorator initialDirection,
+      directorator targetDirection,
+      double turnPercent) {
     double horizontalOffset = 0;
     double verticalOffset = 0;
     final double baseOffset = .25;
 
-    // Create a vector representing the direction of travel, then use atan2 to get the angle
-    double upDir = 1;
-    double downDir = -1;
-    double rightDir = -1;
-    double leftDir = 1;
-    double x1, x2;
-    double y1, y2;
     double offsetAngle;
+    double startAngle;
+    double endAngle;
 
     if (initialDirection == directorator.left) {
       verticalOffset = baseOffset;
-      x1 = 0;
-      y1 = leftDir;
+      startAngle = leftAngle;
     } else if (initialDirection == directorator.right) {
       verticalOffset = -baseOffset;
-      x1 = 0;
-      y1 = rightDir;
+      startAngle = rightAngle;
     } else if (initialDirection == directorator.up) {
       horizontalOffset = -baseOffset;
-      x1 = upDir;
-      y1 = 0;
+      startAngle = upAngle;
     } else {
       // down
       horizontalOffset = baseOffset;
-      x1 = downDir;
-      y1 = 0;
+      startAngle = downAngle;
     }
 
     if (targetDirection == directorator.left) {
       verticalOffset = baseOffset;
-      x2 = 0;
-      y2 = leftDir;
+      endAngle = leftAngle;
     } else if (targetDirection == directorator.right) {
       verticalOffset = -baseOffset;
-      x2 = 0;
-      y2 = rightDir;
+      endAngle = rightAngle;
     } else if (targetDirection == directorator.up) {
       horizontalOffset = baseOffset;
-      x2 = upDir;
-      y2 = 0;
+      endAngle = upAngle;
     } else {
       // down
       horizontalOffset = -baseOffset;
-      x2 = downDir;
-      y2 = 0;
+      endAngle = downAngle;
     }
 
-    offsetAngle = Math.atan2(y2 - y1, x2 - x1);
-
-    if (((initialDirection == directorator.up) && (targetDirection == directorator.left))
-        || ((initialDirection == directorator.left) && (targetDirection == directorator.down))
-        || ((initialDirection == directorator.down) && (targetDirection == directorator.right))
-        || ((initialDirection == directorator.right) && (targetDirection == directorator.up))) {
-      offsetAngle = offsetAngle - Math.PI / 2;
-    } else if (((initialDirection == directorator.up) && (targetDirection == directorator.right))
-        || ((initialDirection == directorator.right) && (targetDirection == directorator.down))
-        || ((initialDirection == directorator.down) && (targetDirection == directorator.left))
-        || ((initialDirection == directorator.left) && (targetDirection == directorator.up))) {
-      offsetAngle = offsetAngle + Math.PI / 2;
-    }
+    offsetAngle = endAngle - startAngle;
+    offsetAngle = MathUtil.angleModulus(offsetAngle);
 
     return new Pose2d(
         initialPose.getX() + horizontalOffset,
         initialPose.getY() + verticalOffset,
-        new Rotation2d(offsetAngle));
+        new Rotation2d(MathUtil.angleModulus(startAngle + (offsetAngle * turnPercent))));
   }
 
   // if true, then use pathfind to the start node, then edge.
@@ -476,7 +479,8 @@ public class Navigation2 extends SubsystemBase {
               calculateOffset(
                   edges[i].m_end.m_pose.getTranslation(),
                   edges[i].m_direction,
-                  edges[i + 1].m_direction);
+                  edges[i + 1].m_direction,
+                  edges[i].m_turnAnglePercent);
         } else {
           pose = new Pose2d(edges[i].m_end.m_pose.getTranslation(), edges[i].m_finalOrientation);
         }
