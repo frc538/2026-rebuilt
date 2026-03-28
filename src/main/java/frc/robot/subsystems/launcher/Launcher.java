@@ -62,7 +62,7 @@ public class Launcher extends SubsystemBase {
     mCurrentState = new TrapezoidProfile.State(Math.PI, 0);
     mDesiredState = new TrapezoidProfile.State(Math.PI, 0);
 
-    io.calibrateTurret(Math.PI);
+    io.TurretDisable();
   }
 
   public Command toggleShoot() {
@@ -308,14 +308,15 @@ public class Launcher extends SubsystemBase {
     }
   }
 
-  private void calibrateTurret() {
+  private void handleDisabled() {
     if (DriverStation.isDisabled() == true) {
       if (Constants.Features.isPotentiometerBroken == false) {
         mDesiredState.position = inputs.turnPotentiometer;
         targetAzimuth = inputs.turnPotentiometer;
         mCurrentState.position = inputs.turnPotentiometer;
-        io.calibrateTurret(inputs.turnPotentiometer);
+        io.TurretCalibrate(inputs.turnPotentiometer);
       }
+      io.TurretDisable();
     }
   }
 
@@ -340,15 +341,17 @@ public class Launcher extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
 
-    calibrateTurret();
-
-    aimDownSights(); // sets the target
+    handleDisabled();
+    
+    if (DriverStation.isEnabled()) {
+      aimDownSights(); // sets the target
     getAzimuth(); // sets the target rotation
     aimComp(); // compensates for robot velocity
     setAz(); // point turret
     getShootSpeed(); // flywheel speed
     shoot();
     DetermineFirePermit();
+    }
 
     Logger.recordOutput("Launcher/TurretSpeedGood", TurretSpeedGood);
     Logger.recordOutput("Launcher/aimGood", aimGood);

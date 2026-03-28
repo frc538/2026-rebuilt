@@ -30,7 +30,9 @@ public interface LauncherIO {
 
   public default void updateInputs(LauncherIOInputs inputs) {}
 
-  public default void calibrateTurret(double radians) {}
+  public default void TurretCalibrate(double radians) {}
+
+  public default void TurretDisable() {}
 
   // Need to update this IO interface to add an RPM or rad/s function that sets the flywheel speed
   public default void setRadPerS(double rps) {}

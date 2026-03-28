@@ -39,6 +39,19 @@ public final class Constants {
     REPLAY
   }
 
+  public static class CurrentLimit {
+    public static final int rotatoLimit = 10;
+    public static final int armLimit = 10;
+
+    public static final int turretLimit = 120;
+    public static final int turnLimit = 10;
+
+    public static final int spindexLimit = 10;
+    public static final int feedLimit = 10;
+
+    public static final int climberLimit = 10;
+  }
+
   public static class Features {
     public static final boolean ClimberEnabled = true;
     public static final boolean DriveEnabled = true;
