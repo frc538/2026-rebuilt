@@ -342,15 +342,15 @@ public class Launcher extends SubsystemBase {
     Logger.processInputs("Launcher", inputs);
 
     handleDisabled();
-    
+
     if (DriverStation.isEnabled()) {
       aimDownSights(); // sets the target
-    getAzimuth(); // sets the target rotation
-    aimComp(); // compensates for robot velocity
-    setAz(); // point turret
-    getShootSpeed(); // flywheel speed
-    shoot();
-    DetermineFirePermit();
+      getAzimuth(); // sets the target rotation
+      aimComp(); // compensates for robot velocity
+      setAz(); // point turret
+      getShootSpeed(); // flywheel speed
+      shoot();
+      DetermineFirePermit();
     }
 
     Logger.recordOutput("Launcher/TurretSpeedGood", TurretSpeedGood);
