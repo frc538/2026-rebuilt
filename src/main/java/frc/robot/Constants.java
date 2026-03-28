@@ -113,6 +113,14 @@ public final class Constants {
     public static final double TestFeedSpeed = -0.3;
   }
 
+  public final class turretConstants {
+    public static final double gear1Teeth = 50;
+    public static final double gear2Teeth = 50;
+    
+    public static final int turretEncoder1 = 63;
+    public static final int turretEncoder2 = 64;
+  }
+
   public final class launcherConstants {
     public static final int launchMotorCanId = 37;
     public static final int turnMotorCanId = 62;

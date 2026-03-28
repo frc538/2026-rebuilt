@@ -28,6 +28,8 @@ public class launcherTest {
 
   @Test
   void test_getShootSpeed() {
+    //launcher.launchSpeed = 5.0;
+    launcher.getShootSpeed();
     assertEquals(1, 1);
   }
 }
