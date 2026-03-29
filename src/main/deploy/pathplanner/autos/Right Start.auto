@@ -7,25 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "right shoot path blue"
+            "pathName": "Right Launch"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Collect from neutral Blue"
+            "pathName": "Right Launch to Collect"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "neutral shoot path blue start"
+            "pathName": "Right Launch"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot toggle"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Right Blue",
+  "folder": "Right",
   "choreoAuto": false
 }

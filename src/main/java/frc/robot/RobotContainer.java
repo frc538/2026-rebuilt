@@ -10,9 +10,7 @@ package frc.robot;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.events.EventTrigger;
-
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -201,12 +199,12 @@ public class RobotContainer {
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
-    nav2 = new Navigation2(drive);
+    new NamedCommands().registerCommand("shoot toggle", launcher.toggleShoot());
+    new NamedCommands().registerCommand("intake open", intake.forceIntake());
+    new NamedCommands().registerCommand("intake close", intake.forceIntake());
+    new NamedCommands().registerCommand("climb", climberSubsystem.climberExtend());
 
-    new EventTrigger("shoot toggle").onTrue(launcher.toggleShoot());
-    new EventTrigger("intake open").onTrue(intake.togglePosition());
-    new EventTrigger("intake close").onTrue(intake.togglePosition());
-    new EventTrigger("climb").onTrue(climberSubsystem.climberExtend());
+    nav2 = new Navigation2(drive);
 
     // SmartDashboard.putData(navSys.m_field);
 
