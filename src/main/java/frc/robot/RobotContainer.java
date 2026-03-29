@@ -84,7 +84,7 @@ public class RobotContainer {
         if (Constants.Features.HopperEnabled) {
           hopper =
               new Hopper(
-                  new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+                  new HopperIOSparkMax(Constants.CanIds.FeedCanId, Constants.CanIds.SpindexCanId));
         } else {
           hopper = new Hopper(new HopperIO() {});
         }
@@ -142,8 +142,7 @@ public class RobotContainer {
         }
         if (Constants.Features.ClimberEnabled) {
           climberSubsystem =
-              new ClimberSubsystem(
-                  new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
+              new ClimberSubsystem(new ClimberIOSparkMax(Constants.CanIds.ClimberMotorCANId, 5, 6));
         } else {
           climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         }
@@ -170,7 +169,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         // new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
         // new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
-        intake = new Intake(new IntakeIOSim(Constants.Intake.MovMotorCanId) {});
+        intake = new Intake(new IntakeIOSim(Constants.CanIds.MovMotorCanId) {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
