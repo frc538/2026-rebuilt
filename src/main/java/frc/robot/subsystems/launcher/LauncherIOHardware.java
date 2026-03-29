@@ -56,7 +56,7 @@ public class LauncherIOHardware implements LauncherIO {
             .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(Amps.of(120))
+                    .withStatorCurrentLimit(Amps.of(Constants.CurrentLimit.turretLimit))
                     .withStatorCurrentLimitEnable(true))
             .withFeedback(
                 new FeedbackConfigs()
@@ -69,6 +69,8 @@ public class LauncherIOHardware implements LauncherIO {
         .encoder
         .positionConversionFactor(TurnPositionConversionFactor)
         .velocityConversionFactor(TurnVelocityConversionFactor);
+
+    turnConfig.smartCurrentLimit(Constants.CurrentLimit.turnLimit);
 
     turnConfig.idleMode(IdleMode.kBrake);
     turnConfig.smartCurrentLimit(Constants.launcherConstants.CurrentLimit);
@@ -124,8 +126,12 @@ public class LauncherIOHardware implements LauncherIO {
   }
 
   @Override
-  public void calibrateTurret(double rads) {
+  public void TurretDisable() {
     turnController.setIAccum(0);
+  }
+
+  @Override
+  public void TurretCalibrate(double rads) {
     turnEncoder.setPosition(rads + turretCalibrationOffset);
   }
 
