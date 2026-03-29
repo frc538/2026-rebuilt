@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.9745438282647583,
-        "y": 2.6477280858676204
+        "x": 3.6024111111111115,
+        "y": 0.6926555555555558
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9745438282647583,
-        "y": 3.558534656707627
+        "x": 2.7581312410841647,
+        "y": 1.065577746077033
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rightStartPointBlue"
     },
     {
       "anchor": {
-        "x": -0.601027397260274,
-        "y": -0.6010273972602738
+        "x": 2.2147075606276743,
+        "y": 2.6829101283880177
       },
       "prevControl": {
-        "x": -1.6010273972602758,
-        "y": -0.6010273972602737
+        "x": 2.3570328102710407,
+        "y": 1.8936519258202575
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rightLaunch"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "shoot toggle",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot toggle"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -140.3893117599734
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -91.40343409163023
+    "rotation": -179.508392532697
   },
   "useDefaultConstraints": true
 }

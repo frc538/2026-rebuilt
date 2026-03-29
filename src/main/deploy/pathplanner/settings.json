@@ -3,24 +3,14 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "General Blue",
-    "Left Blue",
-    "Left Red",
-    "Middle Blue",
-    "Middle Red",
-    "General Red",
-    "Right Blue",
-    "Right Red"
+    "Left",
+    "Middle",
+    "Right"
   ],
   "autoFolders": [
-    "General Blue",
-    "General Red",
-    "Left Blue",
-    "Left Red",
-    "Middle Blue",
-    "Middle Red",
-    "Right Blue",
-    "Right Red"
+    "Left",
+    "Middle",
+    "Right"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
