@@ -1,0 +1,189 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.8265477888730377,
+        "y": 5.322396576319543
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.162952924393723,
+        "y": 6.512753209700428
+      },
+      "isLocked": false,
+      "linkedName": "leftLaunch"
+    },
+    {
+      "anchor": {
+        "x": 3.6250213980028523,
+        "y": 7.41845934379458
+      },
+      "prevControl": {
+        "x": 2.706376604850214,
+        "y": 7.41845934379458
+      },
+      "nextControl": {
+        "x": 4.582569587712129,
+        "y": 7.41845934379458
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.157275320970041,
+        "y": 7.314950071326677
+      },
+      "prevControl": {
+        "x": 6.879094151212551,
+        "y": 7.325462731811698
+      },
+      "nextControl": {
+        "x": 7.435456490727531,
+        "y": 7.304437410841655
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.66188302425107,
+        "y": 6.046961483594864
+      },
+      "prevControl": {
+        "x": 7.60029234010945,
+        "y": 6.434982793687076
+      },
+      "nextControl": {
+        "x": 7.791269614835947,
+        "y": 5.2318259629101265
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.80793152639087,
+        "y": 5.218887303851641
+      },
+      "prevControl": {
+        "x": 7.390171184022824,
+        "y": 4.960114122681883
+      },
+      "nextControl": {
+        "x": 6.035865380869188,
+        "y": 5.56202781297239
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.081726978596272,
+        "y": 6.418239031861794
+      },
+      "prevControl": {
+        "x": 6.145700306139323,
+        "y": 5.994319643607838
+      },
+      "nextControl": {
+        "x": 5.915164051355206,
+        "y": 7.521968616262482
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.6250213980028523,
+        "y": 7.41845934379458
+      },
+      "prevControl": {
+        "x": 6.704422253922965,
+        "y": 7.340827389443652
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "leftStartPointBlue"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.4584221748400825,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.9829424307036412,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.1876332622601216,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 5.1,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "shoot toggle",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot toggle"
+        }
+      }
+    },
+    {
+      "name": "intake open",
+      "waypointRelativePos": 2.365968939905482,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake open"
+        }
+      }
+    },
+    {
+      "name": "intake close",
+      "waypointRelativePos": 3.9702903443619117,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake close"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 179.61037023717188
+  },
+  "reversed": false,
+  "folder": "Left",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 145.12467165539786
+  },
+  "useDefaultConstraints": true
+}
