@@ -162,6 +162,9 @@ public class Drive extends SubsystemBase {
       module.periodic();
     }
     odometryLock.unlock();
+    public double yawRate() {
+    return gyroInputs.yawVelocityRadPerSec;
+  }
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
