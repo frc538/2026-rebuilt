@@ -41,16 +41,22 @@ public class LauncherIOHardware implements LauncherIO {
   private SingleJointedArmSim turretSim;
   private final TalonFXConfiguration launcherMotorConfig;
   private final TalonFX launcherMotor;
-  private final SparkMax turnMotor =
-      new SparkMax(Constants.CanIds.turnMotorCanId, MotorType.kBrushless);
-  private final SparkMaxConfig turnConfig = new SparkMaxConfig();
-  private final Slot0Configs launcherSlot0 = new Slot0Configs();
+  private final SparkMax turnMotor;
+  private final SparkMaxConfig turnConfig;
+  private final Slot0Configs launcherSlot0;
   private final SparkClosedLoopController turnController;
   private final SparkRelativeEncoder turnEncoder;
-  AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(3, 2 * Math.PI, 0);
+  AnalogPotentiometer m_potentiometer;
 
   public LauncherIOHardware() {
     launcherMotor = new TalonFX(Constants.CanIds.launchMotorCanId);
+
+    turnMotor = new SparkMax(Constants.CanIds.turnMotorCanId, MotorType.kBrushless);
+    turnConfig = new SparkMaxConfig();
+
+    launcherSlot0 = new Slot0Configs();
+
+    m_potentiometer = new AnalogPotentiometer(3, 2 * Math.PI, 0);
     launcherMotorConfig =
         new TalonFXConfiguration()
             .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))

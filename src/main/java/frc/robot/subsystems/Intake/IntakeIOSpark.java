@@ -26,18 +26,15 @@ public class IntakeIOSpark implements IntakeIO {
   private final SparkClosedLoopController pid;
 
   public IntakeIOSpark() {
-    Rightrotato =
-      new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
+    Rightrotato = new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
     RightrotatoEncoder = Rightrotato.getEncoder();
     SparkMaxConfig config = new SparkMaxConfig();
 
-    Leftrotato =
-      new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
+    Leftrotato = new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
     LeftrotatoEncoder = Leftrotato.getEncoder();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
 
-    movementMotor =
-      new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
+    movementMotor = new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
     armEncoder = movementMotor.getEncoder();
     pid = movementMotor.getClosedLoopController();
 

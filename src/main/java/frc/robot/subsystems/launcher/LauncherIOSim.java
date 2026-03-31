@@ -59,7 +59,7 @@ public class LauncherIOSim implements LauncherIO {
 
   private final TalonFXConfiguration launcherMotorConfig;
   private final TalonFX launcherMotor;
-  private final Slot0Configs launcherSlot0 = new Slot0Configs();
+  private final Slot0Configs launcherSlot0;
   private TalonFXSimState launcherMotorSim;
 
   // MOI calculated from prototype launcher
@@ -81,18 +81,15 @@ public class LauncherIOSim implements LauncherIO {
   // States: [velocity], in radians per second.
   // Inputs (what we can "put in"): [voltage], in volts.
   // Outputs (what we can measure): [velocity], in radians per second.
-  private final LinearSystem<N1, N1, N1> m_flywheelPlant =
-      LinearSystemId.createFlywheelSystem(
-          DCMotor.getKrakenX60(1), kFlywheelMomentOfInertia, kFlywheelGearing);
+  private final LinearSystem<N1, N1, N1> m_flywheelPlant;
 
   // Turret azimuth state
   private SingleJointedArmSim turretSim;
   private static final double kTurretMomentOfInertia = 0.05; // kg * m^2
   private static final double kTurretGearing = 20; // Total guess at the gearing for motor to turret
-  private SparkMax turretSparkMax =
-      new SparkMax(Constants.CanIds.launchMotorCanId + 100, MotorType.kBrushless);
+  private SparkMax turretSparkMax;
   private final SparkClosedLoopController turretClosedLoopController;
-  private SparkMaxConfig m_turretConfig = new SparkMaxConfig();
+  private SparkMaxConfig m_turretConfig;
   private final SparkRelativeEncoder turretEncoder;
   private final SparkRelativeEncoderSim turretEncoderSim;
   private final SparkMaxSim turretSparkMaxSim;
@@ -102,7 +99,17 @@ public class LauncherIOSim implements LauncherIO {
           DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
 
   public LauncherIOSim() {
+    turretSparkMax =
+      new SparkMax(Constants.CanIds.turnMotorCanId + 100, MotorType.kBrushless);
+      m_turretConfig = new SparkMaxConfig();
+    
     launcherMotor = new TalonFX(Constants.CanIds.launchMotorCanId + 100);
+    launcherSlot0 = new Slot0Configs();
+
+    m_flywheelPlant =
+      LinearSystemId.createFlywheelSystem(
+          DCMotor.getKrakenX60(1), kFlywheelMomentOfInertia, kFlywheelGearing);
+
     launcherMotorConfig =
         new TalonFXConfiguration()
             .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))

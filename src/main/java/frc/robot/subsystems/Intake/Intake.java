@@ -26,11 +26,8 @@ public class Intake extends SubsystemBase {
     mConstraints = new Constraints(Constants.Intake.MaxV, Constants.Intake.MaxA);
     mTrapezoidProfile = new TrapezoidProfile(mConstraints);
     inputs = new IntakeIOInputsAutoLogged();
-    mCurrentState =
-      new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
-    mDesiredState =
-      new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
-
+    mCurrentState = new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
+    mDesiredState = new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
   }
 
   @Override
