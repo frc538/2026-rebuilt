@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
   private boolean intakerToggle = false;
 
   public TrapezoidProfile.State mCurrentState;
-  public TrapezoidProfile.State mDesiredState =;
+  public TrapezoidProfile.State mDesiredState;
   public TrapezoidProfile mTrapezoidProfile;
 
   public Constraints mConstraints;
@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
     inputs = new IntakeIOInputsAutoLogged();
     mCurrentState =
       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
-    mDesiredState
+    mDesiredState =
       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
 
   }
