@@ -14,16 +14,20 @@ public class HopperIOSparkMax implements HopperIO {
   private final SparkMax fdSparkMax;
   private final SparkMax sdSparkMax;
 
-  SparkMaxConfig sdConfig = new SparkMaxConfig();
-  SparkMaxConfig fdConfig = new SparkMaxConfig();
+  SparkMaxConfig sdConfig;
+  SparkMaxConfig fdConfig;
 
   SparkRelativeEncoder sdEncoder;
   SparkRelativeEncoder fdEncoder;
 
   public HopperIOSparkMax(int feedcanid, int spindexcanid) { // feed can id
+
     sdSparkMax = new SparkMax(feedcanid, MotorType.kBrushless);
-    fdSparkMax = new SparkMax(spindexcanid, MotorType.kBrushless);
+    sdConfig = new SparkMaxConfig();
     sdEncoder = (SparkRelativeEncoder) sdSparkMax.getEncoder();
+
+    fdSparkMax = new SparkMax(spindexcanid, MotorType.kBrushless);
+    fdConfig = new SparkMaxConfig();
     fdEncoder = (SparkRelativeEncoder) fdSparkMax.getEncoder();
 
     fdConfig

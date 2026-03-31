@@ -20,7 +20,7 @@ public class ClimberIOSparkMax implements ClimberIO {
     SparkMaxConfig climberconfig = new SparkMaxConfig();
 
     climberconfig.idleMode(IdleMode.kBrake);
-    climberconfig.smartCurrentLimit(Constants.ClimberConstants.CurrentLimit);
+    climberconfig.smartCurrentLimit(Constants.CurrentLimit.climberLimit);
 
     climberconfig
         .encoder

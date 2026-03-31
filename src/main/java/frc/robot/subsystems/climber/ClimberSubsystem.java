@@ -2,23 +2,26 @@ package frc.robot.subsystems.climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class ClimberSubsystem extends SubsystemBase {
   private final ClimberIO io;
-  private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
+  private final ClimberIOInputsAutoLogged inputs;
 
-  private double motorSpeed = 0;
+  private double motorSpeed;
 
   public ClimberSubsystem(ClimberIO IO) {
     io = IO;
+    inputs = new ClimberIOInputsAutoLogged();
+    motorSpeed = 0;
   }
 
   // Main/Base Commands
   public Command climberRetract() {
     return runEnd(
         () -> {
-          motorSpeed = -1;
+          motorSpeed = -Constants.ClimberConstants.climberSpeed;
           io.setOutput(motorSpeed);
         },
         () -> {
@@ -30,7 +33,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public Command climberExtend() {
     return runEnd(
         () -> {
-          motorSpeed = 1;
+          motorSpeed = Constants.ClimberConstants.climberSpeed;
           io.setOutput(motorSpeed);
         },
         () -> {
@@ -42,7 +45,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public Command TestClimberRetract() {
     return runEnd(
         () -> {
-          motorSpeed = 0.2;
+          motorSpeed = Constants.ClimberConstants.testclimberSpeed;
           io.setOutput(motorSpeed);
         },
         () -> {
@@ -54,7 +57,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public Command TestClimberExtend() {
     return runEnd(
         () -> {
-          motorSpeed = -0.2;
+          motorSpeed = -Constants.ClimberConstants.testclimberSpeed;
           io.setOutput(motorSpeed);
         },
         () -> {
