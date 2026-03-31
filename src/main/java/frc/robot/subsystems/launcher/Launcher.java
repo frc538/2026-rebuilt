@@ -28,7 +28,6 @@ public class Launcher extends SubsystemBase {
   private double timeFlight;
   private double targetAzimuth;
   private double launchSpeed;
-  private boolean shootSide = false;
   private boolean disableShoot;
   private double testRadPerS;
   private Pose2d aimPointComp;
@@ -40,9 +39,11 @@ public class Launcher extends SubsystemBase {
   private TrapezoidProfile.State mDesiredState;
   private boolean aimGood;
   private boolean TurretSpeedGood;
+
   private boolean autoRotate = false;
   private boolean stopTurret = false;
   private boolean autoTurnRobot = false;
+  private boolean shootSide = false;
 
   TurretEncoder turretEncoder = new TurretEncoder();
 
@@ -340,9 +341,10 @@ public class Launcher extends SubsystemBase {
   }
 
   public Command calibrateCRTEncoders() {
-    return Commands.runOnce(() -> {
-      turretEncoder.read();
-    });
+    return Commands.runOnce(
+        () -> {
+          turretEncoder.read();
+        });
   }
 
   @Override

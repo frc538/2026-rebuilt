@@ -70,7 +70,6 @@ public class LauncherIOSim implements LauncherIO {
   // the motors, this number should be greater than one.
   private static final double kFlywheelGearing = 1.0;
 
-
   // The plant holds a state-space model of our flywheel. This system has the following properties:
   //
   // States: [velocity], in radians per second.
@@ -97,29 +96,27 @@ public class LauncherIOSim implements LauncherIO {
   private final LinearSystem<N2, N1, N2> m_turretPlant;
 
   public LauncherIOSim() {
-  
+
     robotPose = new Pose2d();
     m_turretPlant =
-      LinearSystemId.createSingleJointedArmSystem(
-          DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
+        LinearSystemId.createSingleJointedArmSystem(
+            DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
     // Fuel launching state
-  isFuel = false;
-  fuelMass = 0.2268; // kg
-  fuelRadius = 0.075; // meters
-  kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
-  kWheelRadius = 0.050165; // m
+    isFuel = false;
+    fuelMass = 0.2268; // kg
+    fuelRadius = 0.075; // meters
+    kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
+    kWheelRadius = 0.050165; // m
 
+    turretSparkMax = new SparkMax(Constants.CanIds.turnMotorCanId + 100, MotorType.kBrushless);
+    m_turretConfig = new SparkMaxConfig();
 
-    turretSparkMax =
-      new SparkMax(Constants.CanIds.turnMotorCanId + 100, MotorType.kBrushless);
-      m_turretConfig = new SparkMaxConfig();
-    
     launcherMotor = new TalonFX(Constants.CanIds.launchMotorCanId + 100);
     launcherSlot0 = new Slot0Configs();
 
     m_flywheelPlant =
-      LinearSystemId.createFlywheelSystem(
-          DCMotor.getKrakenX60(1), kFlywheelMomentOfInertia, kFlywheelGearing);
+        LinearSystemId.createFlywheelSystem(
+            DCMotor.getKrakenX60(1), kFlywheelMomentOfInertia, kFlywheelGearing);
 
     launcherMotorConfig =
         new TalonFXConfiguration()
@@ -144,7 +141,6 @@ public class LauncherIOSim implements LauncherIO {
     launcherMotorSim = launcherMotor.getSimState();
 
     flywheelSim = new FlywheelSim(m_flywheelPlant, DCMotor.getKrakenX60(1));
-
 
     m_turretConfig.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit(50);
     m_turretConfig
