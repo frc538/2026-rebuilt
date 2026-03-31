@@ -41,6 +41,9 @@ public final class Constants {
 
   public static class CanIds {
 
+    public static final int turretEncoder1 = 22;
+    public static final int turretEncoder2 = 23;
+
     public static final int ClimberMotorCANId = 13;
 
     public static final int FeedCanId = 4;
@@ -148,9 +151,6 @@ public final class Constants {
 
     public static final double minDistance =
         Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2);
-
-    public static final int turretEncoder1 = 63;
-    public static final int turretEncoder2 = 64;
   }
 
   public final class launcherConstants {
