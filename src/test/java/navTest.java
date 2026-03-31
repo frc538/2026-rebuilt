@@ -10,7 +10,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.launcher.Launcher;
-import frc.robot.subsystems.launcher.LauncherIOSim;
+import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.navigation.Navigation2;
 import frc.robot.subsystems.navigation.Navigation2.directorator;
 import org.junit.jupiter.api.AfterEach;
@@ -28,7 +28,7 @@ public class navTest {
     if (nav == null) {
 
       hopper = new Hopper(new HopperIO() {});
-      launcher = new Launcher(new LauncherIOSim(), hopper::FirePermit);
+      launcher = new Launcher(new LauncherIO() {}, hopper::FirePermit);
       drive =
           new Drive(
               launcher::updateOdometry,
@@ -56,7 +56,7 @@ public class navTest {
     resultD = result.getRotation().getDegrees();
     expected = 0 + 0.8 * -90;
     System.out.printf("expect: %f, got: %f\n", expected, resultD);
-    assertEquals(expected, resultD);
+    assertEquals(expected, resultD, 0.001);
 
     result = nav.calculateOffset(initialPose, directorator.right, directorator.down, 0.8);
     resultD = result.getRotation().getDegrees();

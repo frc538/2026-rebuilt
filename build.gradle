@@ -121,6 +121,14 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
+sourceSets {
+    test {
+        resources {
+            srcDir "test"
+        }
+    }
+}
+
 // Configure jar and deploy tasks
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
