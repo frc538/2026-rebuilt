@@ -62,12 +62,15 @@ public class TurretEncoder {
   }
 
   public Command calibrate() {
-    double encoder1Rotations = can1.getAbsolutePosition().getValueAsDouble();
-    double encoder2Rotations = can2.getAbsolutePosition().getValueAsDouble();
+    //double encoder1Rotations = can1.getAbsolutePosition().getValueAsDouble();
+    //double encoder2Rotations = can2.getAbsolutePosition().getValueAsDouble();
 
-    System.out.printf("Encoder 1 Bias = %f\n", -encoder1Rotations);
-    System.out.printf("Encoder 2 Bias = %f\n", 180 - encoder2Rotations);
+    can1.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(0).withAbsoluteSensorDiscontinuityPoint(1.0));
+    can2.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(180).withAbsoluteSensorDiscontinuityPoint(1.0));
 
-    return Commands.print("Biases Printed");
+    //System.out.printf("Encoder 1 Bias = %f\n", - encoder1Rotations);
+    //System.out.printf("Encoder 2 Bias = %f\n", 180 - encoder2Rotations);
+
+    return Commands.print("Encoders set");
   }
 }
