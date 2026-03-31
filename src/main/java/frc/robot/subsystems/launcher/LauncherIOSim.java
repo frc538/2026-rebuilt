@@ -54,7 +54,8 @@ public class LauncherIOSim implements LauncherIO {
   private Translation3d[] theTrajectories = new Translation3d[30 * 30];
   private int ageValue = 0;
   private final int maxTrajectoryAge = 2 * 50; // 2 seconds
-  private Pose2d robotPose = new Pose2d();
+  // nope
+  private Pose2d robotPose;
   private ChassisSpeeds robotVelocity;
 
   private final TalonFXConfiguration launcherMotorConfig;
@@ -69,12 +70,6 @@ public class LauncherIOSim implements LauncherIO {
   // the motors, this number should be greater than one.
   private static final double kFlywheelGearing = 1.0;
 
-  // Fuel launching state
-  private boolean isFuel = false;
-  private static final double fuelMass = 0.2268; // kg
-  private static final double fuelRadius = 0.075; // meters
-  private static final double kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
-  private static final double kWheelRadius = 0.050165; // m
 
   // The plant holds a state-space model of our flywheel. This system has the following properties:
   //
@@ -83,6 +78,11 @@ public class LauncherIOSim implements LauncherIO {
   // Outputs (what we can measure): [velocity], in radians per second.
   private final LinearSystem<N1, N1, N1> m_flywheelPlant;
 
+  private boolean isFuel;
+  private static double fuelMass;
+  private static double fuelRadius;
+  private static double kFuelMomentOfInertia;
+  private static double kWheelRadius;
   // Turret azimuth state
   private SingleJointedArmSim turretSim;
   private static final double kTurretMomentOfInertia = 0.05; // kg * m^2
@@ -94,11 +94,22 @@ public class LauncherIOSim implements LauncherIO {
   private final SparkRelativeEncoderSim turretEncoderSim;
   private final SparkMaxSim turretSparkMaxSim;
 
-  private final LinearSystem<N2, N1, N2> m_turretPlant =
-      LinearSystemId.createSingleJointedArmSystem(
-          DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
+  private final LinearSystem<N2, N1, N2> m_turretPlant;
 
   public LauncherIOSim() {
+  
+    robotPose = new Pose2d();
+    m_turretPlant =
+      LinearSystemId.createSingleJointedArmSystem(
+          DCMotor.getNEO(1), kTurretMomentOfInertia, kTurretGearing);
+    // Fuel launching state
+  isFuel = false;
+  fuelMass = 0.2268; // kg
+  fuelRadius = 0.075; // meters
+  kFuelMomentOfInertia = 2.0 / 5.0 * fuelMass * fuelRadius * fuelRadius;
+  kWheelRadius = 0.050165; // m
+
+
     turretSparkMax =
       new SparkMax(Constants.CanIds.turnMotorCanId + 100, MotorType.kBrushless);
       m_turretConfig = new SparkMaxConfig();
@@ -133,6 +144,7 @@ public class LauncherIOSim implements LauncherIO {
     launcherMotorSim = launcherMotor.getSimState();
 
     flywheelSim = new FlywheelSim(m_flywheelPlant, DCMotor.getKrakenX60(1));
+
 
     m_turretConfig.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit(50);
     m_turretConfig
