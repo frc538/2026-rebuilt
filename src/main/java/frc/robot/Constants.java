@@ -60,6 +60,7 @@ public final class Constants {
     public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = true;
     public static final boolean isPotentiometerBroken = true;
+    public static final boolean useChineseRemainderTheorem = true;
   }
 
   public static class navigationConstants {
@@ -114,9 +115,24 @@ public final class Constants {
   }
 
   public final class turretConstants {
-    public static final double gear1Teeth = 50;
-    public static final double gear2Teeth = 50;
-    
+    public static final double gear1Teeth = 23;
+    public static final double gear2Teeth = 24;
+    public static final double turretGearTeeth = 200;
+
+    public static final double encoder1Bias = 0;
+    public static final double encoder2Bias = 0;
+
+    public static final double gear1Ratio = gear1Teeth / turretGearTeeth;
+    public static final double gear2Ratio = gear2Teeth / turretGearTeeth;
+
+    public static final double gear1ToothAngle = 360 / gear1Teeth;
+    public static final double gear2ToothAngle = 360 / gear2Teeth;
+    public static final double turretAnglePerHalfTooth1 = (gear1ToothAngle / 2) * gear1Ratio;
+    public static final double turretAnglePerHalfTooth2 = (gear2ToothAngle / 2) * gear2Ratio;
+
+    public static final double minDistance =
+        Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2);
+
     public static final int turretEncoder1 = 63;
     public static final int turretEncoder2 = 64;
   }

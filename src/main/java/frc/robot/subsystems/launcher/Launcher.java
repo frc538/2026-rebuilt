@@ -44,6 +44,8 @@ public class Launcher extends SubsystemBase {
   private boolean stopTurret = false;
   private boolean autoTurnRobot = false;
 
+  TurretEncoder turretEncoder = new TurretEncoder();
+
   private double currentAimTrim = 0;
   private double currentSpeedTrim = 0;
 
@@ -315,25 +317,22 @@ public class Launcher extends SubsystemBase {
         targetAzimuth = inputs.turnPotentiometer;
         mCurrentState.position = inputs.turnPotentiometer;
         io.TurretCalibrate(inputs.turnPotentiometer);
+      } else if (Constants.Features.useChineseRemainderTheorem == true) {
+        double position = turretEncoder.read();
+        mDesiredState.position = position;
+        targetAzimuth = position;
+        mCurrentState.position = position;
+        io.TurretCalibrate(position);
       }
       io.TurretDisable();
     }
   }
 
-  private void stopTurretTurn() {
-    stopTurret = true;
-    mDesiredState.position = Math.PI;
+  public Command calibrateCRTEncoders() {
+    return Commands.runOnce(() -> {
+      turretEncoder.read();
+    });
   }
-
-  private void autoRobotTurn() {
-    if (stopTurret == true) {
-      autoTurnRobot = !autoTurnRobot;
-    }
-  }
-
-  private void getRobotTurn() {}
-
-  private void setRobotTurn() {}
 
   @Override
   public void periodic() {
