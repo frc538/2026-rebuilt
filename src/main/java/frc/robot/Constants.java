@@ -106,7 +106,8 @@ public final class Constants {
 
   public static class ClimberConstants {
 
-    public static final int CurrentLimit = 50;
+    public static final double climberSpeed = 0.75;
+    public static final double testclimberSpeed = 0.25;
 
     public static final double ClimberPositionConversionFactor =
         90.0 / 480.0; // 480 revolutions gives us 90 degrees on the climber.
