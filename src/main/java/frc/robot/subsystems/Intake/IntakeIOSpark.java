@@ -16,21 +16,30 @@ import frc.robot.Constants;
 
 public class IntakeIOSpark implements IntakeIO {
 
-  private final SparkMax movementMotor =
-      new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
-  private final SparkFlex Rightrotato =
-      new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
-  private final SparkFlex Leftrotato =
-      new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
+  private final SparkMax movementMotor;
+  private final SparkFlex Rightrotato;
+  private final SparkFlex Leftrotato;
 
-  private final RelativeEncoder armEncoder = movementMotor.getEncoder();
-  private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();
-  private final RelativeEncoder LeftrotatoEncoder = Leftrotato.getEncoder();
-  private final SparkClosedLoopController pid = movementMotor.getClosedLoopController();
+  private final RelativeEncoder armEncoder;
+  private final RelativeEncoder RightrotatoEncoder;
+  private final RelativeEncoder LeftrotatoEncoder;
+  private final SparkClosedLoopController pid;
 
   public IntakeIOSpark() {
+    Rightrotato =
+      new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
+    RightrotatoEncoder = Rightrotato.getEncoder();
     SparkMaxConfig config = new SparkMaxConfig();
+
+    Leftrotato =
+      new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
+    LeftrotatoEncoder = Leftrotato.getEncoder();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
+
+    movementMotor =
+      new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
+    armEncoder = movementMotor.getEncoder();
+    pid = movementMotor.getClosedLoopController();
 
     config
         .encoder

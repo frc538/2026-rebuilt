@@ -124,8 +124,8 @@ public final class Constants {
     public static final double SDConversionFactor = 1.0;
     public static final double FDConversionFactor = 1.0;
 
-    public static final double SpindexSpeed = -.25;
-    public static final double FeedSpeed = -.5;
+    public static final double SpindexSpeed = -0.25;
+    public static final double FeedSpeed = -0.5;
 
     public static final double TestSpindexSpeed = -0.3;
     public static final double TestFeedSpeed = -0.3;
