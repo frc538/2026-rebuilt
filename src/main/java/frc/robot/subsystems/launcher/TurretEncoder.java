@@ -1,8 +1,12 @@
 package frc.robot.subsystems.launcher;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
+import com.ctre.phoenix6.configs.CustomParamsConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
@@ -16,10 +20,10 @@ public class TurretEncoder {
   CANcoderConfigurator can2Config;
 
   public TurretEncoder() {
-    can1 = new CANcoder(Constants.turretConstants.turretEncoder1);
-    can2 = new CANcoder(Constants.turretConstants.turretEncoder2);
+    can1 = new CANcoder(Constants.CanIds.turretEncoder1);
+    can2 = new CANcoder(Constants.CanIds.turretEncoder2);
 
-    can1Config = can1.getConfigurator();
+    //can1Config = can1.getConfigurator().apply(new MagnetSensorConfigs().withAbsoluteSensorDiscontinuityPoint(1));
     can2Config = can2.getConfigurator();
   }
 
