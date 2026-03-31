@@ -19,19 +19,19 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Launcher extends SubsystemBase {
-  private Pose2d robotPose = new Pose2d();
-  private ChassisSpeeds robotVelocity = new ChassisSpeeds();
-  private Pose2d aimPoint = new Pose2d();
+  private Pose2d robotPose;
+  private ChassisSpeeds robotVelocity;
+  private Pose2d aimPoint;
   private double distanceX;
   private double distanceY;
   private double endDistance;
   private double timeFlight;
-  private double targetAzimuth = Math.PI;
+  private double targetAzimuth;
   private double launchSpeed;
   private boolean shootSide = false;
-  private boolean disableShoot = true;
-  private double testRadPerS = 0.0;
-  private Pose2d aimPointComp = new Pose2d(0, 0, new Rotation2d());
+  private boolean disableShoot;
+  private double testRadPerS;
+  private Pose2d aimPointComp;
   private double finalWheelRotationVelocity;
   private double initialWheelRotVelocity;
   private Constraints profileConstraints;
@@ -46,8 +46,8 @@ public class Launcher extends SubsystemBase {
 
   TurretEncoder turretEncoder = new TurretEncoder();
 
-  private double currentAimTrim = 0;
-  private double currentSpeedTrim = 0;
+  private double currentAimTrim;
+  private double currentSpeedTrim;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -56,8 +56,19 @@ public class Launcher extends SubsystemBase {
   public Launcher(LauncherIO IO, LauncherConsumer consumer) {
     io = IO;
 
+    robotPose = new Pose2d();
+    robotVelocity = new ChassisSpeeds();
+    aimPoint = new Pose2d();
+    targetAzimuth = Math.PI;
+    aimPointComp = new Pose2d(0, 0, new Rotation2d());
+    testRadPerS = 0.0;
+
+    currentAimTrim = 0;
+    currentSpeedTrim = 0;
+
     profileConstraints = new Constraints(maxV, maxA);
     turnProfile = new TrapezoidProfile(profileConstraints);
+    disableShoot = true;
 
     thingy = consumer;
 
