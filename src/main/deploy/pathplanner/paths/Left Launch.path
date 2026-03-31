@@ -3,51 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.592666666666667,
-        "y": 7.455299999999999
+        "x": 3.6250213980028523,
+        "y": 7.41845934379458
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.800977777777778,
-        "y": 7.494277777777777
+        "x": 1.833025202092247,
+        "y": 7.032274893009987
       },
       "isLocked": false,
       "linkedName": "leftStartPointBlue"
     },
     {
       "anchor": {
-        "x": 5.405133333333334,
-        "y": 7.455299999999999
+        "x": 1.8265477888730377,
+        "y": 5.322396576319543
       },
       "prevControl": {
-        "x": 4.878552200167398,
-        "y": 7.4265773927364025
-      },
-      "nextControl": {
-        "x": 6.477022222222222,
-        "y": 7.513766666666667
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.324867469879519,
-        "y": 4.0
-      },
-      "prevControl": {
-        "x": 6.45867858099063,
-        "y": 4.773666666666667
+        "x": 1.8653621456800817,
+        "y": 6.0340229129182585
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Blue Shoot End"
+      "linkedName": "leftLaunch"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "shoot toggle",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot toggle"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -58,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 145.12467165539786
   },
   "reversed": false,
-  "folder": "Left Blue",
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 179.61037023717188
   },
   "useDefaultConstraints": true
 }

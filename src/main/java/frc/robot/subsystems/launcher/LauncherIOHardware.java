@@ -42,7 +42,7 @@ public class LauncherIOHardware implements LauncherIO {
   private final TalonFXConfiguration launcherMotorConfig;
   private final TalonFX launcherMotor;
   private final SparkMax turnMotor =
-      new SparkMax(Constants.launcherConstants.turnMotorCanId, MotorType.kBrushless);
+      new SparkMax(Constants.CanIds.turnMotorCanId, MotorType.kBrushless);
   private final SparkMaxConfig turnConfig = new SparkMaxConfig();
   private final Slot0Configs launcherSlot0 = new Slot0Configs();
   private final SparkClosedLoopController turnController;
@@ -50,7 +50,7 @@ public class LauncherIOHardware implements LauncherIO {
   AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(3, 2 * Math.PI, 0);
 
   public LauncherIOHardware() {
-    launcherMotor = new TalonFX(Constants.launcherConstants.launchMotorCanId);
+    launcherMotor = new TalonFX(Constants.CanIds.launchMotorCanId);
     launcherMotorConfig =
         new TalonFXConfiguration()
             .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
@@ -73,7 +73,6 @@ public class LauncherIOHardware implements LauncherIO {
     turnConfig.smartCurrentLimit(Constants.CurrentLimit.turnLimit);
 
     turnConfig.idleMode(IdleMode.kBrake);
-    turnConfig.smartCurrentLimit(Constants.launcherConstants.CurrentLimit);
     turnConfig
         .closedLoop
         .pid(turnP, turnI, turnD)

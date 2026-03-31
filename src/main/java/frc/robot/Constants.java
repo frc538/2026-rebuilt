@@ -39,16 +39,36 @@ public final class Constants {
     REPLAY
   }
 
+  public static class CanIds {
+
+    public static final int ClimberMotorCANId = 13;
+
+    public static final int FeedCanId = 4;
+    public static final int SpindexCanId = 3;
+
+    public static final int launchMotorCanId = 37;
+    public static final int turnMotorCanId = 62;
+
+    public static final int RightRotatoCanId = 1;
+    public static final int LeftRotatoCanId = 6;
+    public static final int MovMotorCanId = 2;
+  }
+
   public static class CurrentLimit {
+
+    // Intake
     public static final int rotatoLimit = 10;
     public static final int armLimit = 10;
 
+    // Launcher
     public static final int turretLimit = 120;
     public static final int turnLimit = 10;
 
+    // Hopper
     public static final int spindexLimit = 10;
     public static final int feedLimit = 10;
 
+    // Climber
     public static final int climberLimit = 10;
   }
 
@@ -85,7 +105,6 @@ public final class Constants {
   }
 
   public static class ClimberConstants {
-    public static final int ClimberMotorCANId = 13;
 
     public static final int CurrentLimit = 50;
 
@@ -97,9 +116,6 @@ public final class Constants {
   }
 
   public final class Hopper {
-
-    public static final int FeedCanId = 4;
-    public static final int SpindexCanId = 3;
 
     public static final double SpindexGearing = 1.0;
     public static final double FeedGearing = 1.0;
@@ -138,9 +154,6 @@ public final class Constants {
   }
 
   public final class launcherConstants {
-    public static final int launchMotorCanId = 37;
-    public static final int turnMotorCanId = 62;
-    public static final int CurrentLimit = 50;
 
     public static final double turretCalibrationOffset = 0.0;
 
@@ -190,10 +203,6 @@ public final class Constants {
   }
 
   public final class Intake {
-
-    public static final int RightRotatoCanId = 1;
-    public static final int LeftRotatoCanId = 6;
-    public static final int MovMotorCanId = 2;
 
     public static final double UprightPos =
         Math.toRadians(-1); // Measured upright intake position at 1 degrees past 90

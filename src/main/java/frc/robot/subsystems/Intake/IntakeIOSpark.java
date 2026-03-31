@@ -17,11 +17,11 @@ import frc.robot.Constants;
 public class IntakeIOSpark implements IntakeIO {
 
   private final SparkMax movementMotor =
-      new SparkMax(Constants.Intake.MovMotorCanId, MotorType.kBrushless);
+      new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
   private final SparkFlex Rightrotato =
-      new SparkFlex(Constants.Intake.RightRotatoCanId, MotorType.kBrushless);
+      new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
   private final SparkFlex Leftrotato =
-      new SparkFlex(Constants.Intake.LeftRotatoCanId, MotorType.kBrushless);
+      new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
 
   private final RelativeEncoder armEncoder = movementMotor.getEncoder();
   private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();

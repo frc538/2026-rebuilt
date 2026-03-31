@@ -10,6 +10,7 @@ package frc.robot;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -83,7 +84,7 @@ public class RobotContainer {
         if (Constants.Features.HopperEnabled) {
           hopper =
               new Hopper(
-                  new HopperIOSparkMax(Constants.Hopper.FeedCanId, Constants.Hopper.SpindexCanId));
+                  new HopperIOSparkMax(Constants.CanIds.FeedCanId, Constants.CanIds.SpindexCanId));
         } else {
           hopper = new Hopper(new HopperIO() {});
         }
@@ -141,8 +142,7 @@ public class RobotContainer {
         }
         if (Constants.Features.ClimberEnabled) {
           climberSubsystem =
-              new ClimberSubsystem(
-                  new ClimberIOSparkMax(Constants.ClimberConstants.ClimberMotorCANId, 5, 6));
+              new ClimberSubsystem(new ClimberIOSparkMax(Constants.CanIds.ClimberMotorCANId, 5, 6));
         } else {
           climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         }
@@ -169,7 +169,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         // new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
         // new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
-        intake = new Intake(new IntakeIOSim(Constants.Intake.MovMotorCanId) {});
+        intake = new Intake(new IntakeIOSim(Constants.CanIds.MovMotorCanId) {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
@@ -198,6 +198,11 @@ public class RobotContainer {
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
+    new NamedCommands().registerCommand("shoot toggle", launcher.toggleShoot());
+    new NamedCommands().registerCommand("intake open", intake.forceIntake());
+    new NamedCommands().registerCommand("intake close", intake.forceIntake());
+    new NamedCommands().registerCommand("climb", climberSubsystem.climberExtend());
+
     nav2 = new Navigation2(drive);
 
     // SmartDashboard.putData(navSys.m_field);
