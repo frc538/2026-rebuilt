@@ -17,21 +17,16 @@ import frc.robot.Constants;
 public class IntakeIOSpark implements IntakeIO {
 
   private final SparkMax movementMotor;
-  private final SparkFlex Rightrotato;
-  private final SparkFlex Leftrotato;
+  SparkMaxConfig config;
+  private final SparkFlex Rotato;
 
   private final RelativeEncoder armEncoder;
-  private final RelativeEncoder RightrotatoEncoder;
-  private final RelativeEncoder LeftrotatoEncoder;
+  private final RelativeEncoder rotatoEncoder;
   private final SparkClosedLoopController pid;
 
   public IntakeIOSpark() {
-    Rightrotato = new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
-    RightrotatoEncoder = Rightrotato.getEncoder();
-    SparkMaxConfig config = new SparkMaxConfig();
-
-    Leftrotato = new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
-    LeftrotatoEncoder = Leftrotato.getEncoder();
+    Rotato = new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
+    rotatoEncoder = Rotato.getEncoder();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
 
     movementMotor = new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
@@ -61,9 +56,7 @@ public class IntakeIOSpark implements IntakeIO {
 
     movementMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    Rightrotato.configure(
-        RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    Leftrotato.configure(
+    Rotato.configure(
         RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     armEncoder.setPosition(Constants.Intake.UprightPos);
   }
@@ -71,29 +64,24 @@ public class IntakeIOSpark implements IntakeIO {
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
 
-    inputs.RightrotatoOutput = Rightrotato.getAppliedOutput();
-    inputs.RightrotatoBusVoltage = Rightrotato.getBusVoltage();
-    inputs.RightrotatoCurrent = Rightrotato.getOutputCurrent();
 
-    inputs.LeftrotatoOutput = Leftrotato.getAppliedOutput();
-    inputs.LeftrotatoBusVoltage = Leftrotato.getBusVoltage();
-    inputs.LeftrotatoCurrent = Leftrotato.getOutputCurrent();
+    inputs.LeftrotatoOutput = Rotato.getAppliedOutput();
+    inputs.LeftrotatoBusVoltage = Rotato.getBusVoltage();
+    inputs.LeftrotatoCurrent = Rotato.getOutputCurrent();
 
     inputs.armMotorOutput = movementMotor.getAppliedOutput();
     inputs.armMotorBusVoltage = movementMotor.getBusVoltage();
     inputs.armMotorCurrent = movementMotor.getOutputCurrent();
 
     inputs.positionRad = armEncoder.getPosition();
-    inputs.RightrotatoRpm = RightrotatoEncoder.getVelocity();
-    inputs.LeftrotatoRpm = LeftrotatoEncoder.getVelocity();
+    inputs.LeftrotatoRpm = rotatoEncoder.getVelocity();
     inputs.MovementMotorRPM = armEncoder.getVelocity();
     inputs.MovementMotorRotation = armEncoder.getPosition();
   }
 
   @Override
   public void runRotato(double speed) {
-    Rightrotato.set(speed * -1);
-    Leftrotato.set(speed);
+    Rotato.set(speed);
   }
 
   @Override
