@@ -49,7 +49,6 @@ public final class Constants {
     public static final int launchMotorCanId = 37;
     public static final int turnMotorCanId = 62;
 
-    public static final int RightRotatoCanId = 1;
     public static final int LeftRotatoCanId = 6;
     public static final int MovMotorCanId = 2;
   }
