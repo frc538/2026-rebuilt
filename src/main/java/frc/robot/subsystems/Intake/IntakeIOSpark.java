@@ -24,19 +24,22 @@ public class IntakeIOSpark implements IntakeIO {
   private final RelativeEncoder RightrotatoEncoder;
   private final RelativeEncoder LeftrotatoEncoder;
   private final SparkClosedLoopController pid;
+  SparkFlexConfig LeftRotatoConfig;
+  SparkFlexConfig RightRotatoConfig;
 
   public IntakeIOSpark() {
     Rightrotato = new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
     RightrotatoEncoder = Rightrotato.getEncoder();
-    SparkMaxConfig config = new SparkMaxConfig();
+    LeftRotatoConfig = new SparkFlexConfig();
 
     Leftrotato = new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
     LeftrotatoEncoder = Leftrotato.getEncoder();
-    SparkFlexConfig RotatoConfig = new SparkFlexConfig();
+    SparkFlexConfig RightRotatoConfig = new SparkFlexConfig();
 
     movementMotor = new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
     armEncoder = movementMotor.getEncoder();
     pid = movementMotor.getClosedLoopController();
+    SparkMaxConfig config = new SparkMaxConfig();
 
     config
         .encoder
@@ -45,11 +48,19 @@ public class IntakeIOSpark implements IntakeIO {
 
     config.idleMode(IdleMode.kBrake);
 
-    RotatoConfig.encoder
+    
+    LeftRotatoConfig.encoder
         .positionConversionFactor(Constants.Intake.RotatoPosConFac)
         .velocityConversionFactor(Constants.Intake.RotatoVelConFac);
 
-    RotatoConfig.smartCurrentLimit(Constants.CurrentLimit.rotatoLimit);
+    LeftRotatoConfig.smartCurrentLimit(Constants.CurrentLimit.rotatoLimit);
+
+    RightRotatoConfig.encoder
+        .positionConversionFactor(Constants.Intake.RotatoPosConFac)
+        .velocityConversionFactor(Constants.Intake.RotatoVelConFac);
+
+    RightRotatoConfig.smartCurrentLimit(Constants.CurrentLimit.rotatoLimit);
+    RightRotatoConfig.follow(Constants.CanIds.LeftRotatoCanId,true  );
     config.smartCurrentLimit(Constants.CurrentLimit.armLimit);
 
     config
@@ -62,9 +73,9 @@ public class IntakeIOSpark implements IntakeIO {
     movementMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     Rightrotato.configure(
-        RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        RightRotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     Leftrotato.configure(
-        RotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        LeftRotatoConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     armEncoder.setPosition(Constants.Intake.UprightPos);
   }
 
@@ -92,7 +103,6 @@ public class IntakeIOSpark implements IntakeIO {
 
   @Override
   public void runRotato(double speed) {
-    Rightrotato.set(speed * -1);
     Leftrotato.set(speed);
   }
 

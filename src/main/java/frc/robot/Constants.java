@@ -212,7 +212,7 @@ public final class Constants {
 
     public static final double IntakeKg = -3.5;
 
-    public static final double IntakeSpeed = 0.1;
+    public static final double IntakeSpeed = 0.3;
     public static final double MovementMotorVelocity = 1;
 
     public static final double RotatoPosConFac = 2 * Math.PI;
