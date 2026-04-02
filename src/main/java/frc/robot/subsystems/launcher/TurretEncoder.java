@@ -1,12 +1,8 @@
 package frc.robot.subsystems.launcher;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CANcoderConfigurator;
-import com.ctre.phoenix6.configs.CustomParamsConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
@@ -22,7 +18,9 @@ public class TurretEncoder {
   public TurretEncoder() {
     can1 = new CANcoder(Constants.CanIds.turretEncoder1);
     can2 = new CANcoder(Constants.CanIds.turretEncoder2);
-    
+
+    can1MagnetSensorConfigs = new MagnetSensorConfigs();
+    can2MagnetSensorConfigs = new MagnetSensorConfigs();
 
     can1.getConfigurator().refresh(can1MagnetSensorConfigs);
     can2.getConfigurator().refresh(can2MagnetSensorConfigs);
@@ -54,7 +52,10 @@ public class TurretEncoder {
         if (Math.abs(a1 - a2) < Constants.turretConstants.minDistance) {
           Logger.recordOutput("Turret/encoder read valid", true);
           Logger.recordOutput("Turret/position", (a1 + a2) / 2);
-          return (a1 + a2) / 2; //Subtract 1.38 turns
+          double turretAngle = (a1 + a2) / 2 - Constants.turretConstants.halfTravel;
+          turretAngle = (turretAngle * (Math.PI * 2)) + Math.PI;
+          Logger.recordOutput("Turret/position", turretAngle);
+          return turretAngle;
         }
       }
     }
@@ -63,33 +64,34 @@ public class TurretEncoder {
   }
 
   public Command calibrate() {
-    double encoder1Rotations = can1.getAbsolutePosition().getValueAsDouble();
-    double encoder2Rotations = can2.getAbsolutePosition().getValueAsDouble();
+    return Commands.runOnce(
+        () -> {
+          double encoder1Rotations = can1.getAbsolutePosition().getValueAsDouble();
+          double encoder2Rotations = can2.getAbsolutePosition().getValueAsDouble();
 
-    // double encoder1Offset = can1.getConfigurator().refresh(can1Config);
-    double EncoderRaw = encoder1Rotations - can1MagnetSensorConfigs.MagnetOffset;
-    double newEncoder1Offset = 0 - EncoderRaw;
+          // double encoder1Offset = can1.getConfigurator().refresh(can1Config);
+          double EncoderRaw = encoder1Rotations - can1MagnetSensorConfigs.MagnetOffset;
+          double newEncoder1Offset = 0 - EncoderRaw;
 
-    if(newEncoder1Offset < 0) {
-      newEncoder1Offset = newEncoder1Offset + 1;
-    }
+          if (newEncoder1Offset < 0) {
+            newEncoder1Offset = newEncoder1Offset + 1;
+          }
 
-    EncoderRaw = encoder2Rotations - can2MagnetSensorConfigs.MagnetOffset;
-    double newEncoder2Offset = 0.5 - EncoderRaw;
+          EncoderRaw = encoder2Rotations - can2MagnetSensorConfigs.MagnetOffset;
+          double newEncoder2Offset = 0.5 - EncoderRaw;
 
-    if(newEncoder2Offset < 0) {
-      newEncoder2Offset = newEncoder2Offset + 1;
-    }
+          if (newEncoder2Offset < 0) {
+            newEncoder2Offset = newEncoder2Offset + 1;
+          }
 
-    can1MagnetSensorConfigs.MagnetOffset = newEncoder1Offset;
-    can2MagnetSensorConfigs.MagnetOffset = newEncoder2Offset;
+          can1MagnetSensorConfigs.MagnetOffset = newEncoder1Offset;
+          can2MagnetSensorConfigs.MagnetOffset = newEncoder2Offset;
 
-    can1.getConfigurator().apply(can1MagnetSensorConfigs);
-    can2.getConfigurator().apply(can2MagnetSensorConfigs);
+          can1.getConfigurator().apply(can1MagnetSensorConfigs);
+          can2.getConfigurator().apply(can2MagnetSensorConfigs);
 
-    //System.out.printf("Encoder 1 Bias = %f\n", - encoder1Rotations);
-    //System.out.printf("Encoder 2 Bias = %f\n", 180 - encoder2Rotations);
-
-    return Commands.print("Encoders set");
+          // System.out.printf("Encoder 1 Bias = %f\n", - encoder1Rotations);
+          // System.out.printf("Encoder 2 Bias = %f\n", 180 - encoder2Rotations);
+        });
   }
 }

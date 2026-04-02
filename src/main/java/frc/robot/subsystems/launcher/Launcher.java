@@ -329,10 +329,7 @@ public class Launcher extends SubsystemBase {
   }
 
   public Command calibrateCRTEncoders() {
-    return Commands.runOnce(
-        () -> {
-          turretEncoder.read();
-        });
+    return turretEncoder.calibrate();
   }
 
   @Override

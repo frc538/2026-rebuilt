@@ -151,6 +151,9 @@ public final class Constants {
 
     public static final double minDistance =
         Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2);
+
+    public static final double fullTravel = gear1Teeth * gear2Teeth / turretGearTeeth;
+    public static final double halfTravel = fullTravel / 2;
   }
 
   public final class launcherConstants {
