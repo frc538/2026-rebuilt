@@ -41,8 +41,8 @@ public final class Constants {
 
   public static class CanIds {
 
-    public static final int turretEncoder1 = 22;
-    public static final int turretEncoder2 = 23;
+    public static final int turretEncoder23t = 23;
+    public static final int turretEncoder24t = 24;
 
     public static final int ClimberMotorCANId = 13;
 
@@ -81,7 +81,7 @@ public final class Constants {
     public static final boolean HopperEnabled = true;
     public static final boolean LauncherEnabled = true;
     public static final boolean VisionEnabled = true;
-    public static final boolean IntakeEnabled = true;
+    public static final boolean IntakeEnabled = false;
     public static final boolean isPotentiometerBroken = true;
     public static final boolean useChineseRemainderTheorem = true;
   }
@@ -150,7 +150,7 @@ public final class Constants {
     public static final double turretAnglePerHalfTooth2 = (gear2ToothAngle / 2) * gear2Ratio;
 
     public static final double minDistance =
-        Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2);
+        Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2) / 360;
 
     public static final double fullTravel = gear1Teeth * gear2Teeth / turretGearTeeth;
     public static final double halfTravel = fullTravel / 2;
