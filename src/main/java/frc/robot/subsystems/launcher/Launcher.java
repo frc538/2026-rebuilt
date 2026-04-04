@@ -97,7 +97,7 @@ public class Launcher extends SubsystemBase {
   public Command testTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(3.0);
+              io.testTurn(6.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -105,7 +105,7 @@ public class Launcher extends SubsystemBase {
   public Command invertTestTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(-3.0);
+              io.testTurn(-6.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -296,13 +296,13 @@ public class Launcher extends SubsystemBase {
 
   private void setAz() {
     if (stopTurret == false) {
-      mDesiredState.position =
-          MathUtil.clamp(
-              targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
-
-      mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
-
       if (!DriverStation.isTest() || autoRotate) {
+        mDesiredState.position =
+            MathUtil.clamp(
+                targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
+
+        mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
+
         io.pointAt(mCurrentState.position, mCurrentState.velocity);
       }
     } else {
@@ -319,10 +319,14 @@ public class Launcher extends SubsystemBase {
         io.TurretCalibrate(inputs.turnPotentiometer);
       } else if (Constants.Features.useChineseRemainderTheorem == true) {
         double position = turretEncoder.read();
-        mDesiredState.position = position;
-        targetAzimuth = position;
-        mCurrentState.position = position;
-        io.TurretCalibrate(position);
+        if (DriverStation.isDisabled()) {
+          mDesiredState.position = position;
+          mDesiredState.velocity = 0;
+          targetAzimuth = position;
+          mCurrentState.position = position;
+          mCurrentState.velocity = 0;
+          io.TurretCalibrate(position);
+        }
       }
       io.TurretDisable();
     }

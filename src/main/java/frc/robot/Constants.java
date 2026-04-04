@@ -83,11 +83,8 @@ public final class Constants {
     public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = false;
     public static final boolean isPotentiometerBroken = true;
-<<<<<<< UsbCamera-
-    public static final boolean USBCamEnabled = true;
-=======
+    public static final boolean USBCamEnabled = false;
     public static final boolean useChineseRemainderTheorem = true;
->>>>>>> main
   }
 
   public static class navigationConstants {
@@ -138,26 +135,27 @@ public final class Constants {
   }
 
   public final class turretConstants {
-    public static final double gear1Teeth = 23;
-    public static final double gear2Teeth = 24;
-    public static final double turretGearTeeth = 200;
+    public static final int gear1Teeth = 23;
+    public static final int gear2Teeth = 24;
+    public static final int turretGearTeeth = 200;
 
     public static final double encoder1Bias = 0;
     public static final double encoder2Bias = 0;
 
-    public static final double gear1Ratio = gear1Teeth / turretGearTeeth;
-    public static final double gear2Ratio = gear2Teeth / turretGearTeeth;
+    public static final double gear1Ratio = (double) gear1Teeth / (double) turretGearTeeth;
+    public static final double gear2Ratio = (double) gear2Teeth / (double) turretGearTeeth;
 
-    public static final double gear1ToothAngle = 360 / gear1Teeth;
-    public static final double gear2ToothAngle = 360 / gear2Teeth;
+    public static final double gear1ToothAngle = (double) 360 / (double) gear1Teeth;
+    public static final double gear2ToothAngle = (double) 360 / (double) gear2Teeth;
     public static final double turretAnglePerHalfTooth1 = (gear1ToothAngle / 2) * gear1Ratio;
     public static final double turretAnglePerHalfTooth2 = (gear2ToothAngle / 2) * gear2Ratio;
 
     public static final double minDistance =
         1.5 * Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2) / 360;
 
-    public static final double fullTravel = gear1Teeth * gear2Teeth / turretGearTeeth;
-    public static final double halfTravel = fullTravel / 2;
+    public static final double fullTravel =
+        (double) gear1Teeth * (double) gear2Teeth / (double) turretGearTeeth;
+    public static final double halfTravel = fullTravel / 2.0;
   }
 
   public final class launcherConstants {
@@ -194,16 +192,16 @@ public final class Constants {
 
     public static final double minrange = -(3 * Math.PI) / 4;
     public static final double maxrange = (3 * Math.PI) / 4;
-    public static final double maxV = 3;
+    public static final double maxV = 4;
     public static final double maxA = 6;
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 3;
-    public static double turnI = 0.05;
+    public static double turnP = 2;
+    public static double turnI = 0.0; // 5;
     public static double turnD = 0;
 
-    public static double turnVelocityFFGain = maxV * 0.5;
+    public static double turnVelocityFFGain = maxV * 2;
 
     public static final double SpeedStep /*for the trim */ = 0.005;
     public static final double AimTrim = 2; // in degrees
