@@ -188,20 +188,20 @@ public final class Constants {
     public static final double TurnPositionConversionFactor =
         2 * Math.PI / 20 / 2.5088 * 0.96; // 200 : 20 gear ratio, measure in radians
     public static final double TurnVelocityConversionFactor =
-        TurnPositionConversionFactor * 60; // Radians per second
+        TurnPositionConversionFactor * 60 * 0.00025; // Radians per second
 
     public static final double minrange = -(3 * Math.PI) / 4;
     public static final double maxrange = (3 * Math.PI) / 4;
-    public static final double maxV = 4;
-    public static final double maxA = 6;
+    public static final double maxV = 5;
+    public static final double maxA = 10;
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 2;
-    public static double turnI = 0.0; // 5;
-    public static double turnD = 0;
+    public static double turnP = 3;
+    public static double turnI = 0.3;
+    public static double turnD = 0.01;
 
-    public static double turnVelocityFFGain = maxV * 2;
+    public static double turnVelocityFFGain = maxV * 0.5;
 
     public static final double SpeedStep /*for the trim */ = 0.005;
     public static final double AimTrim = 2; // in degrees
