@@ -97,7 +97,7 @@ public class Launcher extends SubsystemBase {
   public Command testTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(2.0);
+              io.testTurn(4.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -105,7 +105,7 @@ public class Launcher extends SubsystemBase {
   public Command invertTestTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(-2.0);
+              io.testTurn(-4.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
