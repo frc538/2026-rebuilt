@@ -83,7 +83,11 @@ public final class Constants {
     public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = false;
     public static final boolean isPotentiometerBroken = true;
+<<<<<<< UsbCamera-
+    public static final boolean USBCamEnabled = true;
+=======
     public static final boolean useChineseRemainderTheorem = true;
+>>>>>>> main
   }
 
   public static class navigationConstants {
