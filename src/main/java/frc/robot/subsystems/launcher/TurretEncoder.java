@@ -45,7 +45,7 @@ public class TurretEncoder {
           Logger.recordOutput("Turret/24t Rotations", j);
           Logger.recordOutput("Turret/A1", a1);
           Logger.recordOutput("Turret/A2", a2);
-          Logger.recordOutput("Turret/Abs of A1 - A2", Math.abs(a1 - a2));
+          // Logger.recordOutput("Turret/Abs of A1 - A2", Math.abs(a1 - a2));
           return turretAngle;
         }
       }

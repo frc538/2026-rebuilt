@@ -76,7 +76,7 @@ public final class Constants {
   }
 
   public static class Features {
-    public static final boolean ClimberEnabled = true;
+    public static final boolean ClimberEnabled = false;
     public static final boolean DriveEnabled = true;
     public static final boolean HopperEnabled = true;
     public static final boolean LauncherEnabled = true;
@@ -150,7 +150,7 @@ public final class Constants {
     public static final double turretAnglePerHalfTooth2 = (gear2ToothAngle / 2) * gear2Ratio;
 
     public static final double minDistance =
-        Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2) / 360;
+        1.5 * Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2) / 360;
 
     public static final double fullTravel = gear1Teeth * gear2Teeth / turretGearTeeth;
     public static final double halfTravel = fullTravel / 2;

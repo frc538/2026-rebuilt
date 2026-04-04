@@ -97,7 +97,7 @@ public class Launcher extends SubsystemBase {
   public Command testTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(4.0);
+              io.testTurn(3.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -105,7 +105,7 @@ public class Launcher extends SubsystemBase {
   public Command invertTestTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(-4.0);
+              io.testTurn(-3.0);
             })
         .finallyDo(() -> io.testTurn(0));
   }
@@ -311,7 +311,7 @@ public class Launcher extends SubsystemBase {
   }
 
   private void handleDisabled() {
-    if (DriverStation.isDisabled() == true) {
+    if (DriverStation.isDisabled() == true || DriverStation.isTest()) {
       if (Constants.Features.isPotentiometerBroken == false) {
         mDesiredState.position = inputs.turnPotentiometer;
         targetAzimuth = inputs.turnPotentiometer;
