@@ -3,6 +3,7 @@ package frc.robot.subsystems.launcher;
 import static edu.wpi.first.units.Units.Amps;
 import static frc.robot.Constants.launcherConstants.TurnPositionConversionFactor;
 import static frc.robot.Constants.launcherConstants.TurnVelocityConversionFactor;
+import static frc.robot.Constants.launcherConstants.ks;
 import static frc.robot.Constants.launcherConstants.turnD;
 import static frc.robot.Constants.launcherConstants.turnI;
 import static frc.robot.Constants.launcherConstants.turnP;
@@ -29,6 +30,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -47,6 +49,8 @@ public class LauncherIOHardware implements LauncherIO {
   private final Slot0Configs launcherSlot0 = new Slot0Configs();
   private final SparkClosedLoopController turnController;
   private final SparkRelativeEncoder turnEncoder;
+  private SimpleMotorFeedforward turretFF;
+
   AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(3, 2 * Math.PI, 0);
 
   public LauncherIOHardware() {
@@ -91,6 +95,7 @@ public class LauncherIOHardware implements LauncherIO {
     turnController = turnMotor.getClosedLoopController();
 
     turnEncoder = (SparkRelativeEncoder) turnMotor.getEncoder();
+    turretFF = new SimpleMotorFeedforward(ks, launcherKV);
   }
 
   @Override
@@ -151,8 +156,9 @@ public class LauncherIOHardware implements LauncherIO {
 
   @Override
   public void pointAt(double radians, double radiansPerSec) {
-    double FFTurret = radiansPerSec * Constants.launcherConstants.turnVelocityFFGain;
+    double FFTurret = turretFF.calculate(radiansPerSec);
     Logger.recordOutput("Launcher/FFTurret", FFTurret);
+
     var result =
         turnController.setSetpoint(radians, ControlType.kPosition, ClosedLoopSlot.kSlot0, FFTurret);
     Logger.recordOutput("Launcher/turnControlResult", result);

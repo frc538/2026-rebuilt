@@ -48,6 +48,7 @@ public class Launcher extends SubsystemBase {
 
   private double currentAimTrim = 0;
   private double currentSpeedTrim = 0;
+  public double turnTestPower = 0;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -97,17 +98,27 @@ public class Launcher extends SubsystemBase {
   public Command testTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(6.0);
+              turnTestPower = turnTestPower + 0.002;
+              io.testTurn(turnTestPower);
             })
-        .finallyDo(() -> io.testTurn(0));
+        .finallyDo(
+            () -> {
+              io.testTurn(0);
+              turnTestPower = 0;
+            });
   }
 
   public Command invertTestTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(-6.0);
+              turnTestPower = turnTestPower - 0.002;
+              io.testTurn(turnTestPower);
             })
-        .finallyDo(() -> io.testTurn(0));
+        .finallyDo(
+            () -> {
+              io.testTurn(0);
+              turnTestPower = 0;
+            });
   }
 
   public Command simFeed() {
@@ -371,6 +382,7 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/testRPSCmd", testRadPerS);
     Logger.recordOutput("Launcher/currentSpeedTrim", currentSpeedTrim);
     Logger.recordOutput("Launcher/currentAimTrim", currentAimTrim);
+    Logger.recordOutput("Launcher/TurnPower", turnTestPower);
   }
 
   @FunctionalInterface

@@ -81,7 +81,7 @@ public final class Constants {
     public static final boolean HopperEnabled = true;
     public static final boolean LauncherEnabled = true;
     public static final boolean VisionEnabled = true;
-    public static final boolean IntakeEnabled = true;
+    public static final boolean IntakeEnabled = false;
     public static final boolean isPotentiometerBroken = true;
     public static final boolean USBCamEnabled = false;
     public static final boolean useChineseRemainderTheorem = true;
@@ -202,6 +202,7 @@ public final class Constants {
     public static double turnD = 0.0;
 
     public static double turnVelocityFFGain = maxV * 0.135;
+    public static double ks = 1.06; /*static gain */
 
     public static final double SpeedStep /*for the trim */ = 0.005;
     public static final double AimTrim = 2; // in degrees

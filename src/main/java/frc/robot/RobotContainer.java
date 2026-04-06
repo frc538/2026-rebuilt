@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.Intake2;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOSim;
@@ -64,7 +63,7 @@ public class RobotContainer {
   private final Navigation2 nav2;
   private final Vision vision;
   private final Hopper hopper;
-  //private final Intake intake;
+  // private final Intake intake;
   private final ClimberSubsystem climberSubsystem;
   private final Intake2 intake2;
 
