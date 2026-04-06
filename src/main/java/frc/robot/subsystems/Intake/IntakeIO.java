@@ -42,6 +42,8 @@ public interface IntakeIO {
   /** Extends/retracts intake to a position in radians */
   public default void setIntakePosition(double radians, double CurrentRads) {}
 
+  public default void armRunVolt(double voltage) {}
+
   /** Test Command for the ARM */
   public default void testArmRun(double speed) {}
 

@@ -97,6 +97,11 @@ public class IntakeIOSpark implements IntakeIO {
   }
 
   @Override
+  public void armRunVolt(double voltage) {
+    movementMotor.setVoltage(voltage);
+  }
+
+  @Override
   public void setIntakePosition(double radians, double CurrentRads) {
     double effectiveKg = Constants.Intake.IntakeKg + m_kgTrim;
     double effectiveAlpha = CurrentRads - Constants.Intake.alpha + m_alphaTrim;

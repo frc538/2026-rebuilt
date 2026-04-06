@@ -207,6 +207,11 @@ public final class Constants {
     public static final double AimTrim = 2; // in degrees
   }
 
+  public final class Intake2 {
+    public static final double upVoltage = 1; // placeholder value in volts
+    public static final double downVoltage = -0.5; // placeholder value in volts
+  }
+
   public final class Intake {
 
     public static final double UprightPos =
