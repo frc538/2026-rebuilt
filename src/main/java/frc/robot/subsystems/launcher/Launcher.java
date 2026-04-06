@@ -140,7 +140,7 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               if (autoRotate == false) {
-                io.turretVoltage(-1.0);
+                io.turretVoltage(-0.5);
               }
             })
         .finallyDo(() -> io.turretVoltage(0));
@@ -150,7 +150,7 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               if (autoRotate == false) {
-                io.turretVoltage(1.0);
+                io.turretVoltage(0.5);
               }
             })
         .finallyDo(() -> io.turretVoltage(0));

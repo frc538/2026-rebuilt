@@ -382,6 +382,11 @@ public class RobotContainer {
     pilotController.y().onTrue(intake.HumpAvoid());
 
     pilotController.x().and(this::isTest).onTrue(launcher.calibrateCRTEncoders());
+
+    pilotController.povUp().and(this::isTest).whileTrue(intake.trimKGUp());
+    pilotController.povDown().and(this::isTest).whileTrue(intake.trimKGDown());
+    pilotController.povLeft().and(this::isTest).whileTrue(intake.trimAlphaUp());
+    pilotController.povRight().and(this::isTest).whileTrue(intake.trimAlphaDown());
   }
 
   /**

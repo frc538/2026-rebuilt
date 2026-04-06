@@ -60,16 +60,16 @@ public final class Constants {
   public static class CurrentLimit {
 
     // Intake
-    public static final int rotatoLimit = 10;
-    public static final int armLimit = 10;
+    public static final int rotatoLimit = 20;
+    public static final int armLimit = 50;
 
     // Launcher
     public static final int turretLimit = 120;
-    public static final int turnLimit = 10;
+    public static final int turnLimit = 75;
 
     // Hopper
-    public static final int spindexLimit = 10;
-    public static final int feedLimit = 10;
+    public static final int spindexLimit = 20;
+    public static final int feedLimit = 20;
 
     // Climber
     public static final int climberLimit = 10;
@@ -81,7 +81,7 @@ public final class Constants {
     public static final boolean HopperEnabled = true;
     public static final boolean LauncherEnabled = true;
     public static final boolean VisionEnabled = true;
-    public static final boolean IntakeEnabled = false;
+    public static final boolean IntakeEnabled = true;
     public static final boolean isPotentiometerBroken = true;
     public static final boolean USBCamEnabled = false;
     public static final boolean useChineseRemainderTheorem = true;
@@ -197,11 +197,11 @@ public final class Constants {
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 3;
-    public static double turnI = 0.3;
-    public static double turnD = 0.01;
+    public static double turnP = 0.05;
+    public static double turnI = 0.0;
+    public static double turnD = 0.0;
 
-    public static double turnVelocityFFGain = maxV * 0.5;
+    public static double turnVelocityFFGain = maxV * 0.135;
 
     public static final double SpeedStep /*for the trim */ = 0.005;
     public static final double AimTrim = 2; // in degrees
@@ -210,11 +210,11 @@ public final class Constants {
   public final class Intake {
 
     public static final double UprightPos =
-        Math.toRadians(-1); // Measured upright intake position at 1 degrees past 90
-    public static final double ReadyPos = 1.594898;
+        Math.toRadians(85.3); // Measured upright intake position at 1 degrees past 90
+    public static final double ReadyPos = Math.toRadians(0);
     public static final double HalfPos = Math.toRadians(50);
 
-    public static final double IntakeKg = -3.5;
+    public static final double IntakeKg = 0.63;
 
     public static final double IntakeSpeed = 0.1;
     public static final double MovementMotorVelocity = 1;
@@ -222,12 +222,12 @@ public final class Constants {
     public static final double RotatoPosConFac = 2 * Math.PI;
     public static final double RotatoVelConFac = Math.PI / 30;
 
-    public static final double ArmPosConFac = 2 * Math.PI / 9;
-    public static final double ArmVelConFac = ArmPosConFac / 60;
+    public static final double ArmPosConFac = 2 * Math.PI / 25;
+    public static final double ArmVelConFac = ArmPosConFac * 60;
 
-    public static final double ArmkP = 1.5;
-    public static final double ArmkI = 0.00;
-    public static final double ArmkD = 0.1;
+    public static final double ArmkP = 0.5;
+    public static final double ArmkI = 0.0;
+    public static final double ArmkD = 0.0;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
     public static final double RotatoRPM = .35;
@@ -238,7 +238,7 @@ public final class Constants {
     public static final double IntakeVelocityConversionFactor =
         Math.PI * 2 / 60; // radians per second
 
-    public static final double alpha = Math.toRadians(15); // angle of center of gravitas
+    public static final double alpha = Math.toRadians(-15); // angle of center of gravitas
 
     public static final int ExtensionCurrentLimit = 1;
     // public static final int IntakeCurrentLimit = 1;
