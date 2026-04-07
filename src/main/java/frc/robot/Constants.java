@@ -41,6 +41,9 @@ public final class Constants {
 
   public static class CanIds {
 
+    public static final int turretEncoder23t = 23;
+    public static final int turretEncoder24t = 24;
+
     public static final int ClimberMotorCANId = 13;
 
     public static final int FeedCanId = 4;
@@ -49,37 +52,37 @@ public final class Constants {
     public static final int launchMotorCanId = 37;
     public static final int turnMotorCanId = 62;
 
-    public static final int RightRotatoCanId = 1;
-    public static final int LeftRotatoCanId = 6;
+    public static final int RightRotatoCanId = 43;
     public static final int MovMotorCanId = 2;
   }
 
   public static class CurrentLimit {
 
     // Intake
-    public static final int rotatoLimit = 10;
-    public static final int armLimit = 10;
+    public static final int rotatoLimit = 50;
+    public static final int armLimit = 50;
 
     // Launcher
     public static final int turretLimit = 120;
-    public static final int turnLimit = 10;
+    public static final int turnLimit = 75;
 
     // Hopper
-    public static final int spindexLimit = 10;
-    public static final int feedLimit = 10;
+    public static final int spindexLimit = 50;
+    public static final int feedLimit = 30;
 
     // Climber
     public static final int climberLimit = 10;
   }
 
   public static class Features {
-    public static final boolean ClimberEnabled = true;
+    public static final boolean ClimberEnabled = false;
     public static final boolean DriveEnabled = true;
     public static final boolean HopperEnabled = true;
     public static final boolean LauncherEnabled = true;
     public static final boolean VisionEnabled = true;
     public static final boolean IntakeEnabled = true;
     public static final boolean isPotentiometerBroken = true;
+    public static final boolean USBCamEnabled = false;
     public static final boolean useChineseRemainderTheorem = true;
   }
 
@@ -131,26 +134,27 @@ public final class Constants {
   }
 
   public final class turretConstants {
-    public static final double gear1Teeth = 23;
-    public static final double gear2Teeth = 24;
-    public static final double turretGearTeeth = 200;
+    public static final int gear1Teeth = 23;
+    public static final int gear2Teeth = 24;
+    public static final int turretGearTeeth = 200;
 
     public static final double encoder1Bias = 0;
     public static final double encoder2Bias = 0;
 
-    public static final double gear1Ratio = gear1Teeth / turretGearTeeth;
-    public static final double gear2Ratio = gear2Teeth / turretGearTeeth;
+    public static final double gear1Ratio = (double) gear1Teeth / (double) turretGearTeeth;
+    public static final double gear2Ratio = (double) gear2Teeth / (double) turretGearTeeth;
 
-    public static final double gear1ToothAngle = 360 / gear1Teeth;
-    public static final double gear2ToothAngle = 360 / gear2Teeth;
+    public static final double gear1ToothAngle = (double) 360 / (double) gear1Teeth;
+    public static final double gear2ToothAngle = (double) 360 / (double) gear2Teeth;
     public static final double turretAnglePerHalfTooth1 = (gear1ToothAngle / 2) * gear1Ratio;
     public static final double turretAnglePerHalfTooth2 = (gear2ToothAngle / 2) * gear2Ratio;
 
     public static final double minDistance =
-        Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2);
+        1.5 * Math.min(turretAnglePerHalfTooth1, turretAnglePerHalfTooth2) / 360;
 
-    public static final int turretEncoder1 = 63;
-    public static final int turretEncoder2 = 64;
+    public static final double fullTravel =
+        (double) gear1Teeth * (double) gear2Teeth / (double) turretGearTeeth;
+    public static final double halfTravel = fullTravel / 2.0;
   }
 
   public final class launcherConstants {
@@ -183,33 +187,39 @@ public final class Constants {
     public static final double TurnPositionConversionFactor =
         2 * Math.PI / 20 / 2.5088 * 0.96; // 200 : 20 gear ratio, measure in radians
     public static final double TurnVelocityConversionFactor =
-        TurnPositionConversionFactor * 60; // Radians per second
+        TurnPositionConversionFactor * 60 * 0.00025; // Radians per second
 
     public static final double minrange = -(3 * Math.PI) / 4;
     public static final double maxrange = (3 * Math.PI) / 4;
-    public static final double maxV = 3;
-    public static final double maxA = 6;
+    public static final double maxV = 5; // 5;
+    public static final double maxA = 10; // 10;
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 3;
-    public static double turnI = 0.05;
-    public static double turnD = 0;
+    public static double turnP = 0.2;
+    public static double turnI = 0.0065;
+    public static double turnD = 0.0;
 
-    public static double turnVelocityFFGain = maxV * 0.5;
+    public static double turnVelocityFFGain = 0.45; // 0.675;
+    public static double ks = 1.06; /*static gain */
 
     public static final double SpeedStep /*for the trim */ = 0.005;
     public static final double AimTrim = 2; // in degrees
   }
 
+  public final class Intake2 {
+    public static final double upVoltage = -1.5; // placeholder value in volts
+    public static final double downVoltage = 0.5; // placeholder value in volts
+  }
+
   public final class Intake {
 
     public static final double UprightPos =
-        Math.toRadians(-1); // Measured upright intake position at 1 degrees past 90
-    public static final double ReadyPos = 1.594898;
+        Math.toRadians(85.3); // Measured upright intake position at 1 degrees past 90
+    public static final double ReadyPos = Math.toRadians(0);
     public static final double HalfPos = Math.toRadians(50);
 
-    public static final double IntakeKg = -3.5;
+    public static final double IntakeKg = 0.63;
 
     public static final double IntakeSpeed = 0.1;
     public static final double MovementMotorVelocity = 1;
@@ -217,12 +227,12 @@ public final class Constants {
     public static final double RotatoPosConFac = 2 * Math.PI;
     public static final double RotatoVelConFac = Math.PI / 30;
 
-    public static final double ArmPosConFac = 2 * Math.PI / 9;
-    public static final double ArmVelConFac = ArmPosConFac / 60;
+    public static final double ArmPosConFac = 2 * Math.PI / 25;
+    public static final double ArmVelConFac = ArmPosConFac * 60;
 
-    public static final double ArmkP = 1.5;
-    public static final double ArmkI = 0.00;
-    public static final double ArmkD = 0.1;
+    public static final double ArmkP = 0.5;
+    public static final double ArmkI = 0.0;
+    public static final double ArmkD = 0.0;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
     public static final double RotatoRPM = .35;
@@ -233,7 +243,7 @@ public final class Constants {
     public static final double IntakeVelocityConversionFactor =
         Math.PI * 2 / 60; // radians per second
 
-    public static final double alpha = Math.toRadians(15); // angle of center of gravitas
+    public static final double alpha = Math.toRadians(-15); // angle of center of gravitas
 
     public static final int ExtensionCurrentLimit = 1;
     // public static final int IntakeCurrentLimit = 1;

@@ -2,6 +2,7 @@ package frc.robot.subsystems.Intake;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,11 +40,15 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRPM);
     Logger.recordOutput("Intake/Sim/", inputs.MovementMotorRotation);
 
-    mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
+    if (DriverStation.isDisabled()) {
+      io.disable();
+    } else {
+      mCurrentState = mTrapezoidProfile.calculate(0.02, mCurrentState, mDesiredState);
+    }
     io.setIntakePosition(mCurrentState.position, inputs.positionRad);
     Logger.recordOutput("Intake/PosProfile", mCurrentState.position);
 
-    if (intakerToggle == true || inputs.positionRad > Constants.Intake.RotatoThresholdRAD) {
+    if (intakerToggle == true || inputs.positionRad < Constants.Intake.RotatoThresholdRAD) {
       io.runRotato(Constants.Intake.RotatoRPM);
     } else {
       io.runRotato(0);
@@ -77,14 +82,14 @@ public class Intake extends SubsystemBase {
 
   public Command testIntakeUp() {
     return run(() -> {
-          io.testArmRun(1 * 0.2);
+          io.testArmRun(1 * -0.2);
         })
         .finallyDo(() -> io.testArmRun(0));
   }
 
   public Command testIntakeDown() {
     return run(() -> {
-          io.testArmRun(0.2 * -1);
+          io.testArmRun(0.2 * 1);
         })
         .finallyDo(() -> io.testArmRun(0));
   }
@@ -109,5 +114,40 @@ public class Intake extends SubsystemBase {
   public void SetReference(double position) {
     mDesiredState = new TrapezoidProfile.State(position, 0);
     Logger.recordOutput("Intake/Commanded Position", position);
+  }
+
+  private double m_kgTrim = 0;
+  private double m_alphaTrim = 0;
+
+  public Command trimKGDown() {
+    return Commands.run(
+        () -> {
+          m_kgTrim += 0.01;
+          io.setTrim(m_kgTrim, m_alphaTrim);
+        });
+  }
+
+  public Command trimKGUp() {
+    return Commands.run(
+        () -> {
+          m_kgTrim += -0.01;
+          io.setTrim(m_kgTrim, m_alphaTrim);
+        });
+  }
+
+  public Command trimAlphaDown() {
+    return Commands.run(
+        () -> {
+          m_alphaTrim += 0.01;
+          io.setTrim(m_kgTrim, m_alphaTrim);
+        });
+  }
+
+  public Command trimAlphaUp() {
+    return Commands.run(
+        () -> {
+          m_alphaTrim += -0.01;
+          io.setTrim(m_kgTrim, m_alphaTrim);
+        });
   }
 }
