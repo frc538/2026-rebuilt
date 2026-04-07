@@ -208,7 +208,7 @@ public final class Constants {
   }
 
   public final class Intake2 {
-    public static final double upVoltage = -1.5; // placeholder value in volts
+    public static final double upVoltage = -2; // placeholder value in volts
     public static final double downVoltage = 0.5; // placeholder value in volts
   }
 
@@ -235,7 +235,7 @@ public final class Constants {
     public static final double ArmkD = 0.0;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
-    public static final double RotatoRPM = .35;
+    public static final double RotatoRPM = .80;
 
     public static final double testRotatoRPM = .2;
 
