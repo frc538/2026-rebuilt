@@ -131,6 +131,8 @@ public class LauncherIOHardware implements LauncherIO {
     inputs.turnEncoderPosition = turnEncoder.getPosition();
 
     inputs.turnPotentiometer = m_potentiometer.get();
+
+    inputs.iAccum = turnController.getIAccum();
   }
 
   @Override
