@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -309,6 +310,14 @@ public class Launcher extends SubsystemBase {
                 targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
 
         mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
+
+        double targetCurrentState = mCurrentState.position;
+
+        double targetError = Units.rotationsToRadians(targetCurrentState);
+
+        if (mCurrentState.position > 0) {
+          targetCurrentState = targetCurrentState - targetError;
+        }
 
         io.pointAt(mCurrentState.position, mCurrentState.velocity);
       }
