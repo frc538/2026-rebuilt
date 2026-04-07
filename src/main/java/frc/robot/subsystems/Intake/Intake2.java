@@ -12,6 +12,8 @@ public class Intake2 extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   private boolean intakerToggle = true;
+  private boolean intBounceTrigger = false;
+  private int i;
 
   //   public TrapezoidProfile.State mCurrentState =
   //       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
@@ -23,6 +25,7 @@ public class Intake2 extends SubsystemBase {
 
   public Intake2(IntakeIO io) {
     this.io = io;
+    i = 0;
     // mConstraints = new Constraints(Constants.Intake.MaxV, Constants.Intake.MaxA);
     // mTrapezoidProfile = new TrapezoidProfile(mConstraints);
   }
@@ -50,6 +53,22 @@ public class Intake2 extends SubsystemBase {
         .finallyDo(() -> io.armRunVolt(0));
   }
 
+  public Command intakeBounce() {
+
+    i = 0;
+    intBounceTrigger = true;
+
+    return run(() -> {
+          i++;
+          if (intBounceTrigger) {
+            io.armRunVolt(Constants.Intake2.upVoltage + 0.5);
+          } else {
+            io.armRunVolt(Constants.Intake2.downVoltage);
+          }
+        })
+        .finallyDo(() -> io.armRunVolt(0));
+  }
+
   public Command intakeDownVoltage() {
     return run(() -> {
           io.armRunVolt(Constants.Intake2.downVoltage);
@@ -60,6 +79,15 @@ public class Intake2 extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+
+    if (i >= 20 && intBounceTrigger == true) {
+      i = 0;
+      intBounceTrigger = false;
+    }
+    if (i >= 15 && intBounceTrigger == false) {
+      i = 0;
+      intBounceTrigger = true;
+    }
 
     if (intakerToggle == true) {
       io.runRotato(Constants.Intake.RotatoRPM);
