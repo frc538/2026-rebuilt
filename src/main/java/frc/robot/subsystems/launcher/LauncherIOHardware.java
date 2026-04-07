@@ -7,6 +7,7 @@ import static frc.robot.Constants.launcherConstants.ks;
 import static frc.robot.Constants.launcherConstants.turnD;
 import static frc.robot.Constants.launcherConstants.turnI;
 import static frc.robot.Constants.launcherConstants.turnP;
+import static frc.robot.Constants.launcherConstants.turnVelocityFFGain;
 import static frc.robot.Constants.launcherConstants.turretCalibrationOffset;
 
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
@@ -95,7 +96,7 @@ public class LauncherIOHardware implements LauncherIO {
     turnController = turnMotor.getClosedLoopController();
 
     turnEncoder = (SparkRelativeEncoder) turnMotor.getEncoder();
-    turretFF = new SimpleMotorFeedforward(ks, launcherKV);
+    turretFF = new SimpleMotorFeedforward(ks, turnVelocityFFGain);
   }
 
   @Override

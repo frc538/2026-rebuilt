@@ -315,7 +315,7 @@ public class RobotContainer {
         .onTrue(
             launcher.testTurretPosition(
                 () -> {
-                  return 5.5;
+                  return 3.15;
                 }));
     navController
         .x()
@@ -323,7 +323,7 @@ public class RobotContainer {
         .onTrue(
             launcher.testTurretPosition(
                 () -> {
-                  return 2;
+                  return 4;
                 }));
 
     // Reset gyro to 0° when right stick is pressed

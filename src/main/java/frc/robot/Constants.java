@@ -52,8 +52,7 @@ public final class Constants {
     public static final int launchMotorCanId = 37;
     public static final int turnMotorCanId = 62;
 
-    public static final int RightRotatoCanId = 1;
-    public static final int LeftRotatoCanId = 6;
+    public static final int RightRotatoCanId = 43;
     public static final int MovMotorCanId = 2;
   }
 
@@ -81,7 +80,7 @@ public final class Constants {
     public static final boolean HopperEnabled = true;
     public static final boolean LauncherEnabled = true;
     public static final boolean VisionEnabled = true;
-    public static final boolean IntakeEnabled = false;
+    public static final boolean IntakeEnabled = true;
     public static final boolean isPotentiometerBroken = true;
     public static final boolean USBCamEnabled = false;
     public static final boolean useChineseRemainderTheorem = true;
@@ -192,16 +191,16 @@ public final class Constants {
 
     public static final double minrange = -(3 * Math.PI) / 4;
     public static final double maxrange = (3 * Math.PI) / 4;
-    public static final double maxV = 5;
-    public static final double maxA = 10;
+    public static final double maxV = 5; // 5;
+    public static final double maxA = 10; // 10;
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 0.05;
-    public static double turnI = 0.0;
+    public static double turnP = 0.5;
+    public static double turnI = 0.08;
     public static double turnD = 0.0;
 
-    public static double turnVelocityFFGain = maxV * 0.135;
+    public static double turnVelocityFFGain = 0.45; // 0.675;
     public static double ks = 1.06; /*static gain */
 
     public static final double SpeedStep /*for the trim */ = 0.005;
@@ -209,8 +208,8 @@ public final class Constants {
   }
 
   public final class Intake2 {
-    public static final double upVoltage = 1; // placeholder value in volts
-    public static final double downVoltage = -0.5; // placeholder value in volts
+    public static final double upVoltage = -1; // placeholder value in volts
+    public static final double downVoltage = 0.5; // placeholder value in volts
   }
 
   public final class Intake {

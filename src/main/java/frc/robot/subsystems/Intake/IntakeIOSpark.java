@@ -20,7 +20,7 @@ public class IntakeIOSpark implements IntakeIO {
   private final SparkMax movementMotor =
       new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
   private final SparkFlex Rightrotato =
-      new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
+      new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
   // private final SparkFlex Leftrotato =
   //     new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
 
