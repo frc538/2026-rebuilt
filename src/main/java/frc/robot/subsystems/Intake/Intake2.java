@@ -11,7 +11,7 @@ public class Intake2 extends SubsystemBase {
 
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  private boolean intakerToggle = false;
+  private boolean intakerToggle = true;
 
   //   public TrapezoidProfile.State mCurrentState =
   //       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
@@ -61,7 +61,7 @@ public class Intake2 extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
 
-    if (intakerToggle == true || inputs.positionRad < Constants.Intake.RotatoThresholdRAD) {
+    if (intakerToggle == true) {
       io.runRotato(Constants.Intake.RotatoRPM);
     } else {
       io.runRotato(0);

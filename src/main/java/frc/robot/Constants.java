@@ -67,8 +67,8 @@ public final class Constants {
     public static final int turnLimit = 75;
 
     // Hopper
-    public static final int spindexLimit = 20;
-    public static final int feedLimit = 20;
+    public static final int spindexLimit = 50;
+    public static final int feedLimit = 30;
 
     // Climber
     public static final int climberLimit = 10;
@@ -196,8 +196,8 @@ public final class Constants {
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 0.125;
-    public static double turnI = 0.0;
+    public static double turnP = 0.2;
+    public static double turnI = 0.0065;
     public static double turnD = 0.0;
 
     public static double turnVelocityFFGain = 0.45; // 0.675;
@@ -208,7 +208,7 @@ public final class Constants {
   }
 
   public final class Intake2 {
-    public static final double upVoltage = -1; // placeholder value in volts
+    public static final double upVoltage = -1.5; // placeholder value in volts
     public static final double downVoltage = 0.5; // placeholder value in volts
   }
 
