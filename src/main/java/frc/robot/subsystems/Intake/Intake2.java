@@ -13,6 +13,7 @@ public class Intake2 extends SubsystemBase {
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   private boolean intakerToggle = true;
   private boolean intBounceTrigger = false;
+  private boolean canBounce = false;
   private int i;
 
   //   public TrapezoidProfile.State mCurrentState =
@@ -48,9 +49,14 @@ public class Intake2 extends SubsystemBase {
 
   public Command intakeUpVoltage() {
     return run(() -> {
+          canBounce = false;
           io.armRunVolt(Constants.Intake2.upVoltage);
         })
-        .finallyDo(() -> io.armRunVolt(0));
+        .finallyDo(
+            () -> {
+              io.armRunVolt(0);
+              canBounce = true;
+            });
   }
 
   public Command intakeBounce() {
@@ -60,20 +66,33 @@ public class Intake2 extends SubsystemBase {
 
     return run(() -> {
           i++;
-          if (intBounceTrigger) {
-            io.armRunVolt(Constants.Intake2.upVoltage + 0.5);
-          } else {
-            io.armRunVolt(Constants.Intake2.downVoltage);
+          if (canBounce) {
+            if (intBounceTrigger) {
+              io.armRunVolt(Constants.Intake2.upVoltage + 0.5);
+            } else {
+              io.armRunVolt(Constants.Intake2.downVoltage);
+            }
           }
         })
-        .finallyDo(() -> io.armRunVolt(0));
+        .finallyDo(
+            () -> {
+              if (canBounce) {
+                io.armRunVolt(0);
+              }
+              ;
+            });
   }
 
   public Command intakeDownVoltage() {
     return run(() -> {
+          canBounce = false;
           io.armRunVolt(Constants.Intake2.downVoltage);
         })
-        .finallyDo(() -> io.armRunVolt(0));
+        .finallyDo(
+            () -> {
+              io.armRunVolt(0);
+              canBounce = true;
+            });
   }
 
   @Override
