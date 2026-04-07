@@ -197,7 +197,7 @@ public final class Constants {
     public static double allowedClosedLoopError = Math.PI / 6;
 
     public static double turnP = 0.2;
-    public static double turnI = 0.0065;
+    public static double turnI = 0.0055;
     public static double turnD = 0.0;
 
     public static double turnVelocityFFGain = 0.45; // 0.675;
