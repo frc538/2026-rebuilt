@@ -48,6 +48,7 @@ public class Launcher extends SubsystemBase {
 
   private double currentAimTrim = 0;
   private double currentSpeedTrim = 0;
+  public double turnTestPower = 0;
 
   LauncherIO io;
   LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -97,17 +98,27 @@ public class Launcher extends SubsystemBase {
   public Command testTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(4.0);
+              turnTestPower = turnTestPower + 0.002;
+              io.testTurn(turnTestPower);
             })
-        .finallyDo(() -> io.testTurn(0));
+        .finallyDo(
+            () -> {
+              io.testTurn(0);
+              turnTestPower = 0;
+            });
   }
 
   public Command invertTestTurn() {
     return Commands.run(
             () -> {
-              io.testTurn(-4.0);
+              turnTestPower = turnTestPower - 0.002;
+              io.testTurn(turnTestPower);
             })
-        .finallyDo(() -> io.testTurn(0));
+        .finallyDo(
+            () -> {
+              io.testTurn(0);
+              turnTestPower = 0;
+            });
   }
 
   public Command simFeed() {
@@ -139,21 +150,17 @@ public class Launcher extends SubsystemBase {
   public Command testTurretRotateClockwise() {
     return Commands.run(
             () -> {
-              if (autoRotate == false) {
-                io.turretVoltage(-1.0);
-              }
+              io.testTurn(-2);
             })
-        .finallyDo(() -> io.turretVoltage(0));
+        .finallyDo(() -> io.testTurn(0));
   }
 
   public Command testTurretRotateCounterclockwise() {
     return Commands.run(
             () -> {
-              if (autoRotate == false) {
-                io.turretVoltage(1.0);
-              }
+              io.testTurn(2);
             })
-        .finallyDo(() -> io.turretVoltage(0));
+        .finallyDo(() -> io.testTurn(0));
   }
 
   public Command testTurretRotateToggleAuto() {
@@ -296,13 +303,13 @@ public class Launcher extends SubsystemBase {
 
   private void setAz() {
     if (stopTurret == false) {
-      mDesiredState.position =
-          MathUtil.clamp(
-              targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
-
-      mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
-
       if (!DriverStation.isTest() || autoRotate) {
+        mDesiredState.position =
+            MathUtil.clamp(
+                targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
+
+        mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
+
         io.pointAt(mCurrentState.position, mCurrentState.velocity);
       }
     } else {
@@ -311,7 +318,7 @@ public class Launcher extends SubsystemBase {
   }
 
   private void handleDisabled() {
-    if (DriverStation.isDisabled() == true) {
+    if (DriverStation.isDisabled() == true || DriverStation.isTest()) {
       if (Constants.Features.isPotentiometerBroken == false) {
         mDesiredState.position = inputs.turnPotentiometer;
         targetAzimuth = inputs.turnPotentiometer;
@@ -319,10 +326,14 @@ public class Launcher extends SubsystemBase {
         io.TurretCalibrate(inputs.turnPotentiometer);
       } else if (Constants.Features.useChineseRemainderTheorem == true) {
         double position = turretEncoder.read();
-        mDesiredState.position = position;
-        targetAzimuth = position;
-        mCurrentState.position = position;
-        io.TurretCalibrate(position);
+        if (DriverStation.isDisabled()) {
+          mDesiredState.position = position;
+          mDesiredState.velocity = 0;
+          targetAzimuth = position;
+          mCurrentState.position = position;
+          mCurrentState.velocity = 0;
+          io.TurretCalibrate(position);
+        }
       }
       io.TurretDisable();
     }
@@ -367,6 +378,7 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/testRPSCmd", testRadPerS);
     Logger.recordOutput("Launcher/currentSpeedTrim", currentSpeedTrim);
     Logger.recordOutput("Launcher/currentAimTrim", currentAimTrim);
+    Logger.recordOutput("Launcher/TurnPower", turnTestPower);
   }
 
   @FunctionalInterface

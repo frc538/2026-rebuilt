@@ -11,6 +11,7 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -22,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.Intake2;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Intake.IntakeIOSpark;
@@ -62,8 +63,9 @@ public class RobotContainer {
   private final Navigation2 nav2;
   private final Vision vision;
   private final Hopper hopper;
-  private final Intake intake;
+  // private final Intake intake;
   private final ClimberSubsystem climberSubsystem;
+  private final Intake2 intake2;
 
   private final Launcher launcher;
 
@@ -76,6 +78,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    if (Constants.Features.USBCamEnabled) {
+      CameraServer.startAutomaticCapture();
+    }
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -136,9 +141,9 @@ public class RobotContainer {
         // new VisionIOLimelight(camera3Name, drive::getRotation));
 
         if (Constants.Features.IntakeEnabled) {
-          intake = new Intake(new IntakeIOSpark() {});
+          intake2 = new Intake2(new IntakeIOSpark() {});
         } else {
-          intake = new Intake(new IntakeIO() {});
+          intake2 = new Intake2(new IntakeIO() {});
         }
         if (Constants.Features.ClimberEnabled) {
           climberSubsystem =
@@ -169,7 +174,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         // new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
         // new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
-        intake = new Intake(new IntakeIOSim(Constants.CanIds.MovMotorCanId) {});
+        intake2 = new Intake2(new IntakeIOSim(Constants.CanIds.MovMotorCanId) {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
 
@@ -194,13 +199,13 @@ public class RobotContainer {
                 new VisionIO() {},
                 new VisionIO() {},
                 new VisionIO() {});
-        intake = new Intake(new IntakeIO() {});
+        intake2 = new Intake2(new IntakeIO() {});
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
     new NamedCommands().registerCommand("shoot toggle", launcher.toggleShoot());
-    new NamedCommands().registerCommand("intake open", intake.forceIntake());
-    new NamedCommands().registerCommand("intake close", intake.forceIntake());
+    new NamedCommands().registerCommand("intake open", intake2.forceIntake());
+    new NamedCommands().registerCommand("intake close", intake2.forceIntake());
     new NamedCommands().registerCommand("climb", climberSubsystem.climberExtend());
 
     nav2 = new Navigation2(drive);
@@ -301,8 +306,11 @@ public class RobotContainer {
     navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
     navController.rightStick().and(this::isTest).onTrue(launcher.testTurretRotateToggleAuto());
 
-    navController.b().and(this::isTest).whileTrue(launcher.testTurn());
-    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+    // navController.b().and(this::isTest).whileTrue(launcher.testTurn());
+    // navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+
+    navController.b().and(this::isTest).whileTrue(launcher.testTurretRotateClockwise());
+    navController.y().and(this::isTest).whileTrue(launcher.testTurretRotateCounterclockwise());
 
     navController
         .a()
@@ -310,7 +318,7 @@ public class RobotContainer {
         .onTrue(
             launcher.testTurretPosition(
                 () -> {
-                  return 5;
+                  return 3.15;
                 }));
     navController
         .x()
@@ -318,7 +326,7 @@ public class RobotContainer {
         .onTrue(
             launcher.testTurretPosition(
                 () -> {
-                  return 2;
+                  return 4;
                 }));
 
     // Reset gyro to 0° when right stick is pressed
@@ -373,11 +381,20 @@ public class RobotContainer {
     //////////////////////////////////////////////////////////////
 
     // Test and teleop
-    pilotController.a().onTrue(intake.togglePosition());
-    pilotController.b().onTrue(intake.forceIntake());
-    pilotController.y().onTrue(intake.HumpAvoid());
+    // pilotController.a().onTrue(intake.togglePosition());
+    // pilotController.b().onTrue(intake.forceIntake());
+    // pilotController.y().onTrue(intake.HumpAvoid());
+
+    pilotController.b().onTrue(intake2.forceIntake());
+    pilotController.a().whileTrue(intake2.intakeDownVoltage());
+    pilotController.y().whileTrue(intake2.intakeUpVoltage());
 
     pilotController.x().and(this::isTest).onTrue(launcher.calibrateCRTEncoders());
+
+    // pilotController.povUp().and(this::isTest).whileTrue(intake.trimKGUp());
+    // pilotController.povDown().and(this::isTest).whileTrue(intake.trimKGDown());
+    // pilotController.povLeft().and(this::isTest).whileTrue(intake.trimAlphaUp());
+    // pilotController.povRight().and(this::isTest).whileTrue(intake.trimAlphaDown());
   }
 
   /**

@@ -14,6 +14,8 @@ public class TurretEncoder {
   MagnetSensorConfigs can1MagnetSensorConfigs;
   MagnetSensorConfigs can2MagnetSensorConfigs;
 
+  private double thePosition = 0;
+
   public TurretEncoder() {
     can1 = new CANcoder(Constants.CanIds.turretEncoder23t);
     can2 = new CANcoder(Constants.CanIds.turretEncoder24t);
@@ -29,29 +31,40 @@ public class TurretEncoder {
     double encoder1Rotations = can1.getAbsolutePosition().getValueAsDouble();
     double encoder2Rotations = can2.getAbsolutePosition().getValueAsDouble();
 
+    double minErr = 1000.0;
+    int minErrN1 = 0;
+    int minErrN2 = 0;
+
     Logger.recordOutput("Turret/encoder 1 rotations", encoder1Rotations);
     Logger.recordOutput("Turret/encoder 2 rotations", encoder2Rotations);
 
     for (int i = 0; i < Constants.turretConstants.gear2Teeth; i++) {
-      double a1 = (i + encoder1Rotations) * Constants.turretConstants.gear1Ratio;
+      double a1 = ((double) i + encoder1Rotations) * Constants.turretConstants.gear1Ratio;
       for (int j = 0; j < Constants.turretConstants.gear1Teeth; j++) {
-        double a2 = (i + encoder2Rotations) * Constants.turretConstants.gear2Ratio;
-        if (Math.abs(a1 - a2) < Constants.turretConstants.minDistance) {
-          double turretAngle = (a1 + a2) / 2 - Constants.turretConstants.halfTravel;
+        double a2 = ((double) j + encoder2Rotations) * Constants.turretConstants.gear2Ratio;
+        double err = Math.abs(a1 - a2);
+        if (err < minErr) {
+          minErr = err;
+          minErrN1 = i;
+          minErrN2 = j;
+          double turretAngle = ((a1 + a2) / 2) - Constants.turretConstants.halfTravel;
           turretAngle = (turretAngle * (Math.PI * 2)) + Math.PI;
-          Logger.recordOutput("Turret/position", turretAngle);
-          Logger.recordOutput("Turret/encoder read valid", true);
-          Logger.recordOutput("Turret/23t Rotations", i);
-          Logger.recordOutput("Turret/24t Rotations", j);
-          Logger.recordOutput("Turret/A1", a1);
-          Logger.recordOutput("Turret/A2", a2);
-          Logger.recordOutput("Turret/Abs of A1 - A2", Math.abs(a1 - a2));
-          return turretAngle;
+
+          thePosition = turretAngle;
+          // Logger.recordOutput("Turret/Abs of A1 - A2", Math.abs(a1 - a2));
+          // return turretAngle;
         }
       }
     }
-    Logger.recordOutput("Turret/encoder read valid", false);
-    return 0;
+    // Logger.recordOutput("Turret/encoder read valid", false);
+    Logger.recordOutput("Turret/position", thePosition);
+    Logger.recordOutput("Turret/minErr", minErr);
+    // Logger.recordOutput("Turret/encoder read valid", true);
+    Logger.recordOutput("Turret/23t Rotations", minErrN1);
+    Logger.recordOutput("Turret/24t Rotations", minErrN2);
+    // Logger.recordOutput("Turret/A1", a1);
+    // Logger.recordOutput("Turret/A2", a2);
+    return thePosition;
   }
 
   public Command calibrate() {
