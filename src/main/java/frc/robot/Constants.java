@@ -59,7 +59,7 @@ public final class Constants {
   public static class CurrentLimit {
 
     // Intake
-    public static final int rotatoLimit = 20;
+    public static final int rotatoLimit = 50;
     public static final int armLimit = 50;
 
     // Launcher
@@ -196,8 +196,8 @@ public final class Constants {
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 0.5;
-    public static double turnI = 0.08;
+    public static double turnP = 0.125;
+    public static double turnI = 0.0;
     public static double turnD = 0.0;
 
     public static double turnVelocityFFGain = 0.45; // 0.675;

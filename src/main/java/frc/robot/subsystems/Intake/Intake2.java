@@ -60,5 +60,11 @@ public class Intake2 extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+
+    if (intakerToggle == true || inputs.positionRad < Constants.Intake.RotatoThresholdRAD) {
+      io.runRotato(Constants.Intake.RotatoRPM);
+    } else {
+      io.runRotato(0);
+    }
   }
 }

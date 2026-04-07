@@ -150,21 +150,17 @@ public class Launcher extends SubsystemBase {
   public Command testTurretRotateClockwise() {
     return Commands.run(
             () -> {
-              if (autoRotate == false) {
-                io.turretVoltage(-0.5);
-              }
+              io.testTurn(-2);
             })
-        .finallyDo(() -> io.turretVoltage(0));
+        .finallyDo(() -> io.testTurn(0));
   }
 
   public Command testTurretRotateCounterclockwise() {
     return Commands.run(
             () -> {
-              if (autoRotate == false) {
-                io.turretVoltage(0.5);
-              }
+              io.testTurn(2);
             })
-        .finallyDo(() -> io.turretVoltage(0));
+        .finallyDo(() -> io.testTurn(0));
   }
 
   public Command testTurretRotateToggleAuto() {

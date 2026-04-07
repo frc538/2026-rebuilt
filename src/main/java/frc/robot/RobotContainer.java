@@ -306,8 +306,11 @@ public class RobotContainer {
     navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
     navController.rightStick().and(this::isTest).onTrue(launcher.testTurretRotateToggleAuto());
 
-    navController.b().and(this::isTest).whileTrue(launcher.testTurn());
-    navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+    // navController.b().and(this::isTest).whileTrue(launcher.testTurn());
+    // navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
+
+    navController.b().and(this::isTest).whileTrue(launcher.testTurretRotateClockwise());
+    navController.y().and(this::isTest).whileTrue(launcher.testTurretRotateCounterclockwise());
 
     navController
         .a()
