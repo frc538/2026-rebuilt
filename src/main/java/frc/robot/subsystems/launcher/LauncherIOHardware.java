@@ -96,7 +96,9 @@ public class LauncherIOHardware implements LauncherIO {
     turnController = turnMotor.getClosedLoopController();
 
     turnEncoder = (SparkRelativeEncoder) turnMotor.getEncoder();
-    turretFF = new SimpleMotorFeedforward(ks, turnVelocityFFGain);
+
+    // We are setting ks to 0 here because the ks value will be applied manually
+    turretFF = new SimpleMotorFeedforward(0.0, turnVelocityFFGain);
   }
 
   @Override
@@ -129,6 +131,8 @@ public class LauncherIOHardware implements LauncherIO {
     inputs.turnEncoderPosition = turnEncoder.getPosition();
 
     inputs.turnPotentiometer = m_potentiometer.get();
+
+    inputs.iAccum = turnController.getIAccum();
   }
 
   @Override
@@ -160,9 +164,31 @@ public class LauncherIOHardware implements LauncherIO {
     double FFTurret = turretFF.calculate(radiansPerSec);
     Logger.recordOutput("Launcher/FFTurret", FFTurret);
 
+    double turretError = radians - turnEncoder.getPosition();
+
+    // Emulate the sparkmax stuff
+    double pCommand = turnP * turretError;
+    double iCommand = turnI * turnController.getIAccum();
+    double dCommand = 0; // Ignore this for now
+
+    double PID = pCommand + iCommand + dCommand;
+
+    double totalVoltageUncompensated = PID + FFTurret;
+
+    double CommandSgn = 0;
+    if (Math.abs(totalVoltageUncompensated) > 0.01) {
+      CommandSgn = Math.signum(totalVoltageUncompensated);
+    }
+
+    double armFFCommand = FFTurret + ks * CommandSgn;
+
     var result =
-        turnController.setSetpoint(radians, ControlType.kPosition, ClosedLoopSlot.kSlot0, FFTurret);
+        turnController.setSetpoint(
+            radians, ControlType.kPosition, ClosedLoopSlot.kSlot0, armFFCommand);
     Logger.recordOutput("Launcher/turnControlResult", result);
+    Logger.recordOutput("Launcher/armFFCommand", armFFCommand);
+    Logger.recordOutput("Launcher/PID (emulated)", PID);
+    Logger.recordOutput("Launcher/turretError", turretError);
 
     // turnController.setSetpoint(
     //    radiansPerSec, ControlType.kVelocity, ClosedLoopSlot.kSlot0, FFTurret);

@@ -196,8 +196,8 @@ public final class Constants {
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 0.2;
-    public static double turnI = 0.0065;
+    public static double turnP = 0.035;
+    public static double turnI = 0.001;
     public static double turnD = 0.0;
 
     public static double turnVelocityFFGain = 0.45; // 0.675;
@@ -208,7 +208,7 @@ public final class Constants {
   }
 
   public final class Intake2 {
-    public static final double upVoltage = -1.5; // placeholder value in volts
+    public static final double upVoltage = -3; // placeholder value in volts
     public static final double downVoltage = 0.5; // placeholder value in volts
   }
 
@@ -235,7 +235,7 @@ public final class Constants {
     public static final double ArmkD = 0.0;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
-    public static final double RotatoRPM = .35;
+    public static final double RotatoRPM = 0.60;
 
     public static final double testRotatoRPM = .2;
 
