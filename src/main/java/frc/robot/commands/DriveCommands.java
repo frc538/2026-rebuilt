@@ -35,6 +35,7 @@ import org.littletonrobotics.junction.Logger;
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
   private static final double ANGLE_KP = 0.1; // 5.0
+  private static final double ANGLE_KI = 0.0; // 0.0
   private static final double ANGLE_KD = 0.0; // 0.4
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
@@ -113,7 +114,7 @@ public class DriveCommands {
     ProfiledPIDController angleController =
         new ProfiledPIDController(
             ANGLE_KP,
-            0.0,
+            ANGLE_KI,
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
@@ -159,7 +160,7 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier) {
 
     // Create PID controller
-    PIDController angleController = new PIDController(ANGLE_KP, 0.0, ANGLE_KD);
+    PIDController angleController = new PIDController(ANGLE_KP, ANGLE_KI, ANGLE_KD);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Construct command
@@ -173,7 +174,9 @@ public class DriveCommands {
           double omegaCMD = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
 
           // Square rotation value for more precise control
-          omegaCMD = Math.copySign(omegaCMD * omegaCMD, omegaCMD) * 5;/*scaled to 5 rads per sec in circle */
+          omegaCMD =
+              Math.copySign(omegaCMD * omegaCMD, omegaCMD)
+                  * 5; /*scaled to 5 rads per sec in circle */
 
           // Calculate angular speed
           double omega = angleController.calculate(drive.yawRate(), omegaCMD) + omegaCMD;
