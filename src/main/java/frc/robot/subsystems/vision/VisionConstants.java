@@ -53,6 +53,8 @@ public class VisionConstants {
         9999 // butter
       };
 
+  public static boolean[] useMegaTagTwo = new boolean[] {true, true, false, false};
+
   // Multipliers to apply for MegaTag 2 observations
   public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
   public static double angularStdDevMegatag2Factor =
