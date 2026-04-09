@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enable flywheel toggle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "hopper shoot toggle"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}

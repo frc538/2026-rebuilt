@@ -203,7 +203,8 @@ public class RobotContainer {
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
-    new NamedCommands().registerCommand("shoot toggle", launcher.toggleShoot());
+    new NamedCommands().registerCommand("enable flywheel toggle", launcher.toggleShoot());
+    new NamedCommands().registerCommand("hopper shoot toggle", hopper.HopperToggle();
     new NamedCommands().registerCommand("intake open", intake2.forceIntake());
     new NamedCommands().registerCommand("intake close", intake2.forceIntake());
     new NamedCommands().registerCommand("climb", climberSubsystem.climberExtend());
@@ -386,7 +387,7 @@ public class RobotContainer {
     // pilotController.y().onTrue(intake.HumpAvoid());
 
     pilotController.b().onTrue(intake2.forceIntake());
-    pilotController.a().whileTrue(intake2.intakeDownVoltage());
+    pilotController.rightTrigger(0.75).whileTrue(intake2.intakeDownVoltage());
     pilotController.y().whileTrue(intake2.intakeUpVoltage());
 
     pilotController.x().and(this::isTest).onTrue(launcher.calibrateCRTEncoders());
