@@ -204,9 +204,10 @@ public class RobotContainer {
         break;
     }
     new NamedCommands().registerCommand("enable flywheel toggle", launcher.toggleShoot());
-    new NamedCommands().registerCommand("hopper shoot toggle", hopper.HopperToggle();
-    new NamedCommands().registerCommand("intake open", intake2.forceIntake());
-    new NamedCommands().registerCommand("intake close", intake2.forceIntake());
+    new NamedCommands().registerCommand("hopper shoot toggle", hopper.HopperToggle());
+    new NamedCommands()
+        .registerCommand("intake open", intake2.intakeDownVoltage().withTimeout(1.0));
+    new NamedCommands().registerCommand("intake close", intake2.intakeUpVoltage().withTimeout(1.0));
     new NamedCommands().registerCommand("climb", climberSubsystem.climberExtend());
 
     nav2 = new Navigation2(drive);
