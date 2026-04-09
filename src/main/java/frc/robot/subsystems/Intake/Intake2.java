@@ -11,7 +11,7 @@ public class Intake2 extends SubsystemBase {
 
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  private boolean intakerToggle = true;
+  private boolean intakerToggle = false;
 
   //   public TrapezoidProfile.State mCurrentState =
   //       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
