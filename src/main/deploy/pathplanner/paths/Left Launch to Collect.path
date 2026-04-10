@@ -114,7 +114,7 @@
       "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 1.4584221748400825,
+      "waypointRelativePos": 1.5479744136460545,
       "rotationDegrees": 180.0
     },
     {
@@ -133,17 +133,6 @@
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
-    {
-      "name": "shoot toggle",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot toggle"
-        }
-      }
-    },
     {
       "name": "intake open",
       "waypointRelativePos": 2.365968939905482,

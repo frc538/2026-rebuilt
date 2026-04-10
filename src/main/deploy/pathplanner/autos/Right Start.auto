@@ -11,9 +11,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "shoot toggle"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot toggle"
           }
         },
         {
@@ -26,6 +38,12 @@
           "type": "path",
           "data": {
             "pathName": "Right Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot toggle"
           }
         },
         {

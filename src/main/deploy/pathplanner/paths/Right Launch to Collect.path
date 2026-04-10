@@ -53,7 +53,7 @@
       },
       "prevControl": {
         "x": 7.989714962811492,
-        "y": 0.6119360428490022
+        "y": 0.6119360428490023
       },
       "nextControl": {
         "x": 7.916965111848371,
@@ -110,7 +110,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.4008528784648238,
+      "waypointRelativePos": 1.100213219616204,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.6119402985074616,
       "rotationDegrees": 180.0
     },
     {
@@ -143,17 +147,6 @@
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
-    {
-      "name": "shoot toggle",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot toggle"
-        }
-      }
-    },
     {
       "name": "intake open",
       "waypointRelativePos": 2.5118163403106015,
