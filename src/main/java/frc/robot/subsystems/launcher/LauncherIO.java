@@ -22,6 +22,8 @@ public interface LauncherIO {
     public double turnMotorBusVoltage = 0.0;
     public double turnMotorOutputCurrent = 0.0;
 
+    public double iAccum = 0.0;
+
     // turn encoder
     public double turnEncoderVelocity = 0.0;
     public double turnEncoderPosition = 0.0;
