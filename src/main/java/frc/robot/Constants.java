@@ -235,7 +235,7 @@ public final class Constants {
     public static final double ArmkD = 0.0;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
-    public static final double RotatoRPM = .5;
+    public static final double RotatoRPM = .6;
 
     public static final double testRotatoRPM = .2;
 
