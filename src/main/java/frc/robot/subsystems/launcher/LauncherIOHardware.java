@@ -89,7 +89,8 @@ public class LauncherIOHardware implements LauncherIO {
         .pid(turnP, turnI, turnD)
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .outputRange(-1, 1)
-        .positionWrappingEnabled(false);
+        .positionWrappingEnabled(false)
+        .iMaxAccum(0.5);
 
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
