@@ -126,7 +126,7 @@ public final class Constants {
     public static final double SDConversionFactor = 1.0;
     public static final double FDConversionFactor = 1.0;
 
-    public static final double SpindexSpeed = -.25;
+    public static final double SpindexSpeed = -.3;
     public static final double FeedSpeed = -.5;
 
     public static final double TestSpindexSpeed = -0.3;
@@ -235,7 +235,7 @@ public final class Constants {
     public static final double ArmkD = 0.0;
 
     public static final double RotatoThresholdRAD = Math.PI / 4.0;
-    public static final double RotatoRPM = .35;
+    public static final double RotatoRPM = .5;
 
     public static final double testRotatoRPM = .2;
 

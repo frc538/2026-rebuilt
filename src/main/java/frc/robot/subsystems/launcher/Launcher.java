@@ -262,7 +262,7 @@ public class Launcher extends SubsystemBase {
     double calculatedDistance = Math.sqrt(distanceX + distanceY);
 
     // For testing
-    //double distanceModified = calculatedDistance;
+    // double distanceModified = calculatedDistance;
     double distanceModified = Math.max(1, (0.98 * calculatedDistance) + 3.6);
 
     Logger.recordOutput("Launcher/calculatedDistance", calculatedDistance);
