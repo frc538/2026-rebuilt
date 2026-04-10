@@ -5,15 +5,33 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Left Launch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enable flywheel toggle"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "hopper shoot toggle"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 6.0
           }
         },
         {

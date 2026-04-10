@@ -11,9 +11,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 3.0
+            "name": "hopper shoot toggle"
           }
         },
         {
@@ -26,18 +26,6 @@
           "type": "path",
           "data": {
             "pathName": "Left Launch"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot toggle"
           }
         }
       ]
