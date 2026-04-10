@@ -60,6 +60,7 @@ public class Intake2 extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+    Logger.processInputs("Intake2", inputs);
 
     if (intakerToggle == true) {
       io.runRotato(Constants.Intake.RotatoRPM);
