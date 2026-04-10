@@ -176,7 +176,7 @@ public class LauncherIOHardware implements LauncherIO {
     double totalVoltageUncompensated = PID + FFTurret;
 
     double CommandSgn = 0;
-    if (Math.abs(totalVoltageUncompensated) > 0.01) {
+    if (Math.abs(totalVoltageUncompensated) > 0.0001) {
       CommandSgn = Math.signum(totalVoltageUncompensated);
     }
 
