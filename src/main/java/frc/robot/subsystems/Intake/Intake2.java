@@ -2,6 +2,7 @@ package frc.robot.subsystems.Intake;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -50,9 +51,14 @@ public class Intake2 extends SubsystemBase {
         .finallyDo(() -> io.armRunVolt(0));
   }
 
+    private int rotatoStallCounter = 0;
+    private boolean isStall = false;
+
   public Command intakeDownVoltage() {
     return run(() -> {
-          io.armRunVolt(Constants.Intake2.downVoltage);
+      if (isStall == false) {
+        io.armRunVolt(Constants.Intake2.downVoltage);
+      }
         })
         .finallyDo(() -> io.armRunVolt(0));
   }
@@ -61,6 +67,18 @@ public class Intake2 extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake2", inputs);
+
+    if (inputs.RightrotatoCurrent > 40) {
+      rotatoStallCounter = rotatoStallCounter + 1;
+    } else {
+      rotatoStallCounter = 0;
+      isStall = false;
+    }
+
+    if (rotatoStallCounter > 5) {
+      isStall = true;
+      io.armRunVolt(Constants.Intake2.upVoltage);
+    }
 
     if (intakerToggle == true) {
       io.runRotato(Constants.Intake.RotatoRPM);
