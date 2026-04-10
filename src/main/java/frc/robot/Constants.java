@@ -196,11 +196,11 @@ public final class Constants {
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 0.035;
-    public static double turnI = 0.001;
+    public static double turnP = 0.055;
+    public static double turnI = 0.001; // 1;
     public static double turnD = 0.0;
 
-    public static double turnVelocityFFGain = 0.45; // 0.675;
+    public static double turnVelocityFFGain = 0.15; // 0.45; // 0.675;
     public static double ks = 1.06; /*static gain */
 
     public static final double SpeedStep /*for the trim */ = 0.005;

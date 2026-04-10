@@ -164,12 +164,15 @@ public class LauncherIOHardware implements LauncherIO {
     double FFTurret = turretFF.calculate(radiansPerSec);
     Logger.recordOutput("Launcher/FFTurret", FFTurret);
 
-    double turretError = radians - turnEncoder.getPosition();
+    double turretError = (radians - turnEncoder.getPosition()) / (2 * Math.PI);
 
     // Emulate the sparkmax stuff
     double pCommand = turnP * turretError;
     double iCommand = turnI * turnController.getIAccum();
     double dCommand = 0; // Ignore this for now
+
+    Logger.recordOutput("Launcher/pCommand", pCommand);
+    Logger.recordOutput("Launcher/iCommand", iCommand);
 
     double PID = pCommand + iCommand + dCommand;
 
