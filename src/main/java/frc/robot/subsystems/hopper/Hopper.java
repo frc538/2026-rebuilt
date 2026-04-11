@@ -144,7 +144,7 @@ public class Hopper extends SubsystemBase {
     Logger.processInputs("Hopper", inputs);
     Logger.recordOutput("Hopper/Activated", HopperActivated);
     Logger.recordOutput("Hopper/is spindexer stalling", sdStall);
-  } 
+  }
 
   // do that Calulation in Launcher
   public void FirePermit(boolean Aimgood, boolean SpeedGood) {
