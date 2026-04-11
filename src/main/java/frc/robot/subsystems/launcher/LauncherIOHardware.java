@@ -32,6 +32,8 @@ import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -90,7 +92,7 @@ public class LauncherIOHardware implements LauncherIO {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .outputRange(-1, 1)
         .positionWrappingEnabled(false)
-        .iMaxAccum(0.5);
+        .iMaxAccum(0.25);
 
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -205,6 +207,9 @@ public class LauncherIOHardware implements LauncherIO {
     // turnController.setSetpoint(
     //    radiansPerSec, ControlType.kVelocity, ClosedLoopSlot.kSlot0, FFTurret);
   }
+
+  @Override
+  public void updateRobotInfo(Pose2d robotPose, ChassisSpeeds robotVelocity, double rotationRate) {}
 
   @Override
   public void testTurn(double voltage) {

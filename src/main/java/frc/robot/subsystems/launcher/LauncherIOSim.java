@@ -339,7 +339,7 @@ public class LauncherIOSim implements LauncherIO {
   }
 
   @Override
-  public void updateRobotInfo(Pose2d robotPose, ChassisSpeeds robotVelocity) {
+  public void updateRobotInfo(Pose2d robotPose, ChassisSpeeds robotVelocity, double omega) {
     this.robotPose = robotPose;
     this.robotVelocity = robotVelocity;
   }

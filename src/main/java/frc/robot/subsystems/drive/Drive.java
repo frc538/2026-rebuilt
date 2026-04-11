@@ -99,6 +99,7 @@ public class Drive extends SubsystemBase {
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
   PoseConsumer consumer;
+  double m_omega = 0;
 
   public Drive(
       PoseConsumer consumer,
@@ -125,7 +126,7 @@ public class Drive extends SubsystemBase {
         this::getPose,
         this::setPose,
         this::getChassisSpeeds,
-        this::runVelocity,
+        this::runVelocityOrig,
         new PPHolonomicDriveController(
             new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
         PP_CONFIG,
@@ -211,7 +212,7 @@ public class Drive extends SubsystemBase {
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
 
-    consumer.accept(poseEstimator.getEstimatedPosition(), getVelocity());
+    consumer.accept(poseEstimator.getEstimatedPosition(), getVelocity(), m_omega);
   }
 
   @AutoLogOutput
@@ -223,12 +224,14 @@ public class Drive extends SubsystemBase {
    * Runs the drive at the desired velocity.
    *
    * @param speeds Speeds in meters/sec
+   * @param omega rotation rate commanded in rad/s
    */
-  public void runVelocity(ChassisSpeeds speeds) {
+  public void runVelocity(ChassisSpeeds speeds, double omega) {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants.kSpeedAt12Volts);
+    m_omega = omega;
 
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -243,6 +246,10 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 
+  public void runVelocityOrig(ChassisSpeeds speeds) {
+    runVelocity(speeds, 0);
+  }
+
   /** Runs the drive in a straight line with the specified drive output. */
   public void runCharacterization(double output) {
     for (int i = 0; i < 4; i++) {
@@ -252,7 +259,7 @@ public class Drive extends SubsystemBase {
 
   /** Stops the drive. */
   public void stop() {
-    runVelocity(new ChassisSpeeds());
+    runVelocity(new ChassisSpeeds(), 0);
   }
 
   /**
@@ -381,6 +388,6 @@ public class Drive extends SubsystemBase {
 
   @FunctionalInterface
   public static interface PoseConsumer {
-    public void accept(Pose2d robotPose, ChassisSpeeds robotVelocity);
+    public void accept(Pose2d robotPose, ChassisSpeeds robotVelocity, double omega);
   }
 }

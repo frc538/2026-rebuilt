@@ -191,16 +191,16 @@ public final class Constants {
 
     public static final double minrange = -(3 * Math.PI) / 4;
     public static final double maxrange = (3 * Math.PI) / 4;
-    public static final double maxV = 5; // 5;
-    public static final double maxA = 10; // 10;
+    public static final double maxV = 7; // 5;
+    public static final double maxA = 15; // 10;
 
     public static double allowedClosedLoopError = Math.PI / 6;
 
-    public static double turnP = 0.055;
-    public static double turnI = 0.001; // 1;
-    public static double turnD = 0.0;
+    public static double turnP = 0.13;
+    public static double turnI = 0.00007; // 5; // 1; // 1;
+    public static double turnD = 0.0001;
 
-    public static double turnVelocityFFGain = 0.15; // 0.45; // 0.675;
+    public static double turnVelocityFFGain = 0.05; // 0.45; // 0.675;
     public static double ks = 1.06; /*static gain */
 
     public static final double SpeedStep /*for the trim */ = 0.005;

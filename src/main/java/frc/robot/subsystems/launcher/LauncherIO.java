@@ -64,5 +64,6 @@ public interface LauncherIO {
 
   public default void resetEncoder() {}
 
-  public default void updateRobotInfo(Pose2d robotPose, ChassisSpeeds robotVelocity) {}
+  public default void updateRobotInfo(
+      Pose2d robotPose, ChassisSpeeds robotVelocity, double rotationRate) {}
 }

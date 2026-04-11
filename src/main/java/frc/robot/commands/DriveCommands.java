@@ -94,7 +94,8 @@ public class DriveCommands {
                   speeds,
                   isFlipped
                       ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
+                      : drive.getRotation()),
+              omega);
         },
         drive);
   }
@@ -145,7 +146,8 @@ public class DriveCommands {
                       speeds,
                       isFlipped
                           ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                          : drive.getRotation()));
+                          : drive.getRotation()),
+                  omega);
             },
             drive)
 
@@ -198,7 +200,8 @@ public class DriveCommands {
                   speeds,
                   isFlipped
                       ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
+                      : drive.getRotation()),
+              omega);
         },
         drive);
   }
@@ -284,7 +287,7 @@ public class DriveCommands {
             Commands.run(
                 () -> {
                   double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
-                  drive.runVelocity(new ChassisSpeeds(0.0, 0.0, speed));
+                  drive.runVelocity(new ChassisSpeeds(0.0, 0.0, speed), 0);
                 },
                 drive)),
 
