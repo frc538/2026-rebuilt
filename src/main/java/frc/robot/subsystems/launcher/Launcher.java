@@ -303,6 +303,64 @@ public class Launcher extends SubsystemBase {
     thingy.accept(aimGood, TurretSpeedGood);
   }
 
+  // dead code for replay purposes
+  private void doPointAt(double radians, double radPerSec) {
+    // In percentage of bus voltage
+    double FFTurret = (radPerSec * Constants.launcherConstants.turnVelocityFFGain);
+    Logger.recordOutput("Launcher/FFTurret", FFTurret);
+
+    // in rotations
+    double turretError = (radians - inputs.turnEncoderPosition) / (2 * Math.PI);
+
+    // Emulate the sparkmax stuff
+
+    // in rotation-relative
+    double pCommand = turnP * turretError;
+    double iCommand = turnI * inputs.iAccum;
+    double dCommand = 0; // Ignore this for now
+
+    Logger.recordOutput("Launcher/pCommand", pCommand);
+    Logger.recordOutput("Launcher/iCommand", iCommand);
+
+    // total feedback controller in percentage???
+    double PID = pCommand + iCommand + dCommand;
+
+    double totalVoltageUncompensated = PID + FFTurret;
+
+    double CommandSgn = 0;
+    if (Math.abs(totalVoltageUncompensated) > 0.0001) {
+      CommandSgn = Math.signum(totalVoltageUncompensated);
+    }
+
+    double arbFFCommand = (FFTurret + ks * CommandSgn);
+
+    Logger.recordOutput("Launcher/arbFFCommand", arbFFCommand);
+    Logger.recordOutput("Launcher/PID (emulated)", PID);
+    Logger.recordOutput("Launcher/turretError", turretError);
+
+    // in rotations
+    double turretErrorRealish = (radians - inputs.turnEncoderPosition) / (2 * Math.PI);
+
+    // Emulate the sparkmax stuff
+
+    // in rotation-relative
+    double pCommandRealish = turnP * turretErrorRealish;
+    double iCommandRealish = inputs.iAccum;
+    double dCommandRealish = 0; // Ignore this for now
+
+    Logger.recordOutput("Launcher/pCommandRealish", pCommandRealish);
+    Logger.recordOutput("Launcher/iCommandRealish", iCommandRealish);
+
+    // total feedback controller in percentage???
+    double PIDRealish = pCommandRealish + iCommandRealish + dCommandRealish;
+    Logger.recordOutput("Launcher/PIDRealish (emulated)", PIDRealish);
+    double estimTotalCommand = arbFFCommand / inputs.turnMotorBusVoltage + PIDRealish;
+    Logger.recordOutput("Launcher/arbFFCommandRealish", arbFFCommand / inputs.turnMotorBusVoltage);
+    Logger.recordOutput("Launcher/estimTotalCommand", estimTotalCommand);
+
+    io.pointAt(radians, radPerSec);
+  }
+
   private void setAz() {
     if (stopTurret == false) {
       if (!DriverStation.isTest() || autoRotate) {
