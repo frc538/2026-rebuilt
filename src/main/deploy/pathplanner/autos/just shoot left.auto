@@ -13,25 +13,43 @@
         {
           "type": "named",
           "data": {
+            "name": "enable flywheel toggle"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "hopper shoot toggle"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Left Launch to Collect"
+            "waitTime": 6.0
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Left Launch"
+            "name": "enable flywheel toggle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "hopper shoot toggle"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": null,
   "choreoAuto": false
 }

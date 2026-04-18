@@ -27,15 +27,42 @@ public class Hopper extends SubsystemBase {
 
   private void HopperToggler(double SpinSpeed, double FeedSpeed) {
     if (HopperActivated) {
+      sdStall = false;
+      sdStallCounter = 0;
+      sdRecoveryCounter = 0;
       // HopperOFF();
       io.SpindexSpeedCommand(0);
       io.FeedSpeedCommand(0);
       HopperActivated = false;
     } else {
       // HopperON();
-      io.SpindexSpeedCommand(SpinSpeed);
+      // io.SpindexSpeedCommand(SpinSpeed);
       io.FeedSpeedCommand(FeedSpeed);
       HopperActivated = true;
+
+      if (sdStall == false) {
+        if (Math.abs(inputs.SpindexRPM) <= 10 && inputs.SDOutputCurrent > 42) {
+          if (sdStallCounter > 10) {
+            sdStall = true;
+            sdRecoveryCounter = 10;
+          } else {
+            sdStallCounter = sdStallCounter + 1;
+          }
+        }
+      }
+
+      if (sdStall == true) {
+        if (sdRecoveryCounter > 0) {
+          sdRecoveryCounter = sdRecoveryCounter - 1;
+          io.SpindexSpeedCommand(-Constants.Hopper.SpindexSpeed);
+        } else {
+          sdStall = false;
+
+          io.SpindexSpeedCommand(Constants.Hopper.SpindexSpeed);
+        }
+      } else {
+        io.SpindexSpeedCommand(Constants.Hopper.SpindexSpeed);
+      }
     }
   }
 
@@ -107,11 +134,16 @@ public class Hopper extends SubsystemBase {
         });
   }
 
+  private int sdStallCounter = 0;
+  private boolean sdStall = false;
+  private int sdRecoveryCounter = 0;
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Hopper", inputs);
     Logger.recordOutput("Hopper/Activated", HopperActivated);
+    Logger.recordOutput("Hopper/is spindexer stalling", sdStall);
   }
 
   // do that Calulation in Launcher

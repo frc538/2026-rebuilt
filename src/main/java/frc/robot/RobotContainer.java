@@ -203,9 +203,9 @@ public class RobotContainer {
         climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
         break;
     }
-    new NamedCommands().registerCommand("shoot toggle", launcher.toggleShoot());
-    new NamedCommands().registerCommand("intake open", intake2.forceIntake());
-    new NamedCommands().registerCommand("intake close", intake2.forceIntake());
+    new NamedCommands().registerCommand("enable flywheel toggle", launcher.toggleShoot());
+    new NamedCommands().registerCommand("hopper shoot toggle", hopper.HopperToggle());
+    new NamedCommands().registerCommand("intake close", intake2.intakeUpVoltage().withTimeout(1.0));
     new NamedCommands().registerCommand("climb", climberSubsystem.climberExtend());
 
     nav2 = new Navigation2(drive);
@@ -261,7 +261,6 @@ public class RobotContainer {
 
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
-        // DriveCommands.joystickDrive(
         DriveCommands.driveDriftAccount(
             drive,
             () -> -pilotController.getLeftY(),
@@ -386,8 +385,10 @@ public class RobotContainer {
     // pilotController.b().onTrue(intake.forceIntake());
     // pilotController.y().onTrue(intake.HumpAvoid());
 
+    intake2.setDefaultCommand(intake2.goDownButDontWhenStall());
+
     pilotController.b().onTrue(intake2.forceIntake());
-    pilotController.a().whileTrue(intake2.intakeDownVoltage());
+    // pilotController.rightTrigger(0.75).whileTrue(intake2.intakeDownVoltage());
     pilotController.y().whileTrue(intake2.intakeUpVoltage());
 
     pilotController.x().and(this::isTest).onTrue(launcher.calibrateCRTEncoders());

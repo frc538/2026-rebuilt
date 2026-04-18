@@ -32,6 +32,8 @@ import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -89,7 +91,8 @@ public class LauncherIOHardware implements LauncherIO {
         .pid(turnP, turnI, turnD)
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .outputRange(-1, 1)
-        .positionWrappingEnabled(false);
+        .positionWrappingEnabled(false)
+        .iMaxAccum(0.25);
 
     turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -161,26 +164,36 @@ public class LauncherIOHardware implements LauncherIO {
 
   @Override
   public void pointAt(double radians, double radiansPerSec) {
+    // In motor voltage
     double FFTurret = turretFF.calculate(radiansPerSec);
     Logger.recordOutput("Launcher/FFTurret", FFTurret);
 
-    double turretError = radians - turnEncoder.getPosition();
+    // In rotations error
+    double turretError = (radians - turnEncoder.getPosition()) / (2 * Math.PI);
 
     // Emulate the sparkmax stuff
     double pCommand = turnP * turretError;
-    double iCommand = turnI * turnController.getIAccum();
+    double iCommand = turnController.getIAccum();
     double dCommand = 0; // Ignore this for now
 
+    Logger.recordOutput("Launcher/pCommand", pCommand);
+    Logger.recordOutput("Launcher/iCommand", iCommand);
+
+    // Rotations to duty-cycle percentage feedback command
     double PID = pCommand + iCommand + dCommand;
 
-    double totalVoltageUncompensated = PID + FFTurret;
+    // In motor voltage
+    double totalVoltageUncompensated = PID / turnMotor.getBusVoltage() + FFTurret;
 
     double CommandSgn = 0;
-    if (Math.abs(totalVoltageUncompensated) > 0.01) {
+    if (Math.abs(totalVoltageUncompensated) > 0.0001) {
       CommandSgn = Math.signum(totalVoltageUncompensated);
     }
 
+    // In motor voltage
     double armFFCommand = FFTurret + ks * CommandSgn;
+
+    double estimatedTotalApplied = armFFCommand / turnMotor.getBusVoltage() + PID;
 
     var result =
         turnController.setSetpoint(
@@ -189,10 +202,14 @@ public class LauncherIOHardware implements LauncherIO {
     Logger.recordOutput("Launcher/armFFCommand", armFFCommand);
     Logger.recordOutput("Launcher/PID (emulated)", PID);
     Logger.recordOutput("Launcher/turretError", turretError);
+    Logger.recordOutput("Launcher/estimatedTotalApplied", estimatedTotalApplied);
 
     // turnController.setSetpoint(
     //    radiansPerSec, ControlType.kVelocity, ClosedLoopSlot.kSlot0, FFTurret);
   }
+
+  @Override
+  public void updateRobotInfo(Pose2d robotPose, ChassisSpeeds robotVelocity, double rotationRate) {}
 
   @Override
   public void testTurn(double voltage) {

@@ -134,17 +134,6 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "shoot toggle",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot toggle"
-        }
-      }
-    },
-    {
       "name": "intake open",
       "waypointRelativePos": 2.365968939905482,
       "endWaypointRelativePos": null,
@@ -183,7 +172,7 @@
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 145.12467165539786
+    "rotation": 159.13174645201167
   },
   "useDefaultConstraints": true
 }

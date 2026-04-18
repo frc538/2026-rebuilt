@@ -46,20 +46,60 @@ public class Intake2 extends SubsystemBase {
   public Command intakeUpVoltage() {
     return run(() -> {
           io.armRunVolt(Constants.Intake2.upVoltage);
+          Logger.recordOutput("Intake2/armRunVolt", Constants.Intake2.upVoltage);
         })
-        .finallyDo(() -> io.armRunVolt(0));
+        .finallyDo(
+            () -> {
+              io.armRunVolt(0);
+              Logger.recordOutput("Intake2/armRunVolt", 0);
+            });
   }
 
-  public Command intakeDownVoltage() {
-    return run(() -> {
-          io.armRunVolt(Constants.Intake2.downVoltage);
-        })
-        .finallyDo(() -> io.armRunVolt(0));
+  private int rotatoStallCounter = 0;
+  private boolean isStall = false;
+
+  public Command goDownButDontWhenStall() {
+    return run(
+        () -> {
+          if (inputs.RightrotatoCurrent > 45) {
+            rotatoStallCounter = rotatoStallCounter + 1;
+            if (rotatoStallCounter > 25) {
+              isStall = true;
+            }
+          } else {
+            rotatoStallCounter = 0;
+            isStall = false;
+          }
+
+          if (isStall == true) {
+            io.armRunVolt(Constants.Intake2.upVoltage);
+            Logger.recordOutput("Intake2/armRunVolt", Constants.Intake2.upVoltage);
+          } else {
+            io.armRunVolt(Constants.Intake2.downVoltage);
+            Logger.recordOutput("Intake2/armRunVolt", Constants.Intake2.downVoltage);
+          }
+        });
   }
+
+  // public Command intakeDownVoltage() {
+  //       return run(() -> {
+  //             io.armRunVolt(Constants.Intake2.downVoltage);
+  //             Logger.recordOutput("Intake2/armRunVolt", Constants.Intake2.downVoltage);
+  //           })
+  //           .finallyDo(
+  //               () -> {
+  //                 io.armRunVolt(0);
+  //                 Logger.recordOutput("Intake2/armRunVolt", 0);
+  //               });
+  // }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+    Logger.processInputs("Intake2", inputs);
+
+    Logger.recordOutput("Intake2/isStall", isStall);
+    Logger.recordOutput("Intake2/stall count", rotatoStallCounter);
 
     if (intakerToggle == true) {
       io.runRotato(Constants.Intake.RotatoRPM);

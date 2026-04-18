@@ -177,10 +177,13 @@ public class Launcher extends SubsystemBase {
         });
   }
 
-  public void updateOdometry(Pose2d robotPose, ChassisSpeeds robotVelocity) {
+  private double m_omega = 0.0;
+
+  public void updateOdometry(Pose2d robotPose, ChassisSpeeds robotVelocity, double rotationRate) {
     this.robotPose = robotPose;
     this.robotVelocity = robotVelocity;
-    io.updateRobotInfo(robotPose, robotVelocity);
+    m_omega = rotationRate;
+    io.updateRobotInfo(robotPose, robotVelocity, rotationRate);
   }
 
   public void getAzimuth() {
@@ -261,7 +264,9 @@ public class Launcher extends SubsystemBase {
 
     double calculatedDistance = Math.sqrt(distanceX + distanceY);
 
-    double distanceModified = Math.max(1, (0.45 * calculatedDistance) + 5.5);
+    // For testing
+    // double distanceModified = calculatedDistance;
+    double distanceModified = Math.max(1, (0.98 * calculatedDistance) + 3.6);
 
     Logger.recordOutput("Launcher/calculatedDistance", calculatedDistance);
     Logger.recordOutput("Launcher/distanceModified", distanceModified);
@@ -301,12 +306,60 @@ public class Launcher extends SubsystemBase {
     thingy.accept(aimGood, TurretSpeedGood);
   }
 
+  // dead code for replay purposes
+  private void doPointAt(double radians, double radPerSec) {
+
+    // In percentage of bus voltage
+    double FFTurret = (radPerSec * Constants.launcherConstants.turnVelocityFFGain);
+    Logger.recordOutput("Launcher/FFTurret", FFTurret);
+
+    // in rotations
+    double turretError = (radians - inputs.turnEncoderPosition) / (2 * Math.PI);
+
+    // Emulate the sparkmax stuff
+
+    // in rotation-relative
+    double pCommand = turnP * turretError;
+    double iCommand = inputs.iAccum;
+    double dCommand = 0; // Ignore this for now
+
+    Logger.recordOutput("Launcher/pCommand", pCommand);
+    Logger.recordOutput("Launcher/iCommand", iCommand);
+
+    // total feedback controller in percentage???
+    double PID = pCommand + iCommand + dCommand;
+
+    double totalVoltageUncompensated = PID / inputs.turnMotorBusVoltage + FFTurret;
+
+    double CommandSgn = 0;
+    if (Math.abs(totalVoltageUncompensated) > 0.0001) {
+      CommandSgn = Math.signum(totalVoltageUncompensated);
+    }
+
+    double arbFFCommand = (FFTurret + ks * CommandSgn);
+
+    double estimatedTotalApplied = arbFFCommand / inputs.turnMotorBusVoltage + PID;
+
+    Logger.recordOutput("Launcher/estimatedTurnApplied", estimatedTotalApplied);
+    Logger.recordOutput("Launcher/arbFFCommand", arbFFCommand);
+    Logger.recordOutput("Launcher/PID (emulated)", PID);
+    Logger.recordOutput("Launcher/turretError", turretError);
+
+    io.pointAt(radians, radPerSec);
+  }
+
+  private double omegaCmdGain = 0.0;
+
   private void setAz() {
     if (stopTurret == false) {
       if (!DriverStation.isTest() || autoRotate) {
+        double targetWithRotateCommandComp = targetAzimuth + m_omega * omegaCmdGain;
+
         mDesiredState.position =
             MathUtil.clamp(
-                targetAzimuth, launcherConstants.minWireLimit, launcherConstants.maxWireLimit);
+                targetWithRotateCommandComp,
+                launcherConstants.minWireLimit,
+                launcherConstants.maxWireLimit);
 
         mCurrentState = turnProfile.calculate(0.02, mCurrentState, mDesiredState);
 

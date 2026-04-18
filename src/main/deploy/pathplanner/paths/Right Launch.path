@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.7581312410841647,
-        "y": 1.065577746077033
+        "y": 1.0655777460770328
       },
       "isLocked": false,
       "linkedName": "rightStartPointBlue"
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -140.3893117599734
+    "rotation": -165.4412324973422
   },
   "reversed": false,
   "folder": "Right",
