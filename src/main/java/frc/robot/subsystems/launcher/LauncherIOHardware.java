@@ -212,8 +212,8 @@ public class LauncherIOHardware implements LauncherIO {
   public void updateRobotInfo(Pose2d robotPose, ChassisSpeeds robotVelocity, double rotationRate) {}
 
   @Override
-  public void testTurn(double voltage) {
-    Logger.recordOutput("Launcher/testTurnVoltage", voltage);
+  public void turretVoltage(double voltage) {
+    Logger.recordOutput("Launcher/turretVoltage", voltage);
     turnMotor.setVoltage(voltage);
   }
 

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.launcher;
 
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.launcherConstants.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.launcherConstants;
 import java.util.function.DoubleSupplier;
@@ -43,6 +45,7 @@ public class Launcher extends SubsystemBase {
   private boolean autoRotate = false;
   private boolean stopTurret = false;
   private boolean autoTurnRobot = false;
+  private final SysIdRoutine sysId;
 
   TurretEncoder turretEncoder = new TurretEncoder();
 
@@ -66,6 +69,25 @@ public class Launcher extends SubsystemBase {
     mDesiredState = new TrapezoidProfile.State(Math.PI, 0);
 
     io.TurretDisable();
+
+    // Configure SysId
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                Volts.of(4),
+                null,
+                (state) -> Logger.recordOutput("Launcher/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> io.turretVoltage(voltage.in(Volts)), null, this));
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
   }
 
   public Command toggleShoot() {
@@ -99,11 +121,11 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               turnTestPower = turnTestPower + 0.002;
-              io.testTurn(turnTestPower);
+              io.turretVoltage(turnTestPower);
             })
         .finallyDo(
             () -> {
-              io.testTurn(0);
+              io.turretVoltage(0);
               turnTestPower = 0;
             });
   }
@@ -112,11 +134,11 @@ public class Launcher extends SubsystemBase {
     return Commands.run(
             () -> {
               turnTestPower = turnTestPower - 0.002;
-              io.testTurn(turnTestPower);
+              io.turretVoltage(turnTestPower);
             })
         .finallyDo(
             () -> {
-              io.testTurn(0);
+              io.turretVoltage(0);
               turnTestPower = 0;
             });
   }
@@ -150,17 +172,17 @@ public class Launcher extends SubsystemBase {
   public Command testTurretRotateClockwise() {
     return Commands.run(
             () -> {
-              io.testTurn(-2);
+              io.turretVoltage(-2);
             })
-        .finallyDo(() -> io.testTurn(0));
+        .finallyDo(() -> io.turretVoltage(0));
   }
 
   public Command testTurretRotateCounterclockwise() {
     return Commands.run(
             () -> {
-              io.testTurn(2);
+              io.turretVoltage(2);
             })
-        .finallyDo(() -> io.testTurn(0));
+        .finallyDo(() -> io.turretVoltage(0));
   }
 
   public Command testTurretRotateToggleAuto() {

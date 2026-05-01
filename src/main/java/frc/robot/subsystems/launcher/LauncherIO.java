@@ -54,8 +54,6 @@ public interface LauncherIO {
   // Simulate feeding a projectile into the launcher
   public default void simLaunch() {}
 
-  public default void testTurn(double voltage) {}
-
   public default void invertTurn() {}
 
   public default void deinvertTurn() {}

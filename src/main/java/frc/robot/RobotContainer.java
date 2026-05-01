@@ -271,6 +271,24 @@ public class RobotContainer {
     pilotController.axisGreaterThan(1, 0.3).onTrue(nav2.cancelPath());
     pilotController.axisGreaterThan(4, 0.3).onTrue(nav2.cancelPath());
 
+    pilotController
+        .a()
+        .and(this::isTest)
+        .whileTrue(launcher.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    pilotController
+        .y()
+        .and(this::isTest)
+        .whileTrue(launcher.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+    pilotController
+        .x()
+        .and(this::isTest)
+        .whileTrue(launcher.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    pilotController
+        .b()
+        .and(this::isTest)
+        .whileTrue(launcher.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     // Switch to X pattern when X button is pressed
     pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
