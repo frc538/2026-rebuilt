@@ -17,24 +17,32 @@ import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOSpark implements IntakeIO {
 
-  private final SparkMax movementMotor =
-      new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
-  private final SparkFlex Rightrotato =
-      new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
+  private final SparkMax movementMotor;
+  private final SparkFlex Rightrotato;
   // private final SparkFlex Leftrotato =
   //     new SparkFlex(Constants.CanIds.LeftRotatoCanId, MotorType.kBrushless);
 
-  private final RelativeEncoder armEncoder = movementMotor.getEncoder();
-  private final RelativeEncoder RightrotatoEncoder = Rightrotato.getEncoder();
+  private final RelativeEncoder armEncoder;
+  private final RelativeEncoder RightrotatoEncoder;
   // private final RelativeEncoder LeftrotatoEncoder = Leftrotato.getEncoder();
-  private final SparkClosedLoopController pid = movementMotor.getClosedLoopController();
+  private final SparkClosedLoopController pid;
 
-  private double m_kgTrim = 0;
-  private double m_alphaTrim = 0;
+  private double m_kgTrim;
+  private double m_alphaTrim;
 
   public IntakeIOSpark() {
+     movementMotor = new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
+     armEncoder = movementMotor.getEncoder();
+     pid = movementMotor.getClosedLoopController();
+
+    Rightrotato = new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
+    RightrotatoEncoder = Rightrotato.getEncoder();
+
     SparkMaxConfig config = new SparkMaxConfig();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
+    
+    m_kgTrim = 0;
+    m_alphaTrim = 0;
 
     config
         .encoder
