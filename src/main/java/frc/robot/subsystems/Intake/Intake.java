@@ -12,22 +12,29 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase {
 
   private final IntakeIO io;
-  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  public boolean FlipFlop = true;
-  private boolean intakerToggle = false;
+  private final IntakeIOInputsAutoLogged inputs;
+  public boolean FlipFlop;
+  private boolean intakerToggle;
 
-  public TrapezoidProfile.State mCurrentState =
-      new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
-  public TrapezoidProfile.State mDesiredState =
-      new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
+  public TrapezoidProfile.State mCurrentState;
+  public TrapezoidProfile.State mDesiredState;
   public TrapezoidProfile mTrapezoidProfile;
 
   public Constraints mConstraints;
 
   public Intake(IntakeIO io) {
     this.io = io;
+    inputs = new IntakeIOInputsAutoLogged();
+
+    mCurrentState = new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
+    mDesiredState = new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
+    
+
     mConstraints = new Constraints(Constants.Intake.MaxV, Constants.Intake.MaxA);
     mTrapezoidProfile = new TrapezoidProfile(mConstraints);
+    
+    intakerToggle = false;
+    FlipFlop = true;
   }
 
   @Override
