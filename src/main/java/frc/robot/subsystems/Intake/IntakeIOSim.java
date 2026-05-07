@@ -25,23 +25,20 @@ public class IntakeIOSim implements IntakeIO {
 
   SingleJointedArmSim TooLongName;
 
-  private boolean firstFrame = true;
+  //these things dont do anything
+ // private boolean firstFrame = true;
 
-  double mReferencePosition = 0.0;
-  double mArbFF = 0.0;
-  double kS = 0.0;
-  double kG = 0.0;
-  double kV = 0.0;
-  double kA = 0.0;
-  double maxV = 0.3;
-  double maxA = 0.3;
-  double kP = 0.0;
-  double kI = 0.0;
-  double kD = 0.0;
-
-  double kPLast = 0;
-  double kILast = 0;
-  double kDLast = 0;
+ // double mReferencePosition = 0.0;
+ // double mArbFF = 0.0;
+ // double kS = 0.0;
+ // double kG = 0.0;
+ // double kV = 0.0;
+ // double kA = 0.0;
+ // double maxV = 0.3;
+ // double maxA = 0.3;
+ // double kP = 0.0;
+ // double kI = 0.0;
+ // double kD = 0.0;
 
   private SparkClosedLoopController movMotorController;
 
@@ -49,6 +46,9 @@ public class IntakeIOSim implements IntakeIO {
   SparkRelativeEncoderSim movMotorEncoderSim;
 
   public IntakeIOSim(int MovMotorCanId) {
+
+
+
     MovMotor = new SparkMax(MovMotorCanId, MotorType.kBrushless);
     MovMotorEncoder = (SparkRelativeEncoder) MovMotor.getEncoder();
     movConfig = new SparkMaxConfig();
