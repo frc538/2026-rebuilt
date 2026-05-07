@@ -8,10 +8,11 @@ public class ClimberSubsystem extends SubsystemBase {
   private final ClimberIO io;
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
-  private double motorSpeed = 0;
+  private double motorSpeed;
 
   public ClimberSubsystem(ClimberIO IO) {
     io = IO;
+    motorSpeed = 0;
   }
 
   // Main/Base Commands

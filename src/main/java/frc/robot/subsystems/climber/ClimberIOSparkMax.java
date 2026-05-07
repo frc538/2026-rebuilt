@@ -13,6 +13,7 @@ public class ClimberIOSparkMax implements ClimberIO {
   private final SparkMax motor;
   private final SparkRelativeEncoder motorRelativeEncoder;
 
+  @SuppressWarnings("removal")
   public ClimberIOSparkMax(int motor1, int dioBottomLimit, int dioTopLimit) {
     motor = new SparkMax(motor1, MotorType.kBrushless);
     motorRelativeEncoder = (SparkRelativeEncoder) motor.getEncoder();
@@ -20,7 +21,7 @@ public class ClimberIOSparkMax implements ClimberIO {
     SparkMaxConfig climberconfig = new SparkMaxConfig();
 
     climberconfig.idleMode(IdleMode.kBrake);
-    climberconfig.smartCurrentLimit(Constants.ClimberConstants.CurrentLimit);
+    climberconfig.smartCurrentLimit(Constants.CurrentLimit.climberLimit);
 
     climberconfig
         .encoder
