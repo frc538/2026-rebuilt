@@ -260,39 +260,26 @@ public class RobotContainer {
      
     /// UNIVERSAL
     /// applicable to both teleop and test mode
-    // Default command, normal field-relative drive
+
+    
+    /// Climber Commands
+    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+
+    // Launcher
+    navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
+    
+    //////////////////////////////////////////////////////////////
+    ///  TELE-OPERATED
+    //////////////////////////////////////////////////////////////
+    // Drive
+    
     drive.setDefaultCommand(
         DriveCommands.driveDriftAccount(
             drive,
             () -> -pilotController.getLeftY(),
             () -> -pilotController.getLeftX(),
-            () -> -pilotController.getRightX()));
-
-    //Hopper
-    navController.rightTrigger(0.75).onTrue(hopper.HopperToggle());
-    navController.rightTrigger(0.75).onFalse(hopper.HopperToggle());
-    
-    /// Climber Commands
-
-    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
-
-    /// Intake Commands
-    intake2.setDefaultCommand(intake2.goDownButDontWhenStall());
-
-    pilotController.b().onTrue(intake2.forceIntake());
-    // pilotController.rightTrigger(0.75).whileTrue(intake2.intakeDownVoltage());
-    pilotController.y().whileTrue(intake2.intakeUpVoltage());
-
-    // Launcher
-    navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
-
-
-    //whys this universal? going to split it for better readability
-
-    ///  TELE-OPERATED
-    // Drive
-    
+            () -> -pilotController.getRightX()));// UNIVERSAL
         // Switch to X pattern when X button is pressed
     pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -335,7 +322,7 @@ public class RobotContainer {
                 }));
     
     pilotController.axisGreaterThan(0, 0.3).onTrue(nav2.cancelPath());
-    pilotController.axisGreaterThan(1, 0.3).onTrue(nav2.cancelPath());
+    pilotController.axisGreaterThan(1, 0.3).onTrue(nav2.cancelPath());// UNIVERSAL?
     pilotController.axisGreaterThan(4, 0.3).onTrue(nav2.cancelPath());//what are these?
 
     // Launcher
@@ -344,12 +331,29 @@ public class RobotContainer {
     navController.povRight().and(this::isNotTest).whileTrue(launcher.trimRight());
     navController.povUp().and(this::isNotTest).whileTrue(launcher.trimForward());
     navController.povDown().and(this::isNotTest).whileTrue(launcher.trimBack());
+
+    /// Intake
+    intake2.setDefaultCommand(intake2.goDownButDontWhenStall()); // UNIVERSAL
+
+    pilotController.b().onTrue(intake2.forceIntake()); // UNIVERSAL
+    // pilotController.rightTrigger(0.75).whileTrue(intake2.intakeDownVoltage());
+    pilotController.y().whileTrue(intake2.intakeUpVoltage()); // UNIVERSAL
+    
+    //Hopper
+    navController.rightTrigger(0.75).onTrue(hopper.HopperToggle()); // UNIVERSAL
+    navController.rightTrigger(0.75).onFalse(hopper.HopperToggle()); // UNIVERSAL
     
     //////////////////////////////////////////////////////////////
     /// TEST
     ////////////////////////////////////////////////////////////// 
     
     /// Drive 
+    drive.setDefaultCommand(
+        DriveCommands.driveDriftAccount(
+            drive,
+            () -> -pilotController.getLeftY(),
+            () -> -pilotController.getLeftX(),
+            () -> -pilotController.getRightX())); // UNIVERSAL
     pilotController.x().and(this::isTest).onTrue(launcher.calibrateCRTEncoders());
     
     // launcher
@@ -381,6 +385,16 @@ public class RobotContainer {
                 () -> {
                   return 4;
                 }));
+                
+    /// Intake
+    intake2.setDefaultCommand(intake2.goDownButDontWhenStall()); // UNIVERSAL
+    pilotController.b().onTrue(intake2.forceIntake()); // UNIVERSAL
+    pilotController.y().whileTrue(intake2.intakeUpVoltage()); // UNIVERSAL
+    // pilotController.rightTrigger(0.75).whileTrue(intake2.intakeDownVoltage());
+
+    //Hopper
+    navController.rightTrigger(0.75).onTrue(hopper.HopperToggle()); // UNIVERSAL
+    navController.rightTrigger(0.75).onFalse(hopper.HopperToggle()); // UNIVERSAL
                 
 // UPDATED CODE END
 
