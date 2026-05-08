@@ -28,11 +28,10 @@ public class Intake extends SubsystemBase {
 
     mCurrentState = new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
     mDesiredState = new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
-    
 
     mConstraints = new Constraints(Constants.Intake.MaxV, Constants.Intake.MaxA);
     mTrapezoidProfile = new TrapezoidProfile(mConstraints);
-    
+
     intakerToggle = false;
     FlipFlop = true;
   }

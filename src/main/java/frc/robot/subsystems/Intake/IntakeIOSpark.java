@@ -31,16 +31,16 @@ public class IntakeIOSpark implements IntakeIO {
   private double m_alphaTrim;
 
   public IntakeIOSpark() {
-     movementMotor = new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
-     armEncoder = movementMotor.getEncoder();
-     pid = movementMotor.getClosedLoopController();
+    movementMotor = new SparkMax(Constants.CanIds.MovMotorCanId, MotorType.kBrushless);
+    armEncoder = movementMotor.getEncoder();
+    pid = movementMotor.getClosedLoopController();
 
     Rightrotato = new SparkFlex(Constants.CanIds.RightRotatoCanId, MotorType.kBrushless);
     RightrotatoEncoder = Rightrotato.getEncoder();
 
     SparkMaxConfig config = new SparkMaxConfig();
     SparkFlexConfig RotatoConfig = new SparkFlexConfig();
-    
+
     m_kgTrim = 0;
     m_alphaTrim = 0;
 
