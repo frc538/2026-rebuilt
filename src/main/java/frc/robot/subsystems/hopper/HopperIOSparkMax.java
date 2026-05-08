@@ -18,8 +18,7 @@ public class HopperIOSparkMax implements HopperIO {
   private final SparkMax sdSparkMax;
   SparkRelativeEncoder sdEncoder;
   SparkMaxConfig sdConfig;
-  
-  
+
   public HopperIOSparkMax(int feedcanid, int spindexcanid) { // feed can id
     sdSparkMax = new SparkMax(feedcanid, MotorType.kBrushless);
     sdEncoder = (SparkRelativeEncoder) sdSparkMax.getEncoder();
@@ -28,25 +27,26 @@ public class HopperIOSparkMax implements HopperIO {
     fdSparkMax = new SparkMax(spindexcanid, MotorType.kBrushless);
     fdEncoder = (SparkRelativeEncoder) fdSparkMax.getEncoder();
     fdConfig = new SparkMaxConfig();
-    fdConfig
-        .idleMode(IdleMode.kBrake)
-        // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
-        .inverted(false);
+
     sdConfig
         .idleMode(IdleMode.kBrake)
         // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
         .inverted(false);
     sdConfig.smartCurrentLimit(Constants.CurrentLimit.spindexLimit);
-    fdConfig.smartCurrentLimit(Constants.CurrentLimit.feedLimit);
-
-    fdConfig
-        .encoder
-        .positionConversionFactor(Constants.Hopper.FDConversionFactor)
-        .velocityConversionFactor(Constants.Hopper.FDConversionFactor);
     sdConfig
         .encoder
         .positionConversionFactor(Constants.Hopper.SDConversionFactor)
         .velocityConversionFactor(Constants.Hopper.SDConversionFactor);
+
+    fdConfig
+        .idleMode(IdleMode.kBrake)
+        // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
+        .inverted(false);
+    fdConfig.smartCurrentLimit(Constants.CurrentLimit.feedLimit);
+    fdConfig
+        .encoder
+        .positionConversionFactor(Constants.Hopper.FDConversionFactor)
+        .velocityConversionFactor(Constants.Hopper.FDConversionFactor);
 
     sdSparkMax.configure(
         sdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -59,6 +59,7 @@ public class HopperIOSparkMax implements HopperIO {
     inputs.FDBusVoltage = fdSparkMax.getBusVoltage();
     inputs.FDOutputCurrent = fdSparkMax.getOutputCurrent();
     inputs.FDMotorTemperature = fdSparkMax.getMotorTemperature();
+
     inputs.SDAppliedOutput = sdSparkMax.getAppliedOutput();
     inputs.SDBusVoltage = sdSparkMax.getBusVoltage();
     inputs.SDOutputCurrent = sdSparkMax.getOutputCurrent();
