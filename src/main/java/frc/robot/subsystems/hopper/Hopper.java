@@ -9,11 +9,14 @@ import org.littletonrobotics.junction.Logger;
 public class Hopper extends SubsystemBase {
 
   HopperIO io;
-  HopperIOInputsAutoLogged inputs = new HopperIOInputsAutoLogged();
-  Boolean HopperActivated = false;
+  HopperIOInputsAutoLogged inputs;
+  Boolean HopperActivated;
 
   public Hopper(HopperIO IO) {
     io = IO;
+    inputs = new HopperIOInputsAutoLogged();
+
+    HopperActivated = false;
   }
 
   public Command HopperON() {
