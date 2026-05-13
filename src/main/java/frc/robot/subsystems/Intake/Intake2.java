@@ -10,8 +10,11 @@ import org.littletonrobotics.junction.Logger;
 public class Intake2 extends SubsystemBase {
 
   private final IntakeIO io;
-  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-  private boolean intakerToggle = false;
+  private final IntakeIOInputsAutoLogged inputs;
+  private boolean intakerToggle;
+
+  private int rotatoStallCounter;
+  private boolean isStall;
 
   //   public TrapezoidProfile.State mCurrentState =
   //       new TrapezoidProfile.State(Constants.Intake.UprightPos, 0);
@@ -23,6 +26,11 @@ public class Intake2 extends SubsystemBase {
 
   public Intake2(IntakeIO io) {
     this.io = io;
+    intakerToggle = false;
+    inputs = new IntakeIOInputsAutoLogged();
+
+    rotatoStallCounter = 0;
+    isStall = false;
     // mConstraints = new Constraints(Constants.Intake.MaxV, Constants.Intake.MaxA);
     // mTrapezoidProfile = new TrapezoidProfile(mConstraints);
   }
@@ -54,9 +62,6 @@ public class Intake2 extends SubsystemBase {
               Logger.recordOutput("Intake2/armRunVolt", 0);
             });
   }
-
-  private int rotatoStallCounter = 0;
-  private boolean isStall = false;
 
   public Command goDownButDontWhenStall() {
     return run(
