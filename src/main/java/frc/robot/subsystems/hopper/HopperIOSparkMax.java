@@ -12,39 +12,41 @@ import frc.robot.Constants;
 public class HopperIOSparkMax implements HopperIO {
 
   private final SparkMax fdSparkMax;
-  private final SparkMax sdSparkMax;
-
-  SparkMaxConfig sdConfig = new SparkMaxConfig();
-  SparkMaxConfig fdConfig = new SparkMaxConfig();
-
-  SparkRelativeEncoder sdEncoder;
   SparkRelativeEncoder fdEncoder;
+  SparkMaxConfig fdConfig;
+
+  private final SparkMax sdSparkMax;
+  SparkRelativeEncoder sdEncoder;
+  SparkMaxConfig sdConfig;
 
   public HopperIOSparkMax(int feedcanid, int spindexcanid) { // feed can id
     sdSparkMax = new SparkMax(feedcanid, MotorType.kBrushless);
-    fdSparkMax = new SparkMax(spindexcanid, MotorType.kBrushless);
     sdEncoder = (SparkRelativeEncoder) sdSparkMax.getEncoder();
-    fdEncoder = (SparkRelativeEncoder) fdSparkMax.getEncoder();
+    sdConfig = new SparkMaxConfig();
 
-    fdConfig
-        .idleMode(IdleMode.kBrake)
-        // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
-        .inverted(false);
+    fdSparkMax = new SparkMax(spindexcanid, MotorType.kBrushless);
+    fdEncoder = (SparkRelativeEncoder) fdSparkMax.getEncoder();
+    fdConfig = new SparkMaxConfig();
+
     sdConfig
         .idleMode(IdleMode.kBrake)
         // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
         .inverted(false);
     sdConfig.smartCurrentLimit(Constants.CurrentLimit.spindexLimit);
-    fdConfig.smartCurrentLimit(Constants.CurrentLimit.feedLimit);
-
-    fdConfig
-        .encoder
-        .positionConversionFactor(Constants.Hopper.FDConversionFactor)
-        .velocityConversionFactor(Constants.Hopper.FDConversionFactor);
     sdConfig
         .encoder
         .positionConversionFactor(Constants.Hopper.SDConversionFactor)
         .velocityConversionFactor(Constants.Hopper.SDConversionFactor);
+
+    fdConfig
+        .idleMode(IdleMode.kBrake)
+        // .smartCurrentLimit(Constants.ArmConstants.CurrentLimit)
+        .inverted(false);
+    fdConfig.smartCurrentLimit(Constants.CurrentLimit.feedLimit);
+    fdConfig
+        .encoder
+        .positionConversionFactor(Constants.Hopper.FDConversionFactor)
+        .velocityConversionFactor(Constants.Hopper.FDConversionFactor);
 
     sdSparkMax.configure(
         sdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -57,6 +59,7 @@ public class HopperIOSparkMax implements HopperIO {
     inputs.FDBusVoltage = fdSparkMax.getBusVoltage();
     inputs.FDOutputCurrent = fdSparkMax.getOutputCurrent();
     inputs.FDMotorTemperature = fdSparkMax.getMotorTemperature();
+
     inputs.SDAppliedOutput = sdSparkMax.getAppliedOutput();
     inputs.SDBusVoltage = sdSparkMax.getBusVoltage();
     inputs.SDOutputCurrent = sdSparkMax.getOutputCurrent();
