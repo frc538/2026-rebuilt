@@ -334,7 +334,6 @@ public class RobotContainer {
     intake2.setDefaultCommand(intake2.goDownButDontWhenStall()); // UNIVERSAL
 
     pilotController.b().onTrue(intake2.forceIntake()); // UNIVERSAL
-    // pilotController.rightTrigger(0.75).whileTrue(intake2.intakeDownVoltage());
     pilotController.y().whileTrue(intake2.intakeUpVoltage()); // UNIVERSAL
 
     // Hopper
@@ -393,49 +392,6 @@ public class RobotContainer {
     // Hopper
     navController.rightTrigger(0.75).onTrue(hopper.HopperToggle()); // UNIVERSAL
     navController.rightTrigger(0.75).onFalse(hopper.HopperToggle()); // UNIVERSAL
-
-    // UPDATED CODE END
-
-    // controller.rightBumper().onTrue(navSys.showPath());
-
-    // navController.b().and(this::isTest).whileTrue(launcher.testTurn());
-    // navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
-
-    /////////////////////////////////////////////////////////////////////////
-
-    //////////////////////////////////////////////////////////////
-    /// Climber Commands
-    //////////////////////////////////////////////////////////////
-
-    ///////////////////////////////////////////////////////////////
-    /// Launcher Commands
-    ///////////////////////////////////////////////////////////////
-
-    /// Teleop Commands
-    // navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
-
-    //////////////////////////////////////////////////////////////
-    /// Hopper Commands (Drives spindexer and feeds the launcher)
-    //////////////////////////////////////////////////////////////
-
-    // navController.a().and(this::isTest).whileTrue(hopper.testFeed());
-    // navController.x().and(this::isTest).whileTrue(hopper.testSpindex());
-
-    //////////////////////////////////////////////////////////////
-    /// Intake Commands
-    //////////////////////////////////////////////////////////////
-
-    // Test and teleop
-    // pilotController.a().onTrue(intake.togglePosition());
-    // pilotController.b().onTrue(intake.forceIntake());
-    // pilotController.y().onTrue(intake.HumpAvoid());
-
-    pilotController.x().and(this::isTest).onTrue(launcher.calibrateCRTEncoders());
-
-    // pilotController.povUp().and(this::isTest).whileTrue(intake.trimKGUp());
-    // pilotController.povDown().and(this::isTest).whileTrue(intake.trimKGDown());
-    // pilotController.povLeft().and(this::isTest).whileTrue(intake.trimAlphaUp());
-    // pilotController.povRight().and(this::isTest).whileTrue(intake.trimAlphaDown());
   }
 
   /**
