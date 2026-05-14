@@ -254,35 +254,53 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //////////////////////////////////////////////////////////////
+    // UPDATED ORGANIZATION
+    //////////////////////////////////////////////////////////////
+
+    /// UNIVERSAL
+    /// applicable to both teleop and test mode
+
+    /// Climber Commands
+    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
+    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
+
+    // Launcher
+    navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
 
     //////////////////////////////////////////////////////////////
-    /// Drive Commands
+    ///  TELE-OPERATED
     //////////////////////////////////////////////////////////////
+    // Drive
 
-    // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.driveDriftAccount(
             drive,
             () -> -pilotController.getLeftY(),
             () -> -pilotController.getLeftX(),
-            () -> -pilotController.getRightX()));
-
-    pilotController.axisGreaterThan(0, 0.3).onTrue(nav2.cancelPath());
-    pilotController.axisGreaterThan(1, 0.3).onTrue(nav2.cancelPath());
-    pilotController.axisGreaterThan(4, 0.3).onTrue(nav2.cancelPath());
-
+            () -> -pilotController.getRightX())); // UNIVERSAL
     // Switch to X pattern when X button is pressed
-    pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // navigation controller controls
+    pilotController.x().and(this::isNotTest).onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // Reset gyro to 0° when right stick is pressed
+    pilotController
+        .rightStick()
+        .and(this::isNotTest)
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                    drive)
+                .ignoringDisable(true));
+
+    // navigation
     navController.a().and(this::isNotTest).onTrue(nav2.navDown(() -> drive.getPose()));
     navController.b().and(this::isNotTest).onTrue(nav2.navRight(() -> drive.getPose()));
     navController.x().and(this::isNotTest).onTrue(nav2.navLeft(() -> drive.getPose()));
     navController.y().and(this::isNotTest).onTrue(nav2.navUp(() -> drive.getPose()));
 
     navController.rightStick().and(this::isNotTest).onTrue(nav2.cancelPath());
-    navController.rightTrigger(0.75).onTrue(hopper.HopperToggle());
-    navController.rightTrigger(0.75).onFalse(hopper.HopperToggle());
 
     navController
         .rightBumper()
@@ -301,16 +319,52 @@ public class RobotContainer {
                   return drive.getPose();
                 }));
 
-    // controller.rightBumper().onTrue(navSys.showPath());
+    pilotController.axisGreaterThan(0, 0.3).onTrue(nav2.cancelPath());
+    pilotController.axisGreaterThan(1, 0.3).onTrue(nav2.cancelPath()); // UNIVERSAL?
+    pilotController.axisGreaterThan(4, 0.3).onTrue(nav2.cancelPath()); // what are these?
 
-    navController.leftStick().onTrue(launcher.toggleShoot()); // both teleop and test
+    // Launcher
+
+    navController.povLeft().and(this::isNotTest).whileTrue(launcher.trimLeft());
+    navController.povRight().and(this::isNotTest).whileTrue(launcher.trimRight());
+    navController.povUp().and(this::isNotTest).whileTrue(launcher.trimForward());
+    navController.povDown().and(this::isNotTest).whileTrue(launcher.trimBack());
+
+    /// Intake
+    intake2.setDefaultCommand(intake2.goDownButDontWhenStall()); // UNIVERSAL
+
+    pilotController.b().onTrue(intake2.forceIntake()); // UNIVERSAL
+    pilotController.y().whileTrue(intake2.intakeUpVoltage()); // UNIVERSAL
+
+    // Hopper
+    navController.rightTrigger(0.75).onTrue(hopper.HopperToggle()); // UNIVERSAL
+    navController.rightTrigger(0.75).onFalse(hopper.HopperToggle()); // UNIVERSAL
+
+    //////////////////////////////////////////////////////////////
+    /// TEST
+    //////////////////////////////////////////////////////////////
+
+    /// Drive
+    drive.setDefaultCommand(
+        DriveCommands.driveDriftAccount(
+            drive,
+            () -> -pilotController.getLeftY(),
+            () -> -pilotController.getLeftX(),
+            () -> -pilotController.getRightX())); // UNIVERSAL
+    pilotController.x().and(this::isTest).onTrue(launcher.calibrateCRTEncoders());
+
+    // launcher
     navController.rightStick().and(this::isTest).onTrue(launcher.testTurretRotateToggleAuto());
-
-    // navController.b().and(this::isTest).whileTrue(launcher.testTurn());
-    // navController.y().and(this::isTest).whileTrue(launcher.invertTestTurn());
-
     navController.b().and(this::isTest).whileTrue(launcher.testTurretRotateClockwise());
     navController.y().and(this::isTest).whileTrue(launcher.testTurretRotateCounterclockwise());
+    navController
+        .rightBumper()
+        .and(DriverStation::isTest)
+        .whileTrue(
+            launcher.testRPS(
+                () -> {
+                  return navController.getLeftY();
+                }));
 
     navController
         .a()
@@ -329,74 +383,15 @@ public class RobotContainer {
                   return 4;
                 }));
 
-    // Reset gyro to 0° when right stick is pressed
-    pilotController
-        .rightStick()
-        .and(this::isNotTest)
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));
-
-    //////////////////////////////////////////////////////////////
-    /// Climber Commands
-    //////////////////////////////////////////////////////////////
-
-    pilotController.leftBumper().whileTrue((climberSubsystem.climberRetract()));
-    pilotController.rightBumper().whileTrue((climberSubsystem.climberExtend()));
-
-    //////////////////////////////////////////////////////////////
-    /// Launcher Commands
-    //////////////////////////////////////////////////////////////
-
-    /// Teleop Commands
-
-    navController.povLeft().and(this::isNotTest).whileTrue(launcher.trimLeft());
-    navController.povRight().and(this::isNotTest).whileTrue(launcher.trimRight());
-    navController.povUp().and(this::isNotTest).whileTrue(launcher.trimForward());
-    navController.povDown().and(this::isNotTest).whileTrue(launcher.trimBack());
-    // navController.povCenter().and(this::isNotTest).whileTrue(launcher.ResetTrim());
-
-    navController
-        .rightBumper()
-        .and(DriverStation::isTest)
-        .whileTrue(
-            launcher.testRPS(
-                () -> {
-                  return navController.getLeftY();
-                }));
-
-    //////////////////////////////////////////////////////////////
-    /// Hopper Commands (Drives spindexer and feeds the launcher)
-    //////////////////////////////////////////////////////////////
-
-    // navController.a().and(this::isTest).whileTrue(hopper.testFeed());
-    // navController.x().and(this::isTest).whileTrue(hopper.testSpindex());
-
-    //////////////////////////////////////////////////////////////
-    /// Intake Commands
-    //////////////////////////////////////////////////////////////
-
-    // Test and teleop
-    // pilotController.a().onTrue(intake.togglePosition());
-    // pilotController.b().onTrue(intake.forceIntake());
-    // pilotController.y().onTrue(intake.HumpAvoid());
-
-    intake2.setDefaultCommand(intake2.goDownButDontWhenStall());
-
-    pilotController.b().onTrue(intake2.forceIntake());
+    /// Intake
+    intake2.setDefaultCommand(intake2.goDownButDontWhenStall()); // UNIVERSAL
+    pilotController.b().onTrue(intake2.forceIntake()); // UNIVERSAL
+    pilotController.y().whileTrue(intake2.intakeUpVoltage()); // UNIVERSAL
     // pilotController.rightTrigger(0.75).whileTrue(intake2.intakeDownVoltage());
-    pilotController.y().whileTrue(intake2.intakeUpVoltage());
 
-    pilotController.x().and(this::isTest).onTrue(launcher.calibrateCRTEncoders());
-
-    // pilotController.povUp().and(this::isTest).whileTrue(intake.trimKGUp());
-    // pilotController.povDown().and(this::isTest).whileTrue(intake.trimKGDown());
-    // pilotController.povLeft().and(this::isTest).whileTrue(intake.trimAlphaUp());
-    // pilotController.povRight().and(this::isTest).whileTrue(intake.trimAlphaDown());
+    // Hopper
+    navController.rightTrigger(0.75).onTrue(hopper.HopperToggle()); // UNIVERSAL
+    navController.rightTrigger(0.75).onFalse(hopper.HopperToggle()); // UNIVERSAL
   }
 
   /**
